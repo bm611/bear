@@ -73,6 +73,10 @@ const quoteLine = Decoration.line({ class: 'cm-quote-line' })
 const codeLine = Decoration.line({ class: 'cm-code-line' })
 const hashtagMark = Decoration.mark({ class: 'cm-hashtag' })
 const todoDoneMark = Decoration.mark({ class: 'cm-todo-done' })
+const highlightMark = Decoration.mark({ class: 'cm-highlight' })
+
+/** Bear's `==highlight==`, which is not part of CommonMark or GFM. */
+const HIGHLIGHT_RE = /==(?=[^\s=])((?:[^=\n]|=(?!=))*[^\s=])==/g
 
 function build(view: EditorView): DecorationSets {
   const decorations: Range<Decoration>[] = []
@@ -124,6 +128,12 @@ function build(view: EditorView): DecorationSets {
           const start = line.from + match.from
           if (inCode(view, start)) continue
           decorations.push(hashtagMark.range(start, line.from + match.to))
+        }
+
+        for (const match of line.text.matchAll(HIGHLIGHT_RE)) {
+          const start = line.from + match.index
+          if (inCode(view, start)) continue
+          decorations.push(highlightMark.range(start, start + match[0].length))
         }
       }
       if (line.to >= doc.length) break

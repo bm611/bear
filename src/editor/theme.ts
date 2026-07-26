@@ -24,8 +24,15 @@ export const bearHighlightStyle = HighlightStyle.define([
   { tag: t.contentSeparator, color: 'var(--text-tertiary)' },
   { tag: t.labelName, color: 'var(--text-tertiary)' },
   { tag: t.escape, color: 'var(--text-tertiary)' },
-  // HeaderMark, EmphasisMark, ListMark, QuoteMark, CodeMark, LinkMark…
-  { tag: t.processingInstruction, color: 'var(--syntax-mark)', fontWeight: '400' },
+  // HeaderMark, EmphasisMark, ListMark, QuoteMark, CodeMark, LinkMark… Lezer
+  // tags the markers as part of their parent too, so `~~` would otherwise be
+  // struck through and `[` underlined. Last rule wins, so reset that here.
+  {
+    tag: t.processingInstruction,
+    color: 'var(--syntax-mark)',
+    fontWeight: '400',
+    textDecoration: 'none',
+  },
 ])
 
 export const bearEditorTheme = EditorView.theme({
@@ -84,6 +91,12 @@ export const bearEditorTheme = EditorView.theme({
     fontWeight: '500',
   },
   '.cm-hashtag:hover': { backgroundColor: 'var(--accent-wash-strong)' },
+
+  '.cm-highlight': {
+    backgroundColor: 'var(--highlight)',
+    borderRadius: '3px',
+    padding: '0.08em 0',
+  },
 
   '.cm-todo': {
     display: 'inline-block',

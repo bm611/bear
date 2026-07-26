@@ -47,6 +47,7 @@
   --code-bg: rgba(120, 120, 130, 0.09);
   --code-text: #8a4f45;
   --todo-border: #b9bcc4;
+  --highlight: #ffe9a8;
 
   --shadow-pop: 0 12px 34px rgba(15, 17, 26, 0.14), 0 2px 6px rgba(15, 17, 26, 0.08);
 }
@@ -79,6 +80,7 @@
   --code-bg: rgba(255, 255, 255, 0.07);
   --code-text: #f0a89c;
   --todo-border: #565962;
+  --highlight: rgba(214, 178, 62, 0.32);
 
   --shadow-pop: 0 14px 40px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.35);
 }
@@ -754,7 +756,7 @@ button.disclosure:hover {
 }
 
 .preview-body mark {
-  background: var(--accent-wash-strong);
+  background: var(--highlight);
   color: inherit;
   border-radius: 3px;
   padding: 0 0.15em;
