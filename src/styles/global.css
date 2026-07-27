@@ -10,6 +10,8 @@
 
   --editor-font: var(--font-ui);
   --editor-font-size: 16px;
+  /* Bear's readable column is deliberately compact: it keeps prose from
+     spreading too wide and gives the same wrap points as the native editor. */
   --editor-measure: 42rem;
 
   --sidebar-width: 15rem;
@@ -24,6 +26,7 @@
   color-scheme: light;
   --accent: #536b8f;
   --accent-hover: #465c7d;
+  --list-marker: #2679c4;
   --accent-soft: rgba(83, 107, 143, 0.42);
   --accent-wash: rgba(83, 107, 143, 0.09);
   --accent-wash-strong: rgba(83, 107, 143, 0.16);
@@ -57,6 +60,7 @@
   color-scheme: dark;
   --accent: #708ab2;
   --accent-hover: #8099bf;
+  --list-marker: #91bdf0;
   --accent-soft: rgba(112, 138, 178, 0.5);
   --accent-wash: rgba(112, 138, 178, 0.14);
   --accent-wash-strong: rgba(112, 138, 178, 0.24);

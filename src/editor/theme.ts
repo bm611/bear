@@ -46,7 +46,10 @@ export const bearEditorTheme = EditorView.theme({
   '&.cm-focused': { outline: 'none' },
   '.cm-scroller': {
     fontFamily: 'var(--editor-font)',
-    lineHeight: '1.62',
+    // Bear keeps the 16px body copy on a compact ~26px baseline. This also
+    // governs blank paragraph lines and list rows, so one value preserves the
+    // same vertical rhythm across the whole note.
+    lineHeight: '1.625',
     padding: '0',
     overflowY: 'auto',
     overscrollBehavior: 'contain',
@@ -59,6 +62,16 @@ export const bearEditorTheme = EditorView.theme({
     width: '100%',
   },
   '.cm-line': { padding: '0 1px 0 0' },
+  // Keep a small, deliberate gap between a list marker and its copy, without
+  // changing word spacing anywhere else in the line.
+  '.cm-list-marker': {
+    display: 'inline-block',
+    marginRight: '0.35em',
+    // Highlight styles also colour Markdown punctuation. Keep the marker on
+    // a clear blue accent even when that syntax style is applied to the same
+    // span.
+    color: 'var(--list-marker) !important',
+  },
   '.cm-cursor, .cm-dropCursor': { borderLeftWidth: '2px', borderLeftColor: 'var(--accent)' },
   '&.cm-focused .cm-selectionBackground, .cm-selectionBackground, ::selection': {
     backgroundColor: 'var(--selection)',

@@ -85,6 +85,7 @@ function lineClass(level: string) {
 const quoteLine = Decoration.line({ class: 'cm-quote-line' })
 const hiddenMark = Decoration.replace({})
 const hashtagMark = Decoration.mark({ class: 'cm-hashtag' })
+const listMark = Decoration.mark({ class: 'cm-list-marker' })
 const todoDoneMark = Decoration.mark({ class: 'cm-todo-done' })
 const highlightMark = Decoration.mark({ class: 'cm-highlight' })
 const SYNTAX_MARK_NODES = /^(EmphasisMark|StrikethroughMark|CodeMark|QuoteMark|LinkMark)$/
@@ -171,6 +172,9 @@ function build(view: EditorView): DecorationSets {
           for (let n = first; n <= last; n += 1) {
             decorations.push(codeLine(n === first, n === last).range(doc.line(n).from))
           }
+        }
+        if (node.name === 'ListMark') {
+          decorations.push(listMark.range(node.from, node.to))
         }
         if (SYNTAX_MARK_NODES.test(node.name)) {
           let markTo = node.to
