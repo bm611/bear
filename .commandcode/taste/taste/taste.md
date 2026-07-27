@@ -1,0 +1,9 @@
+# Taste
+- Communicates visual/UI feedback using screenshots (side-by-side reference vs. current state). Confidence: 0.8
+- Provides numbered lists of issues/requests when giving feedback. Confidence: 0.7
+- Follows up persistently when a change doesn't appear applied — expects verification that fixes actually took effect. Confidence: 0.8
+- Expects pixel-level fidelity when matching a reference design (spacing, line/word/paragraph spacing, etc.). Confidence: 0.8
+- Prefers blue accent colors for UI elements like list markers (bullets, numbered lists). Confidence: 0.6
+- Prefers subtle/low-contrast selection highlighting (tinted accent wash) over solid accent fills — finds high-contrast selected states distracting. Confidence: 0.9
+- Dislikes ambiguous/duplicated UI controls (e.g., two identical icons for different actions) — prefers visually distinct, clearly differentiated controls. Confidence: 0.8
+- Prefers conventional toolbar toggle buttons over novel/edge-based controls (e.g., pane-border chevron rails) for panel management — rejected chevron collapse UX and asked to revert to original toolbar toggles. Confidence: 0.9

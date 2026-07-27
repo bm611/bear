@@ -329,14 +329,11 @@ select {
 }
 
 .sidebar-row[aria-current='true'] {
-  background: var(--accent);
-  color: var(--text-inverse);
+  background: var(--accent-wash-strong);
 }
 
-.sidebar-row[aria-current='true'] .count-badge,
-.sidebar-row[aria-current='true'] .sidebar-row-icon,
-.sidebar-row[aria-current='true'] .disclosure {
-  color: rgba(255, 255, 255, 0.8);
+.sidebar-row[aria-current='true'] .sidebar-row-icon {
+  color: var(--accent);
 }
 
 .sidebar-row-icon {
@@ -510,8 +507,7 @@ button.disclosure:hover {
 }
 
 .note-card[aria-current='true'] {
-  background: var(--accent);
-  color: var(--text-inverse);
+  background: var(--accent-wash-strong);
 }
 
 .note-card-top {
@@ -558,10 +554,8 @@ button.disclosure:hover {
   color: var(--text-tertiary);
 }
 
-.note-card[aria-current='true'] .note-card-date,
-.note-card[aria-current='true'] .note-card-preview,
-.note-card[aria-current='true'] .note-card-meta {
-  color: rgba(255, 255, 255, 0.82);
+.note-card[aria-current='true'] .note-card-title {
+  color: var(--accent);
 }
 
 .note-chip {
@@ -577,18 +571,9 @@ button.disclosure:hover {
   white-space: nowrap;
 }
 
-.note-card[aria-current='true'] .note-chip {
-  background: rgba(255, 255, 255, 0.2);
-  color: #fff;
-}
-
 .note-card-icon {
   display: inline-flex;
   color: var(--accent);
-}
-
-.note-card[aria-current='true'] .note-card-icon {
-  color: #fff;
 }
 
 /* ----------------------------------------------------------------- editor */
