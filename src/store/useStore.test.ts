@@ -1,7 +1,15 @@
-import { beforeEach, describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { fetchNotes, insertNotes } from '../lib/notesApi'
 import { useStore } from './useStore'
 import { createNote, noteTitle } from '../lib/notes'
 import type { Note } from '../lib/types'
+
+vi.mock('../lib/notesApi', () => ({
+  fetchNotes: vi.fn(),
+  insertNotes: vi.fn(),
+  upsertNotes: vi.fn(),
+  deleteNotes: vi.fn(),
+}))
 
 function reset(notes: Note[] = []) {
   useStore.setState({
@@ -10,6 +18,7 @@ function reset(notes: Note[] = []) {
     selectedId: notes[0]?.id ?? null,
     query: '',
     toast: null,
+    notesHydrated: false,
   })
 }
 
@@ -171,6 +180,49 @@ describe('tag maintenance', () => {
     expect(get().notes[0].text).toBe('keep me')
     expect(get().notes[1].text).toBe('untouched #home')
     expect(get().filter).toEqual({ kind: 'all' })
+  })
+})
+
+describe('hydrateNotes', () => {
+  beforeEach(() => {
+    reset()
+    vi.mocked(fetchNotes).mockReset()
+    vi.mocked(insertNotes).mockReset()
+  })
+
+  it('loads the account notes from Supabase', async () => {
+    const note = createNote('From the cloud')
+    vi.mocked(fetchNotes).mockResolvedValue([note])
+
+    await get().hydrateNotes('user-1')
+
+    expect(fetchNotes).toHaveBeenCalledWith('user-1')
+    expect(insertNotes).not.toHaveBeenCalled()
+    expect(get().notes).toEqual([note])
+    expect(get().notesHydrated).toBe(true)
+    expect(get().selectedId).toBe(note.id)
+  })
+
+  it('seeds a brand new account with the welcome notes', async () => {
+    const seeded = [createNote('Welcome')]
+    vi.mocked(fetchNotes).mockResolvedValue([])
+    vi.mocked(insertNotes).mockResolvedValue(seeded)
+
+    await get().hydrateNotes('user-2')
+
+    expect(insertNotes).toHaveBeenCalled()
+    expect(get().notes).toEqual(seeded)
+  })
+
+  it('clears notes and hydration state on sign-out', async () => {
+    vi.mocked(fetchNotes).mockResolvedValue([createNote('Mine')])
+    await get().hydrateNotes('user-3')
+
+    get().resetNotes()
+
+    expect(get().notes).toEqual([])
+    expect(get().notesHydrated).toBe(false)
+    expect(get().selectedId).toBeNull()
   })
 })
 

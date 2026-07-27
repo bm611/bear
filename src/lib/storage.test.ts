@@ -11,21 +11,18 @@ describe('loadLibrary', () => {
     expect(loadLibrary()).toBeNull()
   })
 
-  it('round-trips a saved library', () => {
-    const notes = [createNote('One'), createNote('Two')]
+  it('round-trips saved preferences, filter and selection', () => {
     saveLibrary({
-      notes,
       preferences: { ...defaultPreferences, theme: 'dark', fontSize: 19 },
       filter: { kind: 'tag', tag: 'work' },
-      selectedId: notes[1].id,
+      selectedId: 'some-note-id',
     })
 
     const loaded = loadLibrary()
-    expect(loaded?.notes.map((note) => note.text)).toEqual(['One', 'Two'])
     expect(loaded?.preferences.theme).toBe('dark')
     expect(loaded?.preferences.fontSize).toBe(19)
     expect(loaded?.filter).toEqual({ kind: 'tag', tag: 'work' })
-    expect(loaded?.selectedId).toBe(notes[1].id)
+    expect(loaded?.selectedId).toBe('some-note-id')
   })
 
   it('survives corrupt JSON', () => {
@@ -33,30 +30,21 @@ describe('loadLibrary', () => {
     expect(loadLibrary()).toBeNull()
   })
 
-  it('drops malformed notes and repairs missing fields', () => {
+  it('repairs malformed preferences and filter', () => {
     localStorage.setItem(
       KEY,
       JSON.stringify({
-        notes: [{ id: 'a', text: 'kept' }, { text: 'no id' }, null, 42],
         preferences: { theme: 'chartreuse', fontSize: 900, sort: 'nonsense' },
         filter: { kind: 'tag' },
       }),
     )
 
     const loaded = loadLibrary()
-    expect(loaded?.notes).toHaveLength(1)
-    expect(loaded?.notes[0]).toMatchObject({ id: 'a', text: 'kept', pinned: false, trashedAt: null })
-    expect(typeof loaded?.notes[0].createdAt).toBe('number')
     // Unknown values fall back to the defaults, sizes are clamped.
     expect(loaded?.preferences.theme).toBe(defaultPreferences.theme)
     expect(loaded?.preferences.sort).toBe(defaultPreferences.sort)
     expect(loaded?.preferences.fontSize).toBe(24)
     expect(loaded?.filter).toEqual({ kind: 'all' })
-  })
-
-  it('remembers an empty library instead of re-seeding it', () => {
-    saveLibrary({ notes: [], preferences: defaultPreferences, filter: { kind: 'all' }, selectedId: null })
-    expect(loadLibrary()?.notes).toEqual([])
   })
 })
 
@@ -69,6 +57,15 @@ describe('backup files', () => {
 
   it('accepts a bare array of notes', () => {
     expect(parseLibraryFile(JSON.stringify([{ id: 'x', text: 'bare' }]))).toHaveLength(1)
+  })
+
+  it('drops malformed notes and repairs missing fields', () => {
+    const parsed = parseLibraryFile(
+      JSON.stringify({ notes: [{ id: 'a', text: 'kept' }, { text: 'no id' }, null, 42] }),
+    )
+    expect(parsed).toHaveLength(1)
+    expect(parsed[0]).toMatchObject({ id: 'a', text: 'kept', pinned: false, trashedAt: null })
+    expect(typeof parsed[0].createdAt).toBe('number')
   })
 
   it('rejects files with no usable notes', () => {

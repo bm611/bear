@@ -4,6 +4,7 @@ import { buildTagTree } from '../lib/tags'
 import { matchesFilter } from '../lib/search'
 import { exportLibrary, parseLibraryFile } from '../lib/storage'
 import { downloadFile } from '../lib/download'
+import { supabase } from '../lib/supabaseClient'
 import { mod } from '../lib/platform'
 import type { Filter, ThemeMode } from '../lib/types'
 import { TagTree } from './TagTree'
@@ -246,6 +247,16 @@ export function Sidebar({ onShowShortcuts, onNavigate }: SidebarProps) {
               }}
             >
               Import backup…
+            </MenuItem>
+
+            <MenuSeparator />
+            <MenuItem
+              onSelect={() => {
+                setSettingsOpen(false)
+                void supabase.auth.signOut()
+              }}
+            >
+              Sign out
             </MenuItem>
           </Menu>
         ) : null}

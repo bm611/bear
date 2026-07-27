@@ -7,7 +7,7 @@ const DAY = 24 * HOUR
 
 const WELCOME = `# Welcome to Bear
 
-A small, fast place to keep everything you write. Notes are plain markdown, they save as you type, and they live in this browser — no account, no sync, no server.
+A small, fast place to keep everything you write. Notes are plain markdown and they save as you type, synced to your account.
 
 ## Organise with hashtags
 Forget folders. Just write a tag anywhere in a note and it appears in the sidebar:

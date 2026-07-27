@@ -5,7 +5,9 @@ import { NoteList } from './components/NoteList'
 import { EditorPane } from './components/EditorPane'
 import { ShortcutsSheet } from './components/ShortcutsSheet'
 import { Toast } from './components/Toast'
+import { AuthScreen } from './components/AuthScreen'
 import { useStore } from './store/useStore'
+import { useAuthStore } from './store/useAuthStore'
 import { useVisibleNotes } from './hooks/useVisibleNotes'
 import { NARROW_QUERY, useMediaQuery } from './hooks/useMediaQuery'
 import { hasMod } from './lib/platform'
@@ -47,10 +49,39 @@ function useTypography() {
   }, [font, fontSize])
 }
 
+/** Loads the signed-in user's notes on sign-in, and clears them on sign-out. */
+function useNotesSync() {
+  const status = useAuthStore((state) => state.status)
+  const userId = useAuthStore((state) => state.session?.user.id ?? null)
+  const hydrateNotes = useStore((state) => state.hydrateNotes)
+  const resetNotes = useStore((state) => state.resetNotes)
+  const notesHydrated = useStore((state) => state.notesHydrated)
+
+  useEffect(() => {
+    if (status === 'signedIn' && userId) {
+      hydrateNotes(userId)
+    } else if (status === 'signedOut') {
+      resetNotes()
+    }
+  }, [status, userId, hydrateNotes, resetNotes])
+
+  return status === 'signedIn' && notesHydrated
+}
+
 export function App() {
   useTheme()
   useTypography()
 
+  const authStatus = useAuthStore((state) => state.status)
+  const notesReady = useNotesSync()
+
+  if (authStatus !== 'signedIn') return <AuthScreen />
+  if (!notesReady) return null
+
+  return <AppShell />
+}
+
+function AppShell() {
   const notes = useStore((state) => state.notes)
   const selectedId = useStore((state) => state.selectedId)
   const preferences = useStore((state) => state.preferences)

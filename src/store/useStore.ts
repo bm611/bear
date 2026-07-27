@@ -5,6 +5,7 @@ import { matchesFilter } from '../lib/search'
 import { removeTagFromText, renameTagInText } from '../lib/tags'
 import { defaultPreferences, loadLibrary, saveLibrary } from '../lib/storage'
 import { welcomeNotes } from '../lib/welcome'
+import { deleteNotes, fetchNotes, insertNotes, upsertNotes } from '../lib/notesApi'
 
 export interface StoreState {
   notes: Note[]
@@ -14,7 +15,11 @@ export interface StoreState {
   preferences: Preferences
   /** Transient toast message shown in the bottom-right corner. */
   toast: { id: number; message: string } | null
+  /** Whether `notes` reflects the signed-in user's Supabase data yet. Gates sync-back writes. */
+  notesHydrated: boolean
 
+  hydrateNotes: (userId: string) => Promise<void>
+  resetNotes: () => void
   newNote: (text?: string) => string
   updateNoteText: (id: string, text: string) => void
   selectNote: (id: string | null) => void
@@ -40,14 +45,6 @@ export interface StoreState {
 
 const persisted = loadLibrary()
 
-function initialNotes(): Note[] {
-  if (persisted && persisted.notes.length > 0) return persisted.notes
-  if (persisted) return []
-  return welcomeNotes()
-}
-
-const startingNotes = initialNotes()
-
 /** A brand new note inherits the tag you are currently browsing, like Bear does. */
 function seedTextForFilter(filter: Filter): string {
   return filter.kind === 'tag' ? `# \n\n#${filter.tag}` : '# '
@@ -58,12 +55,31 @@ function touch(note: Note, text: string): Note {
 }
 
 export const useStore = create<StoreState>((set, get) => ({
-  notes: startingNotes,
+  notes: [],
   filter: persisted?.filter ?? { kind: 'all' },
-  selectedId: persisted?.selectedId ?? startingNotes[0]?.id ?? null,
+  selectedId: persisted?.selectedId ?? null,
   query: '',
   preferences: persisted?.preferences ?? { ...defaultPreferences },
   toast: null,
+  notesHydrated: false,
+
+  hydrateNotes: async (userId) => {
+    let notes = await fetchNotes(userId)
+    if (notes.length === 0) notes = await insertNotes(welcomeNotes(), userId)
+    currentUserId = userId
+    markSynced(notes)
+    set((state) => ({
+      notes,
+      notesHydrated: true,
+      selectedId: notes.some((note) => note.id === state.selectedId) ? state.selectedId : (notes[0]?.id ?? null),
+    }))
+  },
+
+  resetNotes: () => {
+    currentUserId = null
+    markSynced([])
+    set({ notes: [], notesHydrated: false, selectedId: null })
+  },
 
   newNote: (text) => {
     const seeded = text ?? seedTextForFilter(get().filter)
@@ -217,15 +233,37 @@ function nextSelection(notes: Note[], removedId: string, filter: Filter): string
 }
 
 let saveTimer: ReturnType<typeof setTimeout> | undefined
+let notesSyncTimer: ReturnType<typeof setTimeout> | undefined
+let currentUserId: string | null = null
+let lastSyncedNotes: Note[] = []
+
+/** Marks `notes` as already reflecting Supabase, so the sync-back effect skips it. */
+function markSynced(notes: Note[]) {
+  lastSyncedNotes = notes
+}
 
 useStore.subscribe((state) => {
   clearTimeout(saveTimer)
   saveTimer = setTimeout(() => {
     saveLibrary({
-      notes: state.notes,
       preferences: state.preferences,
       filter: state.filter,
       selectedId: state.selectedId,
+    })
+  }, 400)
+
+  if (!state.notesHydrated || !currentUserId || state.notes === lastSyncedNotes) return
+  const notes = state.notes
+  const userId = currentUserId
+  clearTimeout(notesSyncTimer)
+  notesSyncTimer = setTimeout(() => {
+    const previous = lastSyncedNotes
+    const currentIds = new Set(notes.map((note) => note.id))
+    const removedIds = previous.filter((note) => !currentIds.has(note.id)).map((note) => note.id)
+    const changed = notes.filter((note) => previous.find((prev) => prev.id === note.id) !== note)
+    markSynced(notes)
+    void Promise.all([deleteNotes(removedIds), upsertNotes(changed, userId)]).catch((error) => {
+      console.error('Failed to sync notes to Supabase', error)
     })
   }, 400)
 })

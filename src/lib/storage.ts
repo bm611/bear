@@ -14,7 +14,6 @@ export const defaultPreferences: Preferences = {
 
 export interface PersistedLibrary {
   version: number
-  notes: Note[]
   preferences: Preferences
   filter: Filter
   selectedId: string | null
@@ -78,11 +77,9 @@ export function loadLibrary(): PersistedLibrary | null {
 
   try {
     const parsed: unknown = JSON.parse(raw)
-    if (!isRecord(parsed) || !Array.isArray(parsed.notes)) return null
-    const notes = parsed.notes.map(coerceNote).filter((note): note is Note => note !== null)
+    if (!isRecord(parsed)) return null
     return {
       version: SCHEMA_VERSION,
-      notes,
       preferences: coercePreferences(parsed.preferences),
       filter: coerceFilter(parsed.filter),
       selectedId: typeof parsed.selectedId === 'string' ? parsed.selectedId : null,
