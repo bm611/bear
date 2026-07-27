@@ -86,14 +86,14 @@ const EXPORT_CSS = `
 :root { color-scheme: light dark; }
 body {
   margin: 0 auto; padding: 3rem 1.5rem; max-width: 44rem;
-  font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, system-ui, sans-serif;
+  font: 16px/1.65 "Google Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
   color: #1c1c1e; background: #fff; overflow-wrap: break-word;
 }
 h1, h2, h3, h4 { line-height: 1.25; margin: 1.8em 0 .6em; }
 h1 { font-size: 1.9rem } h2 { font-size: 1.5rem } h3 { font-size: 1.25rem }
 a { color: #d5473d }
 blockquote { margin: 1em 0; padding: .2em 0 .2em 1em; border-left: 3px solid #e5e5ea; color: #5a5a5f }
-code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .9em;
+code { font-family: "Google Sans Code", ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .9em;
   background: #f2f2f7; padding: .15em .35em; border-radius: 4px }
 pre { background: #f2f2f7; padding: 1em; border-radius: 8px; overflow-x: auto }
 pre code { background: none; padding: 0 }

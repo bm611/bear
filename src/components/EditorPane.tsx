@@ -9,6 +9,7 @@ import {
   BoldIcon,
   BulletIcon,
   ChevronRight,
+  ClipboardIcon,
   CodeIcon,
   CopyIcon,
   DownloadIcon,
@@ -296,7 +297,7 @@ export function EditorPane({ note, viewRef, onBack }: EditorPaneProps) {
                 Duplicate note
               </MenuItem>
               <MenuItem
-                icon={<CopyIcon size={15} />}
+                icon={<ClipboardIcon size={15} />}
                 onSelect={() => {
                   setMenuOpen(false)
                   void copyMarkdown()

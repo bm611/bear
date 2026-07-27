@@ -41,6 +41,21 @@ almost everything (press <kbd>⌘/</kbd> to see them).
 Clicking a tag pill inside a note filters the library by it. Clicking a checkbox
 ticks the todo off in the document itself.
 
+## Type and icons
+
+Set in [Google Sans](https://fonts.google.com/specimen/Google+Sans), with
+[Google Sans Code](https://fonts.google.com/specimen/Google+Sans+Code) for code
+spans, fenced blocks and the mono editor setting. Both are self-hosted from
+their Fontsource packages (SIL OFL 1.1) — `src/styles/fonts.css` declares only
+the latin subsets, because importing the packages' own CSS would bundle all 25
+subsets and 14 MB of woff2 for a latin interface.
+
+Icons come from [Hugeicons](https://hugeicons.com) (free set) via
+`@hugeicons/react`. `src/components/Icons.tsx` maps each Hugeicons glyph to a
+named component so the rest of the app imports `TrashIcon` rather than
+`Delete02Icon`, and one wrapper fixes the size and stroke weight everywhere.
+The bear in the sidebar is the app's own mark — Hugeicons has no bear.
+
 ## Layout
 
 ```
