@@ -22,12 +22,14 @@ import {
   QuoteIcon,
   RestoreIcon,
   SidebarIcon,
+  TableIcon,
   TodoIcon,
   TrashIcon,
 } from './Icons'
 import {
   insertCodeBlock,
   insertLink,
+  insertTable,
   setHeading,
   toggleBold,
   toggleBulletList,
@@ -35,11 +37,10 @@ import {
   toggleQuote,
   toggleTodo,
 } from '../editor/commands'
-import { characterCount, noteTags, noteTitle, readingTime, todoStats, wordCount } from '../lib/notes'
+import { noteTitle } from '../lib/notes'
 import { exportNoteHtml, slugify } from '../lib/markdown'
 import { copyToClipboard, downloadFile } from '../lib/download'
-import { fullDate, relativeDate } from '../lib/date'
-import { combo, mod, MOD, SHIFT, BACKSPACE } from '../lib/platform'
+import { combo, mod, ALT, MOD, SHIFT, BACKSPACE } from '../lib/platform'
 import type { Note } from '../lib/types'
 
 interface EditorPaneProps {
@@ -98,9 +99,6 @@ export function EditorPane({ note, viewRef, onBack }: EditorPaneProps) {
   }
 
   const title = noteTitle(note)
-  const tags = noteTags(note)
-  const todos = todoStats(note.text)
-  const words = wordCount(note.text)
 
   const run = (command: (view: EditorView) => boolean) => () => {
     const view = viewRef.current
@@ -257,6 +255,16 @@ export function EditorPane({ note, viewRef, onBack }: EditorPaneProps) {
             <button
               type="button"
               className="icon-button"
+              aria-label="Table"
+              title={`Table (${combo(MOD, ALT, 'T')})`}
+              onMouseDown={keepEditorFocus}
+              onClick={run(insertTable)}
+            >
+              <TableIcon />
+            </button>
+            <button
+              type="button"
+              className="icon-button"
               aria-label="Link"
               title={`Link (${mod('K')})`}
               onMouseDown={keepEditorFocus}
@@ -408,29 +416,6 @@ export function EditorPane({ note, viewRef, onBack }: EditorPaneProps) {
       ) : null}
 
       <Editor noteId={note.id} text={note.text} readOnly={readOnly} viewRef={viewRef} />
-
-      <div className="editor-footer">
-        <span title={`Created ${fullDate(note.createdAt)}`}>Edited {relativeDate(note.updatedAt)}</span>
-        <span>
-          {words} word{words === 1 ? '' : 's'}
-        </span>
-        <span className="desktop-only">{characterCount(note.text)} characters</span>
-        <span className="desktop-only">{readingTime(note.text)} min read</span>
-        {todos.total > 0 ? (
-          <span>
-            {todos.done}/{todos.total} done
-          </span>
-        ) : null}
-        {tags.length > 0 ? (
-          <span className="editor-footer-tags">
-            {tags.map((tag) => (
-              <span className="note-chip" key={tag}>
-                #{tag}
-              </span>
-            ))}
-          </span>
-        ) : null}
-      </div>
 
       {confirmDelete ? (
         <ConfirmDialog

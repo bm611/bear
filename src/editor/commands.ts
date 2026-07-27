@@ -1,6 +1,7 @@
 import type { ChangeSpec, EditorState } from '@codemirror/state'
 import { EditorSelection } from '@codemirror/state'
 import type { Command, EditorView } from '@codemirror/view'
+import { createTable } from '../lib/table'
 
 /** Wraps or unwraps each selection range with a markdown delimiter. */
 export function toggleWrap(marker: string, endMarker = marker): Command {
@@ -244,6 +245,29 @@ export const insertCodeBlock: Command = (view) => {
   view.dispatch({
     changes: { from, to, insert },
     selection: EditorSelection.cursor(from + leadingBreak.length + 4),
+    scrollIntoView: true,
+    userEvent: 'input.format',
+  })
+  return true
+}
+
+/**
+ * A blank 2×2 table: a header row and one row under it. GFM only reads a table
+ * as one when it starts its own block, so a filled line gets a blank line
+ * between it and the table.
+ */
+export const insertTable: Command = (view) => {
+  const { state } = view
+  const line = state.doc.lineAt(state.selection.main.head)
+  const filled = line.text.trim().length > 0
+  const from = filled ? line.to : line.from
+  const lead = filled ? '\n\n' : ''
+  const insert = `${lead}${createTable(2, 2)}\n`
+
+  view.dispatch({
+    changes: { from, insert },
+    // Into the first header cell, past the `| ` that opens it.
+    selection: EditorSelection.cursor(from + lead.length + 2),
     scrollIntoView: true,
     userEvent: 'input.format',
   })

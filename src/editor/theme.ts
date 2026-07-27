@@ -162,6 +162,81 @@ export const bearEditorTheme = EditorView.theme({
     borderRadius: '8px',
   },
 
+  // A table is drawn from its source: `tables.ts` hides the pipes and the
+  // delimiter row, and each row lays its cells out as equal flex columns. Every
+  // row is a separate line, so equal columns are what keeps one row's grid in
+  // step with the next. `.cm-line` wins on specificity over the base theme's
+  // `display: block`, which is what the doubled class is for.
+  // Rows are shaded in turn instead of ruled apart, so the only horizontal
+  // lines are the table's own edges. Tighter than body copy, too: a table is
+  // read down its columns, and the loose prose rhythm makes that a long trip.
+  '.cm-line.cm-table-line': {
+    display: 'flex',
+    alignItems: 'stretch',
+    padding: '0',
+    lineHeight: '1.5',
+    borderLeft: '1px solid var(--rule-strong)',
+    borderRight: '1px solid var(--rule-strong)',
+  },
+  '.cm-line.cm-table-head': {
+    marginTop: '0.55em',
+    borderTop: '1px solid var(--rule-strong)',
+    borderTopLeftRadius: '8px',
+    borderTopRightRadius: '8px',
+    backgroundColor: 'var(--table-row)',
+  },
+  '.cm-line.cm-table-alt': { backgroundColor: 'var(--table-row)' },
+  '.cm-line.cm-table-last': {
+    marginBottom: '0.6em',
+    borderBottom: '1px solid var(--rule-strong)',
+    borderBottomLeftRadius: '8px',
+    borderBottomRightRadius: '8px',
+  },
+  // The last cell drops its rule so the rounded edge on the line is the only
+  // thing drawn there — `cm-table-cell-end` rather than `:last-child`, which
+  // would land on the buffer CodeMirror leaves after the final hidden pipe.
+  '.cm-table-cell': {
+    flex: '1 1 0',
+    minWidth: '0',
+    padding: '0 0.3em',
+    borderRight: '1px solid var(--rule)',
+    overflowWrap: 'break-word',
+  },
+  '.cm-table-cell-end': { borderRight: 'none' },
+  '.cm-table-head-cell': { fontWeight: '650' },
+  '.cm-table-left': { textAlign: 'left' },
+  '.cm-table-center': { textAlign: 'center' },
+  '.cm-table-right': { textAlign: 'right' },
+
+  '.cm-table-anchor': {
+    position: 'absolute',
+    zIndex: '6',
+    display: 'none',
+    fontFamily: 'var(--font-ui)',
+    transform: 'translate(-100%, -50%)',
+  },
+  '.cm-table-anchor[data-visible="true"]': { display: 'block' },
+  '.cm-table-handle': {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '1.1rem',
+    height: '1.1rem',
+    margin: '0.15rem',
+    padding: '0',
+    borderRadius: '5px',
+    color: 'var(--text-tertiary)',
+    backgroundColor: 'var(--surface-raised)',
+    boxShadow: '0 0 0 1px var(--rule-strong)',
+    cursor: 'pointer',
+  },
+  '.cm-table-handle svg': { width: '13px', height: '13px' },
+  '.cm-table-handle:hover': {
+    color: 'var(--text-inverse)',
+    backgroundColor: 'var(--accent)',
+    boxShadow: '0 0 0 1px var(--accent)',
+  },
+
   '.cm-hashtag': {
     color: 'var(--accent)',
     backgroundColor: 'var(--accent-wash)',
