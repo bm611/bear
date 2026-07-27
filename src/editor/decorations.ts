@@ -1,4 +1,5 @@
 import { syntaxTree } from '@codemirror/language'
+import type { SyntaxNode } from '@lezer/common'
 import type { Range } from '@codemirror/state'
 import {
   Decoration,
@@ -23,6 +24,32 @@ function inCode(view: EditorView, pos: number): boolean {
 }
 
 const TODO_RE = /^(\s*)(?:[-*+][ \t]+)?\[([ xX])\](?=[ \t]|$)/
+
+/** The three interchangeable CommonMark bullets, as opposed to `1.` or `1)`. */
+const BULLET_RE = /^[-*+]$/
+
+/**
+ * `-`, `*` and `+` all mean the same thing and none of them reads as a list at
+ * a glance, so bullet lists draw a dot instead — the same round marker Bear
+ * uses. It is a styled element rather than a `•`, which keeps the size honest
+ * across the three font choices.
+ */
+class BulletWidget extends WidgetType {
+  eq(): boolean {
+    // Every bullet is the same dot, so CodeMirror is free to reuse any of them
+    // rather than rebuild the DOM as lines shift around.
+    return true
+  }
+
+  toDOM(): HTMLElement {
+    const slot = document.createElement('span')
+    slot.className = 'cm-bullet'
+    const dot = document.createElement('span')
+    dot.className = 'cm-bullet-dot'
+    slot.append(dot)
+    return slot
+  }
+}
 
 class TodoWidget extends WidgetType {
   constructor(
@@ -86,9 +113,42 @@ const quoteLine = Decoration.line({ class: 'cm-quote-line' })
 const hiddenMark = Decoration.replace({})
 const hashtagMark = Decoration.mark({ class: 'cm-hashtag' })
 const listMark = Decoration.mark({ class: 'cm-list-marker' })
+const bulletMark = Decoration.replace({ widget: new BulletWidget() })
 const todoDoneMark = Decoration.mark({ class: 'cm-todo-done' })
 const highlightMark = Decoration.mark({ class: 'cm-highlight' })
 const SYNTAX_MARK_NODES = /^(EmphasisMark|StrikethroughMark|CodeMark|QuoteMark|LinkMark)$/
+
+/**
+ * Where a marker sits: how many lists deep, counting from 0 at the top level,
+ * and whether a blockquote is among its ancestors. The source indent that
+ * expresses nesting is worth two spaces in one note and four in the next, so
+ * depth is read off the parse tree and drawn at a fixed step instead — see
+ * `.cm-list-line`. A quote already owns its line's left edge, rule and padding,
+ * so a list inside one keeps the marker but leaves the indent alone rather than
+ * setting the same properties twice.
+ */
+function listPosition(node: SyntaxNode): { depth: number; quoted: boolean } {
+  let depth = -1
+  let quoted = false
+  for (let cur: SyntaxNode | null = node; cur; cur = cur.parent) {
+    if (cur.name === 'BulletList' || cur.name === 'OrderedList') depth += 1
+    else if (cur.name === 'Blockquote') quoted = true
+  }
+  return { depth: Math.max(depth, 0), quoted }
+}
+
+const listLines: Decoration[] = []
+
+function listLine(depth: number): Decoration {
+  // Past a handful of levels the indent is unreadable anyway, and the cap keeps
+  // a pathological document from growing the cache without bound.
+  const level = Math.min(depth, 8)
+  listLines[level] ??= Decoration.line({
+    class: 'cm-list-line',
+    attributes: { style: `--list-depth:${level}` },
+  })
+  return listLines[level]
+}
 
 function codeLine(first: boolean, last: boolean) {
   const edges = `${first ? ' cm-code-start' : ''}${last ? ' cm-code-end' : ''}`
@@ -174,7 +234,30 @@ function build(view: EditorView): DecorationSets {
           }
         }
         if (node.name === 'ListMark') {
-          decorations.push(listMark.range(node.from, node.to))
+          const line = doc.lineAt(node.from)
+          // On `- [ ] task` the checkbox below already replaces the marker as
+          // part of the todo, so a bullet here would fight it for the range.
+          // Ordered markers keep their text: `1.` carries the number.
+          const bullet =
+            BULLET_RE.test(doc.sliceString(node.from, node.to)) && !TODO_RE.test(line.text)
+          // The bullet goes in with the marks rather than the replacements:
+          // that second set is also the atomic one, and the cursor has to be
+          // able to sit inside a bullet to retype or delete it.
+          decorations.push((bullet ? bulletMark : listMark).range(node.from, node.to))
+
+          const { depth, quoted } = listPosition(node.node)
+          if (!quoted) {
+            decorations.push(listLine(depth).range(line.from))
+            // The line draws its own indent now, so the source's leading spaces
+            // would land on top of it. They stay hidden rather than folding
+            // back on selection: an indent carries no information a reader
+            // needs to see, and revealing it would shunt the line sideways on
+            // every click.
+            const indent = /^[ \t]*/.exec(line.text)?.[0].length ?? 0
+            if (indent > 0 && line.from + indent <= node.from) {
+              hidden.push(hiddenMark.range(line.from, line.from + indent))
+            }
+          }
         }
         if (SYNTAX_MARK_NODES.test(node.name)) {
           let markTo = node.to

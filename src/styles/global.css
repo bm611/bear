@@ -9,10 +9,13 @@
     'Liberation Mono', monospace;
 
   --editor-font: var(--font-ui);
-  --editor-font-size: 16px;
+  /* Bear sets body copy at 17px by default. */
+  --editor-font-size: 17px;
   /* Bear's readable column is deliberately compact: it keeps prose from
-     spreading too wide and gives the same wrap points as the native editor. */
-  --editor-measure: 42rem;
+     spreading too wide and gives the same wrap points as the native editor.
+     Measured off the native editor it lands at ~740px against 17px copy, and
+     an `em` here keeps that proportion when the reader steps the size. */
+  --editor-measure: 43.5em;
 
   --sidebar-width: 15rem;
   --list-width: 20rem;

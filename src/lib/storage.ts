@@ -6,7 +6,7 @@ const SCHEMA_VERSION = 1
 export const defaultPreferences: Preferences = {
   theme: 'system',
   font: 'sans',
-  fontSize: 16,
+  fontSize: 17,
   sort: 'modified',
   sidebarVisible: true,
   listVisible: true,
