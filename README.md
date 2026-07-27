@@ -21,9 +21,11 @@ npm run dev      # http://localhost:5173
 
 **Markdown styled as you type.** There is no preview to toggle — the editor
 *is* the preview. Headings grow, bold goes bold, code turns monospace, and the
-syntax markers stay visible but recede in colour, so a note is always editable
-plain text. Built on CodeMirror 6 with a custom highlight style, live todo
-checkboxes and inline tag pills.
+syntax markers recede in colour rather than vanishing, so a note is always
+editable plain text. A heading's `#` is the one marker that folds away
+completely: it comes back the moment the cursor lands on that line, so the
+heading still reads as a heading the rest of the time. Built on CodeMirror 6
+with a custom highlight style, live todo checkboxes and inline tag pills.
 
 **Hashtags, not folders.** Write `#work` anywhere in a note and it appears in
 the sidebar. Tags nest with a slash (`#work/projects/bear`), and parent tags

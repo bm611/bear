@@ -71,6 +71,7 @@ function lineClass(level: string) {
 
 const quoteLine = Decoration.line({ class: 'cm-quote-line' })
 const codeLine = Decoration.line({ class: 'cm-code-line' })
+const hiddenMark = Decoration.replace({})
 const hashtagMark = Decoration.mark({ class: 'cm-hashtag' })
 const todoDoneMark = Decoration.mark({ class: 'cm-todo-done' })
 const highlightMark = Decoration.mark({ class: 'cm-highlight' })
@@ -78,11 +79,50 @@ const highlightMark = Decoration.mark({ class: 'cm-highlight' })
 /** Bear's `==highlight==`, which is not part of CommonMark or GFM. */
 const HIGHLIGHT_RE = /==(?=[^\s=])((?:[^=\n]|=(?!=))*[^\s=])==/g
 
+/** `#{1,6} `, the heading text, then an optional closing run of `#`. */
+const ATX_MARK_RE = /^([ \t]*#{1,6}[ \t]+)([\s\S]*?)((?:[ \t]+#+)?[ \t]*)$/
+
+/**
+ * The parts of an ATX heading line to fold away — the leading hashes with their
+ * space, and any closing `##` — as offsets into the line. Size and weight
+ * already say "heading", so leaving the hashes in makes the line read as
+ * unrendered markup. Nothing is hidden when the line is only markers: that
+ * would leave a blank line with no hint of what it is.
+ */
+export function headingMarkRanges(text: string): Array<{ from: number; to: number }> {
+  const match = ATX_MARK_RE.exec(text)
+  if (!match || match[2].trim() === '') return []
+  const ranges = [{ from: 0, to: match[1].length }]
+  if (match[3].length > 0) {
+    ranges.push({ from: match[1].length + match[2].length, to: text.length })
+  }
+  return ranges
+}
+
+/**
+ * Line numbers holding a cursor or selection, where the markup stays visible so
+ * it can be edited. An unfocused editor has no cursor to speak of — a note just
+ * opened sits at offset 0, and revealing its title's `#` would be noise.
+ */
+function activeLines(view: EditorView): Set<number> {
+  const lines = new Set<number>()
+  if (!view.hasFocus) return lines
+  const doc = view.state.doc
+  for (const range of view.state.selection.ranges) {
+    const first = doc.lineAt(range.from).number
+    const last = doc.lineAt(range.to).number
+    for (let n = first; n <= last; n += 1) lines.add(n)
+  }
+  return lines
+}
+
 function build(view: EditorView): DecorationSets {
   const decorations: Range<Decoration>[] = []
+  const hidden: Range<Decoration>[] = []
   const replacements: Range<Decoration>[] = []
   const doc = view.state.doc
   const tree = syntaxTree(view.state)
+  const active = activeLines(view)
 
   for (const { from, to } of view.visibleRanges) {
     tree.iterate({
@@ -91,7 +131,15 @@ function build(view: EditorView): DecorationSets {
       enter: (node) => {
         const heading = /^(?:ATX|Setext)Heading([1-6])$/.exec(node.name)
         if (heading) {
-          decorations.push(lineClass(heading[1]).range(doc.lineAt(node.from).from))
+          const line = doc.lineAt(node.from)
+          decorations.push(lineClass(heading[1]).range(line.from))
+          // Setext headings underline the text on a second line; hiding that
+          // would leave an empty line behind, so only ATX `#` folds away.
+          if (node.name.startsWith('ATX') && !active.has(line.number)) {
+            for (const range of headingMarkRanges(line.text)) {
+              hidden.push(hiddenMark.range(line.from + range.from, line.from + range.to))
+            }
+          }
           return
         }
         if (node.name === 'Blockquote' || node.name === 'FencedCode' || node.name === 'CodeBlock') {
@@ -142,7 +190,9 @@ function build(view: EditorView): DecorationSets {
   }
 
   return {
-    all: Decoration.set([...decorations, ...replacements], true),
+    // Hidden marks stay out of `atomic`: the cursor has to be able to move into
+    // them, which is what brings the line's `#` back.
+    all: Decoration.set([...decorations, ...hidden, ...replacements], true),
     atomic: Decoration.set(replacements, true),
   }
 }
@@ -161,7 +211,13 @@ export function bearDecorations(options: BearDecorationOptions) {
       }
 
       update(update: ViewUpdate) {
-        if (update.docChanged || update.viewportChanged || syntaxTree(update.startState) !== syntaxTree(update.state)) {
+        if (
+          update.docChanged ||
+          update.viewportChanged ||
+          update.selectionSet ||
+          update.focusChanged ||
+          syntaxTree(update.startState) !== syntaxTree(update.state)
+        ) {
           this.sets = build(update.view)
         }
       }

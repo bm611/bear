@@ -4,7 +4,9 @@ import { tags as t } from '@lezer/highlight'
 
 /**
  * Bear's trick: markdown is styled in place rather than in a preview pane, and
- * the syntax markers stay visible but recede into the background.
+ * the syntax markers recede into the background instead of disappearing. The
+ * exception is a heading's `#`, which `decorations.ts` folds away entirely
+ * unless the cursor is on that line — see the note there.
  */
 export const bearHighlightStyle = HighlightStyle.define([
   { tag: t.heading1, fontSize: '1.65em', fontWeight: '700', lineHeight: '1.25' },
