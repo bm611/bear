@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, type RefObject } from 'react'
-import { EditorState, type Extension } from '@codemirror/state'
+import { EditorSelection, EditorState, type Extension } from '@codemirror/state'
 import { EditorView } from '@codemirror/view'
 import { bearSetup, readOnlyCompartment } from '../editor/setup'
 import type { TagSuggestion } from '../editor/tagComplete'
@@ -20,6 +20,11 @@ interface EditorProps {
   text: string
   readOnly: boolean
   viewRef: RefObject<EditorView | null>
+}
+
+function initialSelection(text: string): EditorSelection | undefined {
+  const firstLine = text.split('\n', 1)[0]
+  return firstLine === '# ' ? EditorSelection.single(2) : undefined
 }
 
 /**
@@ -68,7 +73,7 @@ export function Editor({ noteId, text, readOnly, viewRef }: EditorProps) {
 
     const view = new EditorView({
       parent: host,
-      state: EditorState.create({ doc: text, extensions }),
+      state: EditorState.create({ doc: text, selection: initialSelection(text), extensions }),
     })
     viewRef.current = view
 
@@ -93,7 +98,7 @@ export function Editor({ noteId, text, readOnly, viewRef }: EditorProps) {
       if (switchingNotes) {
         scrollPositions.current.set(noteIdRef.current, view.scrollDOM.scrollTop)
         noteIdRef.current = noteId
-        view.setState(EditorState.create({ doc: text, extensions }))
+        view.setState(EditorState.create({ doc: text, selection: initialSelection(text), extensions }))
         view.dispatch({
           effects: readOnlyCompartment.reconfigure(EditorState.readOnly.of(readOnly)),
         })

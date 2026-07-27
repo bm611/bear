@@ -108,7 +108,9 @@ export function hasOpenTodo(text: string): boolean {
 }
 
 export function isEmptyNote(note: Note): boolean {
-  return note.text.trim().length === 0
+  // New notes begin with an empty H1 so their first typed line is already a
+  // title. Treat that scaffold like a blank draft when navigating away.
+  return note.text.replace(/^#\s*(?:\n|$)/, '').trim().length === 0
 }
 
 export function startOfToday(now = Date.now()): number {

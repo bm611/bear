@@ -75,7 +75,7 @@ const marked = new Marked({ gfm: true, breaks: true }).use({
   extensions: [hashtag, highlight],
 })
 
-/** Markdown → sanitised HTML, for the preview pane and HTML export. */
+/** Markdown → sanitised HTML for standalone HTML export. */
 export function renderMarkdown(text: string): string {
   const html = marked.parse(text, { async: false })
   if (typeof window === 'undefined') return html
@@ -91,7 +91,7 @@ body {
 }
 h1, h2, h3, h4 { line-height: 1.25; margin: 1.8em 0 .6em; }
 h1 { font-size: 1.9rem } h2 { font-size: 1.5rem } h3 { font-size: 1.25rem }
-a { color: #d5473d }
+a { color: #536b8f }
 blockquote { margin: 1em 0; padding: .2em 0 .2em 1em; border-left: 3px solid #e5e5ea; color: #5a5a5f }
 code { font-family: "Google Sans Code", ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .9em;
   background: #f2f2f7; padding: .15em .35em; border-radius: 4px }
@@ -103,7 +103,7 @@ img { max-width: 100% }
 table { border-collapse: collapse; width: 100% }
 th, td { border: 1px solid #e5e5ea; padding: .45em .7em; text-align: left }
 ul.contains-task-list { list-style: none; padding-left: 1.1em }
-.md-hashtag { color: #d5473d; font-weight: 500 }
+.md-hashtag { color: #536b8f; font-weight: 500 }
 @media (prefers-color-scheme: dark) {
   body { color: #e6e6ea; background: #1c1c1e }
   code, pre { background: #2c2c2e } mark { background: #6b5a1e; color: #fff }

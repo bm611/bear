@@ -24,6 +24,11 @@ describe('note lifecycle', () => {
     expect(get().selectedId).toBe(id)
   })
 
+  it('starts a blank note with an H1 title line', () => {
+    get().newNote()
+    expect(get().notes[0].text).toBe('# ')
+  })
+
   it('seeds a new note with the tag being browsed', () => {
     get().setFilter({ kind: 'tag', tag: 'work/admin' })
     get().newNote()

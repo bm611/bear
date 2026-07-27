@@ -14,7 +14,6 @@ const GROUPS: Array<{ title: string; rows: Array<[string, string]> }> = [
       ['Toggle note list', mod('2')],
       ['Pin / unpin', combo(MOD, SHIFT, 'P')],
       ['Move to trash', combo(MOD, BACKSPACE)],
-      ['Preview', combo(MOD, SHIFT, 'V')],
       ['This list', mod('/')],
     ],
   },

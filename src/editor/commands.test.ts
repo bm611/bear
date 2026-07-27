@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { EditorSelection, EditorState } from '@codemirror/state'
 import type { Command, EditorView } from '@codemirror/view'
 import {
+  insertCodeBlock,
   insertHorizontalRule,
   insertLink,
   setHeading,
@@ -61,6 +62,12 @@ describe('toggleTodo', () => {
     expect(h.run(toggleTodo)).toBe('Title\n\n- [ ] A body line.')
   })
 
+  it('keeps a cursor at the start of an empty todo after its marker', () => {
+    const h = at('|')
+    expect(h.run(toggleTodo)).toBe('- [ ] ')
+    expect(h.selection.head).toBe(6)
+  })
+
   it('is its own undo', () => {
     const h = at('- [ ] A body line.|')
     expect(h.run(toggleTodo)).toBe('A body line.')
@@ -108,6 +115,12 @@ describe('list and quote commands', () => {
     const h = at('quoted|')
     expect(h.run(toggleQuote)).toBe('> quoted')
     expect(h.run(toggleQuote)).toBe('quoted')
+  })
+
+  it('keeps a leading cursor after an inserted quote marker', () => {
+    const h = at('|quoted')
+    expect(h.run(toggleQuote)).toBe('> quoted')
+    expect(h.selection.head).toBe(2)
   })
 
   it('does not disturb neighbouring lines', () => {
@@ -187,5 +200,25 @@ describe('insertHorizontalRule', () => {
   it('does not add a blank line when the line is already empty', () => {
     const h = at('|')
     expect(h.run(insertHorizontalRule)).toBe('---\n')
+  })
+})
+
+describe('insertCodeBlock', () => {
+  it('creates a complete fence and puts the cursor on its body line', () => {
+    const h = at('|')
+    expect(h.run(insertCodeBlock)).toBe('```\n\n```')
+    expect(h.selection.head).toBe(4)
+  })
+
+  it('inserts a fenced block after a line with content', () => {
+    const h = at('Some text|')
+    expect(h.run(insertCodeBlock)).toBe('Some text\n```\n\n```')
+    expect(h.selection.head).toBe('Some text\n```\n'.length)
+  })
+
+  it('places selected lines inside the fence', () => {
+    const h = at('«const value = 1»')
+    expect(h.run(insertCodeBlock)).toBe('```\nconst value = 1\n```')
+    expect(h.selection.head).toBe(4)
   })
 })

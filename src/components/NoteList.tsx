@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useStore } from '../store/useStore'
 import { useVisibleNotes } from '../hooks/useVisibleNotes'
-import { noteTags, noteTitle, notePreview, todoStats, UNTITLED } from '../lib/notes'
+import { noteTitle, notePreview, todoStats, UNTITLED } from '../lib/notes'
 import { listDate } from '../lib/date'
 import { mod } from '../lib/platform'
 import type { Filter, Note, SortMode } from '../lib/types'
@@ -218,7 +218,6 @@ interface NoteCardProps {
 function NoteCard({ note, selected, onSelect }: NoteCardProps) {
   const title = noteTitle(note)
   const preview = notePreview(note)
-  const tags = noteTags(note)
   const todos = todoStats(note.text)
 
   return (
@@ -243,20 +242,10 @@ function NoteCard({ note, selected, onSelect }: NoteCardProps) {
 
       {preview ? <span className="note-card-preview">{preview}</span> : null}
 
-      {tags.length > 0 || todos.total > 0 ? (
+      {todos.total > 0 ? (
         <span className="note-card-meta">
-          {todos.total > 0 ? (
-            <>
-              <TodoIcon size={12} />
-              {todos.done}/{todos.total}
-            </>
-          ) : null}
-          {tags.slice(0, 3).map((tag) => (
-            <span className="note-chip" key={tag}>
-              #{tag}
-            </span>
-          ))}
-          {tags.length > 3 ? <span>+{tags.length - 3}</span> : null}
+          <TodoIcon size={12} />
+          {todos.done}/{todos.total}
         </span>
       ) : null}
     </button>

@@ -50,7 +50,7 @@ const startingNotes = initialNotes()
 
 /** A brand new note inherits the tag you are currently browsing, like Bear does. */
 function seedTextForFilter(filter: Filter): string {
-  return filter.kind === 'tag' ? `\n\n#${filter.tag}` : ''
+  return filter.kind === 'tag' ? `# \n\n#${filter.tag}` : '# '
 }
 
 function touch(note: Note, text: string): Note {

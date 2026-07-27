@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { EditorView } from '@codemirror/view'
 import { useStore } from '../store/useStore'
 import { Editor } from './Editor'
@@ -18,30 +18,28 @@ import {
   LinkIcon,
   ListIcon,
   MoreIcon,
-  PencilIcon,
   PinIcon,
   QuoteIcon,
   RestoreIcon,
   SidebarIcon,
-  EyeIcon,
   TodoIcon,
   TrashIcon,
 } from './Icons'
 import {
+  insertCodeBlock,
   insertLink,
   setHeading,
   toggleBold,
   toggleBulletList,
-  toggleInlineCode,
   toggleItalic,
   toggleQuote,
   toggleTodo,
 } from '../editor/commands'
 import { characterCount, noteTags, noteTitle, readingTime, todoStats, wordCount } from '../lib/notes'
-import { exportNoteHtml, renderMarkdown, slugify } from '../lib/markdown'
+import { exportNoteHtml, slugify } from '../lib/markdown'
 import { copyToClipboard, downloadFile } from '../lib/download'
 import { fullDate, relativeDate } from '../lib/date'
-import { combo, hasMod, mod, MOD, SHIFT, BACKSPACE } from '../lib/platform'
+import { combo, mod, MOD, SHIFT, BACKSPACE } from '../lib/platform'
 import type { Note } from '../lib/types'
 
 interface EditorPaneProps {
@@ -63,45 +61,28 @@ export function EditorPane({ note, viewRef, onBack }: EditorPaneProps) {
   const showToast = useStore((state) => state.showToast)
 
   const [menuOpen, setMenuOpen] = useState(false)
-  const [previewing, setPreviewing] = useState(false)
+  const [headingOpen, setHeadingOpen] = useState(false)
   const [confirmDelete, setConfirmDelete] = useState(false)
   const [scrolled, setScrolled] = useState(false)
-  const previewRef = useRef<HTMLDivElement>(null)
 
   const trashed = note?.trashedAt !== null && note !== null
   const readOnly = trashed
 
   useEffect(() => {
-    setPreviewing(false)
+    setHeadingOpen(false)
+    setMenuOpen(false)
     setScrolled(false)
   }, [note?.id])
 
-  useEffect(() => {
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (!hasMod(event) || !event.shiftKey || event.key.toLowerCase() !== 'v') return
-      event.preventDefault()
-      setPreviewing((value) => !value)
-    }
-    window.addEventListener('keydown', onKeyDown, true)
-    return () => window.removeEventListener('keydown', onKeyDown, true)
-  }, [])
-
   // Shade the toolbar's bottom edge once content scrolls beneath it.
   useEffect(() => {
-    const scroller = previewing
-      ? previewRef.current
-      : (viewRef.current?.scrollDOM as HTMLElement | undefined)
+    const scroller = viewRef.current?.scrollDOM as HTMLElement | undefined
     if (!scroller) return
     const onScroll = () => setScrolled(scroller.scrollTop > 4)
     onScroll()
     scroller.addEventListener('scroll', onScroll, { passive: true })
     return () => scroller.removeEventListener('scroll', onScroll)
-  }, [previewing, note?.id, viewRef])
-
-  const html = useMemo(
-    () => (previewing && note ? renderMarkdown(note.text) : ''),
-    [previewing, note],
-  )
+  }, [note?.id, viewRef])
 
   if (!note) {
     return (
@@ -126,6 +107,10 @@ export function EditorPane({ note, viewRef, onBack }: EditorPaneProps) {
     if (!view || readOnly) return
     command(view)
     view.focus()
+  }
+
+  const keepEditorFocus = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault()
   }
 
   const exportMarkdown = () => {
@@ -173,23 +158,48 @@ export function EditorPane({ note, viewRef, onBack }: EditorPaneProps) {
           <ListIcon />
         </button>
 
-        {!previewing && !readOnly ? (
+        {!readOnly ? (
           <>
             <span className="toolbar-divider" />
-            <button
-              type="button"
-              className="icon-button"
-              aria-label="Heading"
-              title={`Heading (${combo(MOD, '⌥', '1')})`}
-              onClick={run(setHeading(2))}
-            >
-              <HeadingIcon />
-            </button>
+            <div className="menu-anchor">
+              <button
+                type="button"
+                className="icon-button"
+                aria-label="Heading level"
+                aria-expanded={headingOpen}
+                title="Heading level"
+                onClick={() => setHeadingOpen((open) => !open)}
+              >
+                <HeadingIcon />
+              </button>
+              {headingOpen ? (
+                <Menu
+                  label="Heading level"
+                  align="left"
+                  onClose={() => setHeadingOpen(false)}
+                  style={{ top: '2.1rem' }}
+                >
+                  {[1, 2, 3, 4, 5, 6].map((level) => (
+                    <MenuItem
+                      key={level}
+                      shortcut={combo(MOD, '⌥', String(level))}
+                      onSelect={() => {
+                        setHeadingOpen(false)
+                        run(setHeading(level))()
+                      }}
+                    >
+                      Heading {level}
+                    </MenuItem>
+                  ))}
+                </Menu>
+              ) : null}
+            </div>
             <button
               type="button"
               className="icon-button"
               aria-label="Bold"
               title={`Bold (${mod('B')})`}
+              onMouseDown={keepEditorFocus}
               onClick={run(toggleBold)}
             >
               <BoldIcon />
@@ -199,6 +209,7 @@ export function EditorPane({ note, viewRef, onBack }: EditorPaneProps) {
               className="icon-button"
               aria-label="Italic"
               title={`Italic (${mod('I')})`}
+              onMouseDown={keepEditorFocus}
               onClick={run(toggleItalic)}
             >
               <ItalicIcon />
@@ -208,6 +219,7 @@ export function EditorPane({ note, viewRef, onBack }: EditorPaneProps) {
               className="icon-button"
               aria-label="Todo"
               title={`Todo (${combo(MOD, SHIFT, 'U')})`}
+              onMouseDown={keepEditorFocus}
               onClick={run(toggleTodo)}
             >
               <TodoIcon />
@@ -217,6 +229,7 @@ export function EditorPane({ note, viewRef, onBack }: EditorPaneProps) {
               className="icon-button"
               aria-label="Bulleted list"
               title={`Bulleted list (${combo(MOD, SHIFT, '8')})`}
+              onMouseDown={keepEditorFocus}
               onClick={run(toggleBulletList)}
             >
               <BulletIcon />
@@ -226,6 +239,7 @@ export function EditorPane({ note, viewRef, onBack }: EditorPaneProps) {
               className="icon-button"
               aria-label="Quote"
               title={`Quote (${combo(MOD, SHIFT, '.')})`}
+              onMouseDown={keepEditorFocus}
               onClick={run(toggleQuote)}
             >
               <QuoteIcon />
@@ -233,9 +247,10 @@ export function EditorPane({ note, viewRef, onBack }: EditorPaneProps) {
             <button
               type="button"
               className="icon-button"
-              aria-label="Code"
-              title={`Code (${mod('E')})`}
-              onClick={run(toggleInlineCode)}
+              aria-label="Code block"
+              title={`Code block (${combo(MOD, SHIFT, 'E')})`}
+              onMouseDown={keepEditorFocus}
+              onClick={run(insertCodeBlock)}
             >
               <CodeIcon />
             </button>
@@ -244,6 +259,7 @@ export function EditorPane({ note, viewRef, onBack }: EditorPaneProps) {
               className="icon-button"
               aria-label="Link"
               title={`Link (${mod('K')})`}
+              onMouseDown={keepEditorFocus}
               onClick={run(insertLink)}
             >
               <LinkIcon />
@@ -252,17 +268,6 @@ export function EditorPane({ note, viewRef, onBack }: EditorPaneProps) {
         ) : null}
 
         <span className="toolbar-spacer" />
-
-        <button
-          type="button"
-          className="icon-button"
-          aria-label={previewing ? 'Back to editing' : 'Preview'}
-          aria-pressed={previewing}
-          title={`${previewing ? 'Edit' : 'Preview'} (${combo(MOD, SHIFT, 'V')})`}
-          onClick={() => setPreviewing((value) => !value)}
-        >
-          {previewing ? <PencilIcon /> : <EyeIcon />}
-        </button>
         <button
           type="button"
           className="icon-button"
@@ -402,14 +407,7 @@ export function EditorPane({ note, viewRef, onBack }: EditorPaneProps) {
         </div>
       ) : null}
 
-      {previewing ? (
-        <div className="preview scroll-host" ref={previewRef}>
-          {/* Sanitised by DOMPurify in renderMarkdown. */}
-          <div className="preview-body" dangerouslySetInnerHTML={{ __html: html }} />
-        </div>
-      ) : (
-        <Editor noteId={note.id} text={note.text} readOnly={readOnly} viewRef={viewRef} />
-      )}
+      <Editor noteId={note.id} text={note.text} readOnly={readOnly} viewRef={viewRef} />
 
       <div className="editor-footer">
         <span title={`Created ${fullDate(note.createdAt)}`}>Edited {relativeDate(note.updatedAt)}</span>

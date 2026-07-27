@@ -41,9 +41,9 @@ class TodoWidget extends WidgetType {
     box.className = this.checked ? 'cm-todo cm-todo-checked' : 'cm-todo'
     box.setAttribute('role', 'checkbox')
     box.setAttribute('aria-checked', String(this.checked))
+    box.tabIndex = 0
     box.title = this.checked ? 'Mark as not done' : 'Mark as done'
-    box.addEventListener('mousedown', (event) => {
-      event.preventDefault()
+    const toggle = () => {
       view.dispatch({
         changes: {
           from: this.bracketFrom,
@@ -51,12 +51,25 @@ class TodoWidget extends WidgetType {
           insert: this.checked ? '[ ]' : '[x]',
         },
       })
+    }
+    box.addEventListener('mousedown', (event) => {
+      event.preventDefault()
+      event.stopPropagation()
+      toggle()
+    })
+    box.addEventListener('keydown', (event) => {
+      if (event.key !== ' ' && event.key !== 'Enter') return
+      event.preventDefault()
+      event.stopPropagation()
+      toggle()
     })
     return box
   }
 
   ignoreEvent(): boolean {
-    return false
+    // The widget owns pointer and keyboard events. Letting CodeMirror process
+    // the same mousedown places the text cursor over the replacement range.
+    return true
   }
 }
 
@@ -70,11 +83,16 @@ function lineClass(level: string) {
 }
 
 const quoteLine = Decoration.line({ class: 'cm-quote-line' })
-const codeLine = Decoration.line({ class: 'cm-code-line' })
 const hiddenMark = Decoration.replace({})
 const hashtagMark = Decoration.mark({ class: 'cm-hashtag' })
 const todoDoneMark = Decoration.mark({ class: 'cm-todo-done' })
 const highlightMark = Decoration.mark({ class: 'cm-highlight' })
+const SYNTAX_MARK_NODES = /^(EmphasisMark|StrikethroughMark|CodeMark|QuoteMark|LinkMark)$/
+
+function codeLine(first: boolean, last: boolean) {
+  const edges = `${first ? ' cm-code-start' : ''}${last ? ' cm-code-end' : ''}`
+  return Decoration.line({ class: `cm-code-line${edges}` })
+}
 
 /** Bear's `==highlight==`, which is not part of CommonMark or GFM. */
 const HIGHLIGHT_RE = /==(?=[^\s=])((?:[^=\n]|=(?!=))*[^\s=])==/g
@@ -99,21 +117,14 @@ export function headingMarkRanges(text: string): Array<{ from: number; to: numbe
   return ranges
 }
 
-/**
- * Line numbers holding a cursor or selection, where the markup stays visible so
- * it can be edited. An unfocused editor has no cursor to speak of — a note just
- * opened sits at offset 0, and revealing its title's `#` would be noise.
- */
-function activeLines(view: EditorView): Set<number> {
-  const lines = new Set<number>()
-  if (!view.hasFocus) return lines
-  const doc = view.state.doc
-  for (const range of view.state.selection.ranges) {
-    const first = doc.lineAt(range.from).number
-    const last = doc.lineAt(range.to).number
-    for (let n = first; n <= last; n += 1) lines.add(n)
-  }
-  return lines
+/** Reveal a folded marker only when the selection actually enters that marker. */
+function selectionTouches(view: EditorView, from: number, to: number): boolean {
+  if (!view.hasFocus) return false
+  return view.state.selection.ranges.some((range) =>
+    range.empty
+      ? range.head >= from && range.head < to
+      : range.from < to && range.to > from,
+  )
 }
 
 function build(view: EditorView): DecorationSets {
@@ -122,7 +133,12 @@ function build(view: EditorView): DecorationSets {
   const replacements: Range<Decoration>[] = []
   const doc = view.state.doc
   const tree = syntaxTree(view.state)
-  const active = activeLines(view)
+
+  const fold = (from: number, to: number) => {
+    if (from < to && !selectionTouches(view, from, to)) {
+      hidden.push(hiddenMark.range(from, to))
+    }
+  }
 
   for (const { from, to } of view.visibleRanges) {
     tree.iterate({
@@ -135,20 +151,43 @@ function build(view: EditorView): DecorationSets {
           decorations.push(lineClass(heading[1]).range(line.from))
           // Setext headings underline the text on a second line; hiding that
           // would leave an empty line behind, so only ATX `#` folds away.
-          if (node.name.startsWith('ATX') && !active.has(line.number)) {
+          if (node.name.startsWith('ATX')) {
             for (const range of headingMarkRanges(line.text)) {
-              hidden.push(hiddenMark.range(line.from + range.from, line.from + range.to))
+              fold(line.from + range.from, line.from + range.to)
             }
           }
           return
         }
-        if (node.name === 'Blockquote' || node.name === 'FencedCode' || node.name === 'CodeBlock') {
-          const decoration = node.name === 'Blockquote' ? quoteLine : codeLine
+        if (node.name === 'Blockquote') {
           const first = doc.lineAt(node.from).number
-          const last = doc.lineAt(Math.min(node.to, doc.length)).number
+          const last = doc.lineAt(Math.max(node.from, node.to - 1)).number
           for (let n = first; n <= last; n += 1) {
-            decorations.push(decoration.range(doc.line(n).from))
+            decorations.push(quoteLine.range(doc.line(n).from))
           }
+        }
+        if (node.name === 'FencedCode' || node.name === 'CodeBlock') {
+          const first = doc.lineAt(node.from).number
+          const last = doc.lineAt(Math.max(node.from, node.to - 1)).number
+          for (let n = first; n <= last; n += 1) {
+            decorations.push(codeLine(n === first, n === last).range(doc.line(n).from))
+          }
+        }
+        if (SYNTAX_MARK_NODES.test(node.name)) {
+          let markTo = node.to
+          // A quote's separating space is structural too; folding it keeps the
+          // rendered text aligned with the quote rule.
+          if (node.name === 'QuoteMark' && doc.sliceString(markTo, markTo + 1) === ' ') {
+            markTo += 1
+          }
+          fold(node.from, markTo)
+        }
+        if (node.name === 'CodeInfo') fold(node.from, node.to)
+        if (
+          node.name === 'URL' &&
+          doc.sliceString(node.from - 1, node.from) === '(' &&
+          doc.sliceString(node.to, node.to + 1) === ')'
+        ) {
+          fold(node.from, node.to)
         }
       },
     })
@@ -182,6 +221,8 @@ function build(view: EditorView): DecorationSets {
           const start = line.from + match.index
           if (inCode(view, start)) continue
           decorations.push(highlightMark.range(start, start + match[0].length))
+          fold(start, start + 2)
+          fold(start + match[0].length - 2, start + match[0].length)
         }
       }
       if (line.to >= doc.length) break

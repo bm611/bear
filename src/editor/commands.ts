@@ -72,14 +72,52 @@ function selectedLines(state: EditorState) {
 
 /** Rewrites every selected line through `map`, keeping the cursor sensible. */
 function mapLines(view: EditorView, map: (text: string, allPrefixed: boolean) => string, test?: RegExp): boolean {
-  const lines = selectedLines(view.state)
+  const { state } = view
+  const lines = selectedLines(state)
   if (lines.length === 0) return false
   const allPrefixed = test ? lines.every((line) => test.test(line.text)) : false
   const changes = lines
-    .map((line) => ({ from: line.from, to: line.to, insert: map(line.text, allPrefixed) }))
-    .filter((change, index) => change.insert !== lines[index].text)
+    .map((line) => {
+      const next = map(line.text, allPrefixed)
+      if (next === line.text) return null
+
+      // Keep the edit as small as possible. Replacing the whole line makes
+      // CodeMirror collapse a cursor inside it to one edge of the replacement.
+      let prefix = 0
+      while (prefix < line.text.length && prefix < next.length && line.text[prefix] === next[prefix]) {
+        prefix += 1
+      }
+      let suffix = 0
+      while (
+        suffix < line.text.length - prefix &&
+        suffix < next.length - prefix &&
+        line.text[line.text.length - suffix - 1] === next[next.length - suffix - 1]
+      ) {
+        suffix += 1
+      }
+      return {
+        from: line.from + prefix,
+        to: line.to - suffix,
+        insert: next.slice(prefix, next.length - suffix),
+      }
+    })
+    .filter((change): change is NonNullable<typeof change> => change !== null)
   if (changes.length === 0) return false
-  view.dispatch({ changes, scrollIntoView: true, userEvent: 'input.format' })
+  const changeSet = state.changes(changes)
+  view.dispatch({
+    changes: changeSet,
+    selection: EditorSelection.create(
+      state.selection.ranges.map((range) =>
+        EditorSelection.range(
+          changeSet.mapPos(range.anchor, 1),
+          changeSet.mapPos(range.head, 1),
+        ),
+      ),
+      state.selection.mainIndex,
+    ),
+    scrollIntoView: true,
+    userEvent: 'input.format',
+  })
   return true
 }
 
@@ -190,12 +228,22 @@ export const insertHorizontalRule: Command = (view) => {
 }
 
 export const insertCodeBlock: Command = (view) => {
-  const range = view.state.selection.main
-  const body = view.state.sliceDoc(range.from, range.to)
-  const insert = `\`\`\`\n${body}\n\`\`\``
+  const { state } = view
+  const range = state.selection.main
+  const firstLine = state.doc.lineAt(range.from)
+  const lastLine = state.doc.lineAt(range.to)
+
+  // A selection becomes the body of the fence. With only a cursor, insert the
+  // block on the current empty line or immediately after a line with content.
+  const from = range.empty && firstLine.text ? firstLine.to : firstLine.from
+  const to = range.empty ? from : lastLine.to
+  const body = range.empty ? '' : state.sliceDoc(from, to)
+  const leadingBreak = range.empty && firstLine.text ? '\n' : ''
+  const trailingBreak = to < state.doc.length ? '\n' : ''
+  const insert = `${leadingBreak}\`\`\`\n${body}\n\`\`\`${trailingBreak}`
   view.dispatch({
-    changes: { from: range.from, to: range.to, insert },
-    selection: EditorSelection.cursor(range.from + 3),
+    changes: { from, to, insert },
+    selection: EditorSelection.cursor(from + leadingBreak.length + 4),
     scrollIntoView: true,
     userEvent: 'input.format',
   })

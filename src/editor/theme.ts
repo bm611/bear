@@ -3,10 +3,9 @@ import { EditorView } from '@codemirror/view'
 import { tags as t } from '@lezer/highlight'
 
 /**
- * Bear's trick: markdown is styled in place rather than in a preview pane, and
- * the syntax markers recede into the background instead of disappearing. The
- * exception is a heading's `#`, which `decorations.ts` folds away entirely
- * unless the cursor is on that line — see the note there.
+ * Markdown is styled in place rather than in a separate preview. Structural
+ * markers are folded by `decorations.ts` and reveal themselves only when the
+ * selection enters one, so the document remains fully editable.
  */
 export const bearHighlightStyle = HighlightStyle.define([
   { tag: t.heading1, fontSize: '1.65em', fontWeight: '700', lineHeight: '1.25' },
@@ -81,6 +80,21 @@ export const bearEditorTheme = EditorView.theme({
     backgroundColor: 'var(--code-bg)',
     fontFamily: 'var(--font-mono)',
     fontSize: '0.92em',
+    paddingLeft: '0.9em',
+    paddingRight: '0.9em',
+  },
+  '.cm-code-start': {
+    marginTop: '0.8em',
+    paddingTop: '0.5em',
+    borderRadius: '8px 8px 0 0',
+  },
+  '.cm-code-end': {
+    marginBottom: '0.9em',
+    paddingBottom: '0.5em',
+    borderRadius: '0 0 8px 8px',
+  },
+  '.cm-code-start.cm-code-end': {
+    borderRadius: '8px',
   },
 
   '.cm-hashtag': {
