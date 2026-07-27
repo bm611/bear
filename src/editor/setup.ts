@@ -16,6 +16,7 @@ import {
   insertCodeBlock,
   insertHorizontalRule,
   insertLink,
+  insertTable,
   setHeading,
   toggleBold,
   toggleBulletList,
@@ -28,6 +29,7 @@ import {
   toggleTodo,
 } from './commands'
 import { bearDecorations } from './decorations'
+import { bearTables, nextTableCell, previousTableCell } from './tables'
 import { bearSyntax } from './theme'
 import { tagCompletion, type TagSuggestion } from './tagComplete'
 
@@ -57,12 +59,16 @@ const formattingKeymap = keymap.of([
   { key: 'Mod-Shift-7', run: toggleNumberedList },
   { key: 'Mod-Shift-.', run: toggleQuote },
   { key: 'Mod-Shift--', run: insertHorizontalRule },
+  { key: 'Mod-Alt-t', run: insertTable },
   { key: 'Mod-Alt-1', run: setHeading(1) },
   { key: 'Mod-Alt-2', run: setHeading(2) },
   { key: 'Mod-Alt-3', run: setHeading(3) },
   { key: 'Mod-Alt-4', run: setHeading(4) },
   { key: 'Mod-Alt-5', run: setHeading(5) },
   { key: 'Mod-Alt-6', run: setHeading(6) },
+  // Before the indent binding: inside a table, Tab walks the cells, and only
+  // falls through to indenting when the cursor is somewhere else.
+  { key: 'Tab', run: nextTableCell, shift: previousTableCell },
   { key: 'Tab', run: indentMore, shift: indentLess },
   {
     key: 'Escape',
@@ -94,6 +100,7 @@ export function bearSetup(options: EditorSetupOptions): Extension[] {
     markdown({ base: markdownLanguage, addKeymap: false }),
     bearSyntax,
     bearDecorations({ onTagClick: options.onTagClick }),
+    bearTables(),
     tagCompletion(options.getTags),
     placeholder('Start writing…'),
     Prec.high(formattingKeymap),

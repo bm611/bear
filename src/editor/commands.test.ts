@@ -5,6 +5,7 @@ import {
   insertCodeBlock,
   insertHorizontalRule,
   insertLink,
+  insertTable,
   setHeading,
   toggleBold,
   toggleBulletList,
@@ -200,6 +201,20 @@ describe('insertHorizontalRule', () => {
   it('does not add a blank line when the line is already empty', () => {
     const h = at('|')
     expect(h.run(insertHorizontalRule)).toBe('---\n')
+  })
+})
+
+describe('insertTable', () => {
+  it('writes a 2×2 table and puts the cursor in the first header cell', () => {
+    const h = at('|')
+    expect(h.run(insertTable)).toBe('|  |  |\n| --- | --- |\n|  |  |\n')
+    expect(h.selection.head).toBe(2)
+  })
+
+  it('separates the table from the paragraph it follows', () => {
+    const h = at('Some text|\nnext')
+    expect(h.run(insertTable)).toBe('Some text\n\n|  |  |\n| --- | --- |\n|  |  |\n\nnext')
+    expect(h.selection.head).toBe('Some text\n\n| '.length)
   })
 })
 

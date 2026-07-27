@@ -32,6 +32,7 @@ const GROUPS: Array<{ title: string; rows: Array<[string, string]> }> = [
       ['Numbered list', combo(MOD, SHIFT, '7')],
       ['Quote', combo(MOD, SHIFT, '.')],
       ['Divider', combo(MOD, SHIFT, '-')],
+      ['Table', combo(MOD, ALT, 'T')],
       ['Heading 1 – 6', combo(MOD, ALT, '1…6')],
       ['Indent / outdent', `Tab / ${combo(SHIFT, 'Tab')}`],
     ],
