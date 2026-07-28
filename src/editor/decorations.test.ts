@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { EditorState } from '@codemirror/state'
 import { EditorView } from '@codemirror/view'
 import { markdown } from '@codemirror/lang-markdown'
-import { bearDecorations, headingMarkRanges } from './decorations'
+import { slateDecorations, headingMarkRanges } from './decorations'
 
 /** Replaces the folded ranges with `·` so the expectations read like the line. */
 function folded(text: string) {
@@ -57,12 +57,12 @@ function mountedEditor(doc: string): EditorView {
     parent,
     state: EditorState.create({
       doc,
-      extensions: [markdown(), bearDecorations({ onTagClick: () => {} })],
+      extensions: [markdown(), slateDecorations({ onTagClick: () => {} })],
     }),
   })
 }
 
-describe('bearDecorations', () => {
+describe('slateDecorations', () => {
   it('folds rendered emphasis and link syntax in the editor', () => {
     const view = mountedEditor('**bold** and *italic* with [a link](https://example.com)')
     expect(view.contentDOM.textContent).toBe('bold and italic with a link')

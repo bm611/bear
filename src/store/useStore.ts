@@ -47,7 +47,7 @@ export interface StoreState {
 
 const persisted = loadLibrary()
 
-/** A brand new note inherits the tag you are currently browsing, like Bear does. */
+/** A brand new note inherits the tag you are currently browsing. */
 function seedTextForFilter(filter: Filter): string {
   return filter.kind === 'tag' ? `# \n\n#${filter.tag}` : '# '
 }

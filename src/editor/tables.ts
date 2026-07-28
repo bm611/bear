@@ -508,6 +508,6 @@ class CellMenu {
   }
 }
 
-export function bearTables(): Extension[] {
+export function slateTables(): Extension[] {
   return [tableField, ViewPlugin.define((view) => new CellMenu(view))]
 }

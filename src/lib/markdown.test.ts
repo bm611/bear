@@ -8,7 +8,7 @@ describe('renderMarkdown', () => {
     expect(renderMarkdown('- one\n- two')).toContain('<li>one</li>')
   })
 
-  it('renders Bear highlights', () => {
+  it('renders highlights', () => {
     expect(renderMarkdown('==look here==')).toContain('<mark>look here</mark>')
     expect(renderMarkdown('==**both**==')).toContain('<mark><strong>both</strong></mark>')
   })

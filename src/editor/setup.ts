@@ -28,9 +28,9 @@ import {
   toggleStrikethrough,
   toggleTodo,
 } from './commands'
-import { bearDecorations } from './decorations'
-import { bearTables, nextTableCell, previousTableCell } from './tables'
-import { bearSyntax } from './theme'
+import { slateDecorations } from './decorations'
+import { slateTables, nextTableCell, previousTableCell } from './tables'
+import { slateSyntax } from './theme'
 import { tagCompletion, type TagSuggestion } from './tagComplete'
 
 export const readOnlyCompartment = new Compartment()
@@ -86,7 +86,7 @@ export interface EditorSetupOptions {
   readOnly: boolean
 }
 
-export function bearSetup(options: EditorSetupOptions): Extension[] {
+export function slateSetup(options: EditorSetupOptions): Extension[] {
   return [
     history(),
     drawSelection(),
@@ -98,9 +98,9 @@ export function bearSetup(options: EditorSetupOptions): Extension[] {
     indentUnit.of('    '),
     closeBrackets(),
     markdown({ base: markdownLanguage, addKeymap: false }),
-    bearSyntax,
-    bearDecorations({ onTagClick: options.onTagClick }),
-    bearTables(),
+    slateSyntax,
+    slateDecorations({ onTagClick: options.onTagClick }),
+    slateTables(),
     tagCompletion(options.getTags),
     placeholder('Start writing…'),
     Prec.high(formattingKeymap),

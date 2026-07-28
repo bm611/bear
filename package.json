@@ -1,9 +1,9 @@
 {
-  "name": "bear",
+  "name": "slate",
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "A Bear-inspired markdown note taking app that runs in the browser.",
+  "description": "A markdown note taking app that runs in the browser.",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",

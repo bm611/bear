@@ -51,8 +51,8 @@ function glyph(icon: IconSvgElement, name: string) {
   return Glyph
 }
 
-/** The app's own mark — Hugeicons has no bear. */
-export function BearMark({ size = 20, ...rest }: { size?: number } & React.SVGProps<SVGSVGElement>) {
+/** The app's own mark: a writing slate, ruled with three strokes of script. */
+export function SlateMark({ size = 20, ...rest }: { size?: number } & React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       width={size}
@@ -67,10 +67,14 @@ export function BearMark({ size = 20, ...rest }: { size?: number } & React.SVGPr
       focusable="false"
       {...rest}
     >
-      <path d="M5.5 7.2A2.6 2.6 0 0 1 9 5.4M18.5 7.2A2.6 2.6 0 0 0 15 5.4" />
-      <path d="M12 20c4.1 0 6.6-2.6 6.6-6.3C18.6 9 15.7 5 12 5S5.4 9 5.4 13.7C5.4 17.4 7.9 20 12 20Z" />
-      <path d="M10.2 12.4h.01M13.8 12.4h.01" strokeWidth={2.2} />
-      <path d="M12 15.2c-.9 0-1.5.5-1.5 1.1s.6 1.1 1.5 1.1 1.5-.5 1.5-1.1-.6-1.1-1.5-1.1Z" />
+      {/* The frame is set lighter than the writing on it, so the three strokes
+          stay legible where the mark is small (12px in the sidebar mock). */}
+      <rect x="3.2" y="3.2" width="17.6" height="17.6" rx="4.2" strokeWidth={1.25} />
+      <g strokeWidth={1.85}>
+        <path d="M7.6 15.4 9.7 8.9" />
+        <path d="M11.4 15.4 13.5 8.9" />
+        <path d="M15.2 15.4 16.2 12.2" />
+      </g>
     </svg>
   )
 }

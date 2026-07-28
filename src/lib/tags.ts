@@ -37,7 +37,7 @@ export function scannableText(text: string): string {
 }
 
 /**
- * Matches Bear's two hashtag flavours:
+ * Matches both hashtag flavours:
  *   `#tag`, `#nested/tag`   — a single run of non-space characters
  *   `#multi word tag#`      — spaces allowed when closed by a second `#`
  */
@@ -95,7 +95,7 @@ export function parseTags(text: string): string[] {
   return found
 }
 
-/** `work/projects/bear` → [`work`, `work/projects`, `work/projects/bear`]. */
+/** `work/projects/slate` → [`work`, `work/projects`, `work/projects/slate`]. */
 export function tagWithAncestors(tag: string): string[] {
   const parts = tag.split('/').filter(Boolean)
   return parts.map((_, i) => parts.slice(0, i + 1).join('/'))

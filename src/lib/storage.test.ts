@@ -2,7 +2,8 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { defaultPreferences, exportLibrary, loadLibrary, parseLibraryFile, saveLibrary } from './storage'
 import { createNote } from './notes'
 
-const KEY = 'bear.library.v1'
+const KEY = 'slate.library.v1'
+const LEGACY_KEY = 'bear.library.v1'
 
 describe('loadLibrary', () => {
   beforeEach(() => localStorage.clear())
@@ -45,6 +46,25 @@ describe('loadLibrary', () => {
     expect(loaded?.preferences.sort).toBe(defaultPreferences.sort)
     expect(loaded?.preferences.fontSize).toBe(24)
     expect(loaded?.filter).toEqual({ kind: 'all' })
+  })
+
+  it('adopts preferences left under the pre-rename key', () => {
+    localStorage.setItem(
+      LEGACY_KEY,
+      JSON.stringify({ preferences: { ...defaultPreferences, theme: 'dark' }, filter: { kind: 'all' } }),
+    )
+
+    expect(loadLibrary()?.preferences.theme).toBe('dark')
+    // The value moves across, so the old key stops shadowing later writes.
+    expect(localStorage.getItem(KEY)).not.toBeNull()
+    expect(localStorage.getItem(LEGACY_KEY)).toBeNull()
+  })
+
+  it('prefers the current key when both are present', () => {
+    localStorage.setItem(LEGACY_KEY, JSON.stringify({ preferences: { theme: 'dark' } }))
+    localStorage.setItem(KEY, JSON.stringify({ preferences: { theme: 'light' } }))
+
+    expect(loadLibrary()?.preferences.theme).toBe('light')
   })
 })
 

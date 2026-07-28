@@ -30,9 +30,9 @@ const BULLET_RE = /^[-*+]$/
 
 /**
  * `-`, `*` and `+` all mean the same thing and none of them reads as a list at
- * a glance, so bullet lists draw a dot instead — the same round marker Bear
- * uses. It is a styled element rather than a `•`, which keeps the size honest
- * across the three font choices.
+ * a glance, so bullet lists draw a round dot instead. It is a styled element
+ * rather than a `•`, which keeps the size honest across the three font
+ * choices.
  */
 class BulletWidget extends WidgetType {
   eq(): boolean {
@@ -155,7 +155,7 @@ function codeLine(first: boolean, last: boolean) {
   return Decoration.line({ class: `cm-code-line${edges}` })
 }
 
-/** Bear's `==highlight==`, which is not part of CommonMark or GFM. */
+/** `==highlight==`, which is not part of CommonMark or GFM. */
 const HIGHLIGHT_RE = /==(?=[^\s=])((?:[^=\n]|=(?!=))*[^\s=])==/g
 
 /** `#{1,6} `, the heading text, then an optional closing run of `#`. */
@@ -325,11 +325,11 @@ function build(view: EditorView): DecorationSets {
   }
 }
 
-export interface BearDecorationOptions {
+export interface SlateDecorationOptions {
   onTagClick: (tag: string) => void
 }
 
-export function bearDecorations(options: BearDecorationOptions) {
+export function slateDecorations(options: SlateDecorationOptions) {
   const plugin = ViewPlugin.fromClass(
     class {
       sets: DecorationSets

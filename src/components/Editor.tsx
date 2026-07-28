@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, type RefObject } from 'react'
 import { EditorSelection, EditorState, type Extension } from '@codemirror/state'
 import { EditorView } from '@codemirror/view'
-import { bearSetup, readOnlyCompartment } from '../editor/setup'
+import { slateSetup, readOnlyCompartment } from '../editor/setup'
 import type { TagSuggestion } from '../editor/tagComplete'
 import { useStore } from '../store/useStore'
 import { buildTagTree } from '../lib/tags'
@@ -64,7 +64,7 @@ export function Editor({ noteId, text, readOnly, viewRef, onTagNavigate }: Edito
     const host = hostRef.current
     if (!host) return
 
-    const extensions = bearSetup({
+    const extensions = slateSetup({
       onChange: (value) => {
         if (syncingRef.current) return
         updateNoteText(noteIdRef.current, value)

@@ -41,7 +41,7 @@ export function stripMarkdown(line: string): string {
 
 export const UNTITLED = 'Untitled Note'
 
-/** Bear uses the first line of the note as its title. */
+/** The first line of the note doubles as its title. */
 export function noteTitle(note: Note): string {
   for (const line of note.text.split('\n')) {
     const title = stripMarkdown(line)

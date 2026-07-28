@@ -9,12 +9,12 @@
     'Liberation Mono', monospace;
 
   --editor-font: var(--font-ui);
-  /* Bear sets body copy at 17px by default. */
+  /* Body copy sits at 17px by default. */
   --editor-font-size: 17px;
-  /* Bear's readable column is deliberately compact: it keeps prose from
-     spreading too wide and gives the same wrap points as the native editor.
-     Measured off the native editor it lands at ~740px against 17px copy, and
-     an `em` here keeps that proportion when the reader steps the size. */
+  /* The readable column is deliberately compact: it keeps prose from
+     spreading too wide and holds the wrap points steady. It lands at ~740px
+     against 17px copy, and an `em` here keeps that proportion when the reader
+     steps the size. */
   --editor-measure: 43.5em;
 
   /* Mono carries the "paper & sticker" identity across the chrome — labels,
@@ -2217,7 +2217,7 @@ button.disclosure:hover {
   background-size: 18px 18px;
 }
 
-.lp-closer-bear {
+.lp-closer-mark {
   position: relative;
   display: grid;
   place-items: center;

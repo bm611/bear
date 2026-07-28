@@ -1,6 +1,6 @@
 export interface Note {
   id: string
-  /** Full markdown source. The first non-empty line doubles as the title, Bear-style. */
+  /** Full markdown source. The first non-empty line doubles as the title. */
   text: string
   createdAt: number
   updatedAt: number

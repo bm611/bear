@@ -12,7 +12,7 @@ import { ConfirmDialog, PromptDialog } from './Dialog'
 import { Menu, MenuItem, MenuLabel, MenuSeparator } from './Menu'
 import {
   ArchiveIcon,
-  BearMark,
+  SlateMark,
   DownloadIcon,
   KeyboardIcon,
   MoonIcon,
@@ -98,8 +98,8 @@ export function Sidebar({ onShowShortcuts, onNewNote, onNavigate }: SidebarProps
     <aside className="sidebar" aria-label="Library">
       <div className="sidebar-header">
         <span className="sidebar-brand">
-          <BearMark size={20} />
-          Bear
+          <SlateMark size={20} />
+          Slate
         </span>
         <div className="sidebar-header-actions">
           <button
@@ -234,7 +234,7 @@ export function Sidebar({ onShowShortcuts, onNewNote, onNavigate }: SidebarProps
               icon={<DownloadIcon size={15} />}
               onSelect={() => {
                 setSettingsOpen(false)
-                downloadFile('bear-notes.json', exportLibrary(notes), 'application/json')
+                downloadFile('slate-notes.json', exportLibrary(notes), 'application/json')
                 showToast('Backup downloaded')
               }}
             >

@@ -1,9 +1,8 @@
-# Bear
+# Slate
 
-A note taking app in the spirit of [Bear](https://bear.app): three panes, plain
-markdown, and hashtags instead of folders. Sign in to keep notes in sync across
-devices via Supabase; preferences (theme, font, layout) still live in the
-browser's `localStorage`.
+A note taking app: three panes, plain markdown, and hashtags instead of
+folders. Sign in to keep notes in sync across devices via Supabase;
+preferences (theme, font, layout) still live in the browser's `localStorage`.
 
 ```bash
 npm install
@@ -30,7 +29,7 @@ with a custom highlight style, live todo checkboxes and inline tag pills. A
 formatting toolbar covers the common shortcuts when muscle memory fails.
 
 **Hashtags, not folders.** Write `#work` anywhere in a note and it appears in
-the sidebar. Tags nest with a slash (`#work/projects/bear`), and parent tags
+the sidebar. Tags nest with a slash (`#work/projects/slate`), and parent tags
 count everything filed underneath them. Spaces are allowed if you close the tag
 with a second hash: `#reading list#`. Tags inside code spans, fenced blocks and
 URLs are left alone. Renaming a tag rewrites every note that uses it, including
@@ -58,7 +57,8 @@ Icons come from [Hugeicons](https://hugeicons.com) (free set) via
 `@hugeicons/react`. `src/components/Icons.tsx` maps each Hugeicons glyph to a
 named component so the rest of the app imports `TrashIcon` rather than
 `Delete02Icon`, and one wrapper fixes the size and stroke weight everywhere.
-The bear in the sidebar is the app's own mark — Hugeicons has no bear.
+The slate in the sidebar is the app's own mark, drawn in the same 24×24 grid
+and stroke weight as the Hugeicons set so it sits with them cleanly.
 
 ## Layout
 
@@ -82,6 +82,8 @@ the suite needs no browser.
 
 Notes sync to Supabase for the signed-in account (debounced ~400 ms after edits).
 Theme, font, sort and pane visibility preferences still save to `localStorage`
-under `bear.library.v1`. Corrupt or partial preference data is repaired on load
-rather than thrown away. Use **Settings → Export backup** for a JSON copy of the
-library as an extra safety net.
+under `slate.library.v1`. Corrupt or partial preference data is repaired on load
+rather than thrown away. A value left under the pre-rename key
+(`bear.library.v1`) is adopted once on first load and then removed, so the
+rename does not reset anyone's preferences. Use **Settings → Export backup**
+for a JSON copy of the library as an extra safety net.

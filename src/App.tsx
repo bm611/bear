@@ -7,7 +7,7 @@ import { ShortcutsSheet } from './components/ShortcutsSheet'
 import { Toast } from './components/Toast'
 import { AuthScreen, type AuthMode } from './components/AuthScreen'
 import { LandingScreen } from './components/LandingScreen'
-import { BearMark } from './components/Icons'
+import { SlateMark } from './components/Icons'
 import { useStore } from './store/useStore'
 import { useAuthStore } from './store/useAuthStore'
 import { useVisibleNotes } from './hooks/useVisibleNotes'
@@ -89,7 +89,7 @@ function BootScreen({
   return (
     <div className="boot-screen" role="status" aria-live="polite">
       <span className="boot-mark">
-        <BearMark size={28} />
+        <SlateMark size={28} />
       </span>
       <h1>{title}</h1>
       {body ? <p>{body}</p> : null}
@@ -112,7 +112,7 @@ export function App() {
   const [authMode, setAuthMode] = useState<AuthMode>('signUp')
 
   if (authStatus === 'loading') {
-    return <BootScreen title="Opening the den…" />
+    return <BootScreen title="Wiping the slate…" />
   }
 
   if (authStatus !== 'signedIn') {
