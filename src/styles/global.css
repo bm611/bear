@@ -75,6 +75,9 @@
   --text-inverse: #fffaf1;
 
   --rule: rgba(23, 19, 16, 0.14);
+  /* Pane edges used to wear the full ink sticker outline; at app scale a 2px
+     black bar between panes reads loud, so they get their own quieter tint. */
+  --rule-pane: rgba(23, 19, 16, 0.22);
   --rule-strong: var(--edge-color);
   --selection: rgba(255, 194, 51, 0.5);
   --syntax-mark: #b5a794;
@@ -117,6 +120,7 @@
   --text-inverse: #171310;
 
   --rule: rgba(255, 248, 235, 0.11);
+  --rule-pane: rgba(255, 248, 235, 0.18);
   --rule-strong: var(--edge-color);
   --selection: rgba(255, 194, 51, 0.28);
   --syntax-mark: #6b6153;
@@ -355,7 +359,7 @@ select {
   flex: 0 0 var(--sidebar-width);
   width: var(--sidebar-width);
   background: var(--sidebar-bg);
-  border-right: 2px solid var(--edge-color);
+  border-right: 1px solid var(--rule-pane);
   overflow: hidden;
 }
 
@@ -547,7 +551,7 @@ button.disclosure:hover {
   flex: 0 0 var(--list-width);
   width: var(--list-width);
   background: var(--list-bg);
-  border-right: 2px solid var(--edge-color);
+  border-right: 1px solid var(--rule-pane);
   overflow: hidden;
 }
 
@@ -2524,6 +2528,37 @@ button.disclosure:hover {
   .editor-pane {
     flex: 1 1 auto;
     width: auto;
+  }
+
+  /* The list is the whole viewport on a phone, where the desktop's compact
+     card type reads far too small — bump it up to a comfortable mobile scale. */
+  .list-title {
+    font-size: 1.15rem;
+  }
+
+  .search-field input {
+    font-size: 1rem;
+  }
+
+  .note-card {
+    padding: 1rem 0.9rem;
+  }
+
+  .note-card-title {
+    font-size: 1.05rem;
+  }
+
+  .note-card-preview {
+    margin-top: 0.25rem;
+    font-size: 0.92rem;
+  }
+
+  .note-card-date {
+    font-size: 0.78rem;
+  }
+
+  .note-card-meta {
+    font-size: 0.76rem;
   }
 
   .editor-host {
