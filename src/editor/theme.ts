@@ -7,9 +7,9 @@ import { tags as t } from '@lezer/highlight'
  * markers are folded by `decorations.ts` and reveal themselves only when the
  * selection enters one, so the document remains fully editable.
  */
-export const bearHighlightStyle = HighlightStyle.define([
-  // Bear's H1 is twice the body size — 34px against 17px copy — and the rest
-  // of the ramp steps down from there rather than from the body size up.
+export const slateHighlightStyle = HighlightStyle.define([
+  // H1 is twice the body size — 34px against 17px copy — and the rest of the
+  // ramp steps down from there rather than from the body size up.
   { tag: t.heading1, fontSize: '2em', fontWeight: '700', lineHeight: '1.4' },
   { tag: t.heading2, fontSize: '1.55em', fontWeight: '700', lineHeight: '1.35' },
   { tag: t.heading3, fontSize: '1.25em', fontWeight: '600' },
@@ -38,7 +38,7 @@ export const bearHighlightStyle = HighlightStyle.define([
   },
 ])
 
-export const bearEditorTheme = EditorView.theme({
+export const slateEditorTheme = EditorView.theme({
   '&': {
     height: '100%',
     fontSize: 'var(--editor-font-size)',
@@ -48,10 +48,10 @@ export const bearEditorTheme = EditorView.theme({
   '&.cm-focused': { outline: 'none' },
   '.cm-scroller': {
     fontFamily: 'var(--editor-font)',
-    // Bear runs its 17px body copy on a 30px baseline. Every line sits on that
-    // grid — blank paragraph lines and list rows included — so the one value
-    // reproduces the native editor's vertical rhythm end to end: a blank line
-    // in the source is exactly one line of air, with no extra block margins.
+    // 17px body copy runs on a 30px baseline. Every line sits on that grid —
+    // blank paragraph lines and list rows included — so the one value carries
+    // the vertical rhythm end to end: a blank line in the source is exactly
+    // one line of air, with no extra block margins.
     lineHeight: '1.765',
     padding: '0',
     overflowY: 'auto',
@@ -65,7 +65,7 @@ export const bearEditorTheme = EditorView.theme({
     width: '100%',
   },
   '.cm-line': { padding: '0 1px 0 0' },
-  // Bear sets every list marker in a fixed slot: the marker itself sits a
+  // Every list marker sits in a fixed slot: the marker itself sits a
   // little way in from the paragraph margin and the copy starts at ~2.2em, so
   // bullets, numbers and checkboxes all line their text up with each other.
   // `min-width` rather than `width` so a long `10.` pushes out instead of
@@ -97,9 +97,9 @@ export const bearEditorTheme = EditorView.theme({
   '.cm-list-line .cm-bullet, .cm-list-line .cm-list-marker': {
     textIndent: '0',
   },
-  // Measured off Bear: a 6px dot against 17px copy, resting 2.5px above the
-  // baseline. Drawn rather than typed — a `•` is a different size in each of
-  // the three editor fonts, and lands differently against the baseline too.
+  // A 6px dot against 17px copy, resting 2.5px above the baseline. Drawn
+  // rather than typed — a `•` is a different size in each of the three editor
+  // fonts, and lands differently against the baseline too.
   '.cm-bullet-dot': {
     display: 'inline-block',
     width: '0.35em',
@@ -127,8 +127,8 @@ export const bearEditorTheme = EditorView.theme({
   // resolves against the line's own 17px, not the heading's, so these stay in
   // step with the body rhythm rather than growing with the heading.
   //
-  // Bear leaves ~40px between an H1 baseline and the line under it, about ten
-  // more than the H1 line box alone accounts for; the padding below makes up
+  // An H1 baseline wants ~40px to the line under it, about ten more than the
+  // H1 line box alone accounts for; the padding below makes up
   // the difference, and survives the `:first-child` reset so a note's title
   // keeps its air.
   '.cm-heading-1': { paddingTop: '1.1em', paddingBottom: '0.55em' },
@@ -307,4 +307,4 @@ export const bearEditorTheme = EditorView.theme({
   '.cm-completionDetail': { color: 'var(--text-tertiary)', fontStyle: 'normal', marginLeft: '0.6em' },
 })
 
-export const bearSyntax = [syntaxHighlighting(bearHighlightStyle), bearEditorTheme]
+export const slateSyntax = [syntaxHighlighting(slateHighlightStyle), slateEditorTheme]

@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react'
-import { BearMark, CheckIcon, ChevronRight, CodeIcon, SyncIcon, TagIcon } from './Icons'
+import { SlateMark, CheckIcon, ChevronRight, CodeIcon, SyncIcon, TagIcon } from './Icons'
 import type { AuthMode } from './AuthScreen'
 
 const prefersReducedMotion = () =>
@@ -49,7 +49,7 @@ function useTypewriter(text: string) {
   return text.slice(0, length)
 }
 
-const DEN_WORDS = [
+const SLATE_WORDS = [
   'half-baked ideas',
   'grocery lists',
   '3am epiphanies',
@@ -168,8 +168,8 @@ function MockWindow() {
         <div className="mock-body">
           <div className="mock-sidebar">
             <div className="mock-side-brand">
-              <BearMark size={12} />
-              Bear
+              <SlateMark size={12} />
+              Slate
             </div>
             {SIDEBAR_ROWS.map((row) => (
               <span className="mock-side-row" data-active={row === 'Notes'} key={row}>
@@ -271,7 +271,7 @@ const CARDS = [
   },
   {
     tone: 'grape',
-    icon: BearMark,
+    icon: SlateMark,
     kicker: 'the trust bit',
     title: 'Yours to walk away with',
     body: 'Every note exports as a plain .md file. No hostage situation, no export fee, no hard feelings — just a folder of text you can read in thirty years.',
@@ -304,7 +304,7 @@ function Star({ className }: { className?: string }) {
 }
 
 export function LandingScreen({ onLaunch }: { onLaunch: (mode: AuthMode) => void }) {
-  const wordIndex = useRotatingWord(DEN_WORDS)
+  const wordIndex = useRotatingWord(SLATE_WORDS)
 
   return (
     <div className="lp">
@@ -318,9 +318,9 @@ export function LandingScreen({ onLaunch }: { onLaunch: (mode: AuthMode) => void
       <header className="lp-nav">
         <a className="lp-logo" href="#top">
           <span className="lp-logo-mark">
-            <BearMark size={20} />
+            <SlateMark size={20} />
           </span>
-          <span className="lp-logo-word">Bear</span>
+          <span className="lp-logo-word">Slate</span>
         </a>
         <nav className="lp-nav-actions">
           <button type="button" className="lp-link" onClick={() => onLaunch('signIn')}>
@@ -345,17 +345,17 @@ export function LandingScreen({ onLaunch }: { onLaunch: (mode: AuthMode) => void
             </span>
 
             <h1 className="lp-title lp-pop" style={{ animationDelay: '110ms' }}>
-              <span className="lp-title-line">A cozy den</span>
+              <span className="lp-title-line">A clean slate</span>
               <span className="lp-title-line lp-title-line-2">for your</span>
               <span className="lp-rotor">
                 <span key={wordIndex} className="lp-rotor-word">
-                  {DEN_WORDS[wordIndex]}
+                  {SLATE_WORDS[wordIndex]}
                 </span>
               </span>
             </h1>
 
             <p className="lp-lede lp-pop" style={{ animationDelay: '190ms' }}>
-              Bear is a fast little markdown notebook that doesn't nag, sync-spin, or hide your
+              Slate is a fast little markdown notebook that doesn't nag, sync-spin, or hide your
               words behind a database. Type. Tag. Close the laptop. It'll all still be there.
             </p>
 
@@ -460,8 +460,8 @@ export function LandingScreen({ onLaunch }: { onLaunch: (mode: AuthMode) => void
 
         <section className="lp-closer">
           <div className="lp-closer-inner">
-            <span className="lp-closer-bear">
-              <BearMark size={44} />
+            <span className="lp-closer-mark">
+              <SlateMark size={44} />
             </span>
             <h2 className="lp-closer-title">Go on, write something down.</h2>
             <p className="lp-closer-sub">
@@ -481,8 +481,8 @@ export function LandingScreen({ onLaunch }: { onLaunch: (mode: AuthMode) => void
 
       <footer className="lp-foot">
         <span className="lp-foot-brand">
-          <BearMark size={15} />
-          Bear
+          <SlateMark size={15} />
+          Slate
         </span>
         <span>Built for people who think in plain text.</span>
       </footer>

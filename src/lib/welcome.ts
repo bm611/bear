@@ -1,7 +1,7 @@
 import type { Note } from './types'
 import { createNote } from './notes'
 
-const WELCOME = `# Welcome to Bear
+const WELCOME = `# Welcome to Slate
 
 A small, fast place to keep everything you write. Notes are plain markdown and they save as you type, synced to your account.
 

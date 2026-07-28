@@ -1,6 +1,8 @@
 import type { Filter, Note, Preferences } from './types'
 
-const STORAGE_KEY = 'bear.library.v1'
+const STORAGE_KEY = 'slate.library.v1'
+/** The key used before the rename. Read once, then retired. */
+const LEGACY_STORAGE_KEY = 'bear.library.v1'
 const SCHEMA_VERSION = 1
 
 export const defaultPreferences: Preferences = {
@@ -65,14 +67,27 @@ function coercePreferences(value: unknown): Preferences {
   }
 }
 
-export function loadLibrary(): PersistedLibrary | null {
-  if (typeof localStorage === 'undefined') return null
-  let raw: string | null = null
+/**
+ * Reads the current key, falling back to the pre-rename one and moving the
+ * value across so the next write lands under a single key.
+ */
+function readRaw(): string | null {
   try {
-    raw = localStorage.getItem(STORAGE_KEY)
+    const current = localStorage.getItem(STORAGE_KEY)
+    if (current) return current
+    const legacy = localStorage.getItem(LEGACY_STORAGE_KEY)
+    if (!legacy) return null
+    localStorage.setItem(STORAGE_KEY, legacy)
+    localStorage.removeItem(LEGACY_STORAGE_KEY)
+    return legacy
   } catch {
     return null
   }
+}
+
+export function loadLibrary(): PersistedLibrary | null {
+  if (typeof localStorage === 'undefined') return null
+  const raw = readRaw()
   if (!raw) return null
 
   try {
@@ -102,7 +117,7 @@ export function exportLibrary(notes: Note[]): string {
   return JSON.stringify({ version: SCHEMA_VERSION, exportedAt: Date.now(), notes }, null, 2)
 }
 
-/** Reads a `bear-notes.json` backup back into a list of notes. */
+/** Reads a `slate-notes.json` backup back into a list of notes. */
 export function parseLibraryFile(contents: string): Note[] {
   const parsed: unknown = JSON.parse(contents)
   const list = isRecord(parsed) && Array.isArray(parsed.notes) ? parsed.notes : parsed

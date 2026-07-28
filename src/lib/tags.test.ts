@@ -84,7 +84,7 @@ describe('tag hierarchy', () => {
 
   it('builds a tree whose parents count nested notes', () => {
     const notes = [
-      createNote('one #work/projects/bear'),
+      createNote('one #work/projects/slate'),
       createNote('two #work/admin'),
       createNote('three #home'),
     ]

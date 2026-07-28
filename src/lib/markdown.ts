@@ -50,7 +50,7 @@ interface HighlightToken extends Tokens.Generic {
   tokens: Token[]
 }
 
-/** Bear's `==highlighted==` syntax. */
+/** The `==highlighted==` syntax. */
 const highlight: TokenizerAndRendererExtension = {
   name: 'highlight',
   level: 'inline',

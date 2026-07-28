@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { supabase } from '../lib/supabaseClient'
-import { BackIcon, BearMark } from './Icons'
+import { BackIcon, SlateMark } from './Icons'
 
 export type AuthMode = 'signIn' | 'signUp'
 
@@ -92,12 +92,12 @@ export function AuthScreen({
       <form className="auth-card" onSubmit={onSubmit} aria-busy={pending || undefined}>
         <div className="auth-brand">
           <span className="auth-brand-mark">
-            <BearMark size={26} />
+            <SlateMark size={26} />
           </span>
-          <h1>Bear</h1>
+          <h1>Slate</h1>
         </div>
         <p className="auth-tagline">
-          {mode === 'signIn' ? 'Welcome back to the den.' : 'Grab a corner of the den.'}
+          {mode === 'signIn' ? 'Welcome back. Pick up where you left off.' : 'Start with a clean slate.'}
         </p>
 
         <button type="button" className="button auth-google" onClick={onGoogle} disabled={pending}>
