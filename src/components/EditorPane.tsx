@@ -48,9 +48,11 @@ interface EditorPaneProps {
   viewRef: React.RefObject<EditorView | null>
   /** Provided only in the stacked layout, where panes replace each other. */
   onBack?: () => void
+  /** After clicking a tag pill, e.g. switch back to the note list on mobile. */
+  onTagNavigate?: () => void
 }
 
-export function EditorPane({ note, viewRef, onBack }: EditorPaneProps) {
+export function EditorPane({ note, viewRef, onBack, onTagNavigate }: EditorPaneProps) {
   const preferences = useStore((state) => state.preferences)
   const setPreferences = useStore((state) => state.setPreferences)
   const togglePin = useStore((state) => state.togglePin)
@@ -415,7 +417,13 @@ export function EditorPane({ note, viewRef, onBack }: EditorPaneProps) {
         </div>
       ) : null}
 
-      <Editor noteId={note.id} text={note.text} readOnly={readOnly} viewRef={viewRef} />
+      <Editor
+        noteId={note.id}
+        text={note.text}
+        readOnly={readOnly}
+        viewRef={viewRef}
+        onTagNavigate={onTagNavigate}
+      />
 
       {confirmDelete ? (
         <ConfirmDialog

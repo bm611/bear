@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { Filter, TagNode } from '../lib/types'
-import { ChevronRight, TagIcon, TrashIcon, PencilIcon } from './Icons'
+import { ChevronRight, MoreIcon, TagIcon, TrashIcon, PencilIcon } from './Icons'
 import { Menu, MenuItem, MenuSeparator } from './Menu'
 
 interface TagTreeProps {
@@ -82,11 +82,21 @@ function TagRow({ node, filter, onSelect, onRename, onDelete, depth = 0 }: TagRo
           <span className="sidebar-row-label">{node.name}</span>
           <span className="count-badge">{node.count}</span>
         </button>
+
+        <button
+          type="button"
+          className="icon-button tag-row-more"
+          aria-label={`Actions for #${node.path}`}
+          aria-expanded={menuOpen}
+          onClick={() => setMenuOpen((value) => !value)}
+        >
+          <MoreIcon size={14} />
+        </button>
       </div>
 
       {menuOpen ? (
         <Menu
-          align="left"
+          align="right"
           label={`Actions for #${node.path}`}
           onClose={() => setMenuOpen(false)}
           style={{ top: '1.9rem' }}

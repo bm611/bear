@@ -1,8 +1,9 @@
 # Bear
 
 A note taking app in the spirit of [Bear](https://bear.app): three panes, plain
-markdown, and hashtags instead of folders. It runs entirely in the browser —
-notes live in `localStorage`, so there is no account, no server and no sync.
+markdown, and hashtags instead of folders. Sign in to keep notes in sync across
+devices via Supabase; preferences (theme, font, layout) still live in the
+browser's `localStorage`.
 
 ```bash
 npm install
@@ -25,7 +26,8 @@ syntax markers recede in colour rather than vanishing, so a note is always
 editable plain text. A heading's `#` is the one marker that folds away
 completely: it comes back the moment the cursor lands on that line, so the
 heading still reads as a heading the rest of the time. Built on CodeMirror 6
-with a custom highlight style, live todo checkboxes and inline tag pills.
+with a custom highlight style, live todo checkboxes and inline tag pills. A
+formatting toolbar covers the common shortcuts when muscle memory fails.
 
 **Hashtags, not folders.** Write `#work` anywhere in a note and it appears in
 the sidebar. Tags nest with a slash (`#work/projects/bear`), and parent tags
@@ -78,8 +80,8 @@ the suite needs no browser.
 
 ## Notes on storage
 
-Notes are saved to `localStorage` under `bear.library.v1`, debounced 400 ms after
-the last keystroke. Corrupt or partial data is repaired on load rather than
-thrown away — unknown preferences fall back to defaults and malformed notes are
-dropped. Use **Settings → Export backup** for a JSON copy of the library, since
-clearing site data will delete the notes.
+Notes sync to Supabase for the signed-in account (debounced ~400 ms after edits).
+Theme, font, sort and pane visibility preferences still save to `localStorage`
+under `bear.library.v1`. Corrupt or partial preference data is repaired on load
+rather than thrown away. Use **Settings → Export backup** for a JSON copy of the
+library as an extra safety net.

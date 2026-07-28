@@ -19,6 +19,7 @@ function reset(notes: Note[] = []) {
     query: '',
     toast: null,
     notesHydrated: false,
+    notesError: null,
   })
 }
 
@@ -222,7 +223,32 @@ describe('hydrateNotes', () => {
 
     expect(get().notes).toEqual([])
     expect(get().notesHydrated).toBe(false)
+    expect(get().notesError).toBeNull()
     expect(get().selectedId).toBeNull()
+  })
+
+  it('surfaces a load error instead of leaving the shell blank', async () => {
+    vi.mocked(fetchNotes).mockRejectedValue(new Error('network down'))
+
+    await get().hydrateNotes('user-4')
+
+    expect(get().notesHydrated).toBe(false)
+    expect(get().notesError).toBe('network down')
+    expect(get().notes).toEqual([])
+  })
+
+  it('clears a previous load error on a successful retry', async () => {
+    vi.mocked(fetchNotes).mockRejectedValueOnce(new Error('flaky'))
+    await get().hydrateNotes('user-5')
+    expect(get().notesError).toBe('flaky')
+
+    const note = createNote('Recovered')
+    vi.mocked(fetchNotes).mockResolvedValue([note])
+    await get().hydrateNotes('user-5')
+
+    expect(get().notesError).toBeNull()
+    expect(get().notesHydrated).toBe(true)
+    expect(get().notes).toEqual([note])
   })
 })
 

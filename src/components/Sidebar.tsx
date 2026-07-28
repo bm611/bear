@@ -44,16 +44,17 @@ function sameFilter(a: Filter, b: Filter): boolean {
 
 interface SidebarProps {
   onShowShortcuts: () => void
+  /** Creates a note and opens the editor (handles the stacked mobile layout). */
+  onNewNote: () => void
   /** Called after picking a filter or tag, so a narrow layout can close itself. */
   onNavigate?: () => void
 }
 
-export function Sidebar({ onShowShortcuts, onNavigate }: SidebarProps) {
+export function Sidebar({ onShowShortcuts, onNewNote, onNavigate }: SidebarProps) {
   const notes = useStore((state) => state.notes)
   const filter = useStore((state) => state.filter)
   const preferences = useStore((state) => state.preferences)
   const setFilter = useStore((state) => state.setFilter)
-  const newNote = useStore((state) => state.newNote)
   const renameTag = useStore((state) => state.renameTag)
   const deleteTag = useStore((state) => state.deleteTag)
   const setPreferences = useStore((state) => state.setPreferences)
@@ -106,7 +107,7 @@ export function Sidebar({ onShowShortcuts, onNavigate }: SidebarProps) {
             className="icon-button"
             title={`New note (${mod('N')})`}
             aria-label="New note"
-            onClick={() => newNote()}
+            onClick={onNewNote}
           >
             <PlusIcon />
           </button>

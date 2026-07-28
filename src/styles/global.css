@@ -305,6 +305,48 @@ select {
   color: var(--text-primary);
 }
 
+.boot-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  height: 100%;
+  padding: 2rem;
+  text-align: center;
+  background: var(--sidebar-bg);
+  color: var(--text-secondary);
+}
+
+.boot-mark {
+  display: grid;
+  place-items: center;
+  width: 3.2rem;
+  height: 3.2rem;
+  margin-bottom: 0.4rem;
+  border: 3px solid var(--edge-color);
+  border-radius: 14px;
+  background: var(--honey);
+  color: var(--sticker-fg);
+  box-shadow: 4px 4px 0 var(--shadow-ink);
+}
+
+.boot-screen h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  color: var(--text-primary);
+}
+
+.boot-screen p {
+  margin: 0 0 0.6rem;
+  max-width: 24rem;
+  line-height: 1.5;
+  font-size: 0.9rem;
+}
+
 /* ---------------------------------------------------------------- sidebar */
 
 .sidebar {
@@ -427,6 +469,31 @@ select {
 .tag-row-wrapper .sidebar-row {
   flex: 1;
   min-width: 0;
+}
+
+.tag-row-more {
+  flex: 0 0 auto;
+  width: 1.55rem;
+  height: 1.55rem;
+  opacity: 0;
+  color: var(--text-tertiary);
+}
+
+.tag-row-wrapper:hover .tag-row-more,
+.tag-row-wrapper:focus-within .tag-row-more,
+.tag-row-more[aria-expanded='true'] {
+  opacity: 1;
+}
+
+.tag-row-more:hover,
+.tag-row-more[aria-expanded='true'] {
+  color: var(--text-primary);
+}
+
+@media (hover: none) {
+  .tag-row-more {
+    opacity: 0.7;
+  }
 }
 
 .disclosure {
@@ -694,14 +761,23 @@ button.disclosure:hover {
   min-height: 3rem;
   border-bottom: 1px solid transparent;
   transition: border-color var(--transition);
+  overflow-x: auto;
+  scrollbar-width: thin;
 }
 
 .editor-toolbar[data-scrolled='true'] {
   border-bottom-color: var(--edge-color);
 }
 
+.editor-toolbar > .icon-button,
+.editor-toolbar > .menu-anchor,
+.editor-toolbar > .toolbar-divider {
+  flex-shrink: 0;
+}
+
 .toolbar-spacer {
-  flex: 1;
+  flex: 1 0 0.5rem;
+  min-width: 0.5rem;
 }
 
 .toolbar-divider {

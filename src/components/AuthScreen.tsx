@@ -62,12 +62,18 @@ export function AuthScreen({
 
   async function onGoogle() {
     setError(null)
+    setPending(true)
     const { error: authError } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: { redirectTo: window.location.origin },
     })
-    if (authError) setError(authError.message)
+    if (authError) {
+      setPending(false)
+      setError(authError.message)
+    }
   }
+
+  const statusId = error ? 'auth-error' : notice ? 'auth-notice' : undefined
 
   return (
     <div className="auth-screen">
@@ -83,7 +89,7 @@ export function AuthScreen({
           Back
         </button>
       ) : null}
-      <form className="auth-card" onSubmit={onSubmit}>
+      <form className="auth-card" onSubmit={onSubmit} aria-busy={pending || undefined}>
         <div className="auth-brand">
           <span className="auth-brand-mark">
             <BearMark size={26} />
@@ -94,7 +100,7 @@ export function AuthScreen({
           {mode === 'signIn' ? 'Welcome back to the den.' : 'Grab a corner of the den.'}
         </p>
 
-        <button type="button" className="button auth-google" onClick={onGoogle}>
+        <button type="button" className="button auth-google" onClick={onGoogle} disabled={pending}>
           <GoogleGlyph />
           Continue with Google
         </button>
@@ -114,6 +120,8 @@ export function AuthScreen({
           onChange={(event) => setEmail(event.target.value)}
           autoComplete="email"
           required
+          aria-invalid={error ? true : undefined}
+          aria-describedby={statusId}
         />
 
         <label className="auth-label" htmlFor="auth-password">
@@ -128,13 +136,29 @@ export function AuthScreen({
           autoComplete={mode === 'signIn' ? 'current-password' : 'new-password'}
           minLength={6}
           required
+          aria-invalid={error ? true : undefined}
+          aria-describedby={statusId}
         />
 
-        {error ? <p className="auth-error">{error}</p> : null}
-        {notice ? <p className="auth-notice">{notice}</p> : null}
+        {error ? (
+          <p id="auth-error" className="auth-error" role="alert">
+            {error}
+          </p>
+        ) : null}
+        {notice ? (
+          <p id="auth-notice" className="auth-notice" role="status">
+            {notice}
+          </p>
+        ) : null}
 
         <button type="submit" className="button button-primary auth-submit" disabled={pending}>
-          {mode === 'signIn' ? 'Sign in' : 'Create account'}
+          {pending
+            ? mode === 'signIn'
+              ? 'Signing in…'
+              : 'Creating account…'
+            : mode === 'signIn'
+              ? 'Sign in'
+              : 'Create account'}
         </button>
 
         <button
@@ -152,3 +176,4 @@ export function AuthScreen({
     </div>
   )
 }
+
