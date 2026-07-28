@@ -418,8 +418,8 @@ export function LandingScreen({ onLaunch }: { onLaunch: (mode: AuthMode) => void
               get that
             </h2>
             <p className="lp-section-sub">
-              No toolbars to hunt through. The syntax you already half-remember is the whole
-              interface.
+              Type the markdown you already half-remember — headings, todos, and tags light up as you
+              go.
             </p>
           </div>
 

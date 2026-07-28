@@ -7,6 +7,7 @@ import { ShortcutsSheet } from './components/ShortcutsSheet'
 import { Toast } from './components/Toast'
 import { AuthScreen, type AuthMode } from './components/AuthScreen'
 import { LandingScreen } from './components/LandingScreen'
+import { BearMark } from './components/Icons'
 import { useStore } from './store/useStore'
 import { useAuthStore } from './store/useAuthStore'
 import { useVisibleNotes } from './hooks/useVisibleNotes'
@@ -57,16 +58,48 @@ function useNotesSync() {
   const hydrateNotes = useStore((state) => state.hydrateNotes)
   const resetNotes = useStore((state) => state.resetNotes)
   const notesHydrated = useStore((state) => state.notesHydrated)
+  const notesError = useStore((state) => state.notesError)
 
   useEffect(() => {
     if (status === 'signedIn' && userId) {
-      hydrateNotes(userId)
+      void hydrateNotes(userId)
     } else if (status === 'signedOut') {
       resetNotes()
     }
   }, [status, userId, hydrateNotes, resetNotes])
 
-  return status === 'signedIn' && notesHydrated
+  return {
+    ready: status === 'signedIn' && notesHydrated,
+    error: status === 'signedIn' ? notesError : null,
+    retry: () => {
+      if (userId) void hydrateNotes(userId)
+    },
+  }
+}
+
+function BootScreen({
+  title,
+  body,
+  action,
+}: {
+  title: string
+  body?: string
+  action?: { label: string; onClick: () => void }
+}) {
+  return (
+    <div className="boot-screen" role="status" aria-live="polite">
+      <span className="boot-mark">
+        <BearMark size={28} />
+      </span>
+      <h1>{title}</h1>
+      {body ? <p>{body}</p> : null}
+      {action ? (
+        <button type="button" className="button button-primary" onClick={action.onClick}>
+          {action.label}
+        </button>
+      ) : null}
+    </div>
+  )
 }
 
 export function App() {
@@ -74,9 +107,13 @@ export function App() {
   useTypography()
 
   const authStatus = useAuthStore((state) => state.status)
-  const notesReady = useNotesSync()
+  const { ready: notesReady, error: notesError, retry } = useNotesSync()
   const [entry, setEntry] = useState<'landing' | 'auth'>('landing')
   const [authMode, setAuthMode] = useState<AuthMode>('signUp')
+
+  if (authStatus === 'loading') {
+    return <BootScreen title="Opening the den…" />
+  }
 
   if (authStatus !== 'signedIn') {
     if (entry === 'landing') {
@@ -93,7 +130,20 @@ export function App() {
       <AuthScreen key={authMode} initialMode={authMode} onBack={() => setEntry('landing')} />
     )
   }
-  if (!notesReady) return null
+
+  if (notesError) {
+    return (
+      <BootScreen
+        title="Couldn't load your notes"
+        body={notesError}
+        action={{ label: 'Try again', onClick: retry }}
+      />
+    )
+  }
+
+  if (!notesReady) {
+    return <BootScreen title="Fetching your notes…" />
+  }
 
   return <AppShell />
 }
@@ -129,10 +179,21 @@ function AppShell() {
     setMobileSidebar(false)
   }, [])
 
+  const showList = useCallback(() => {
+    setMobilePane('list')
+    setMobileSidebar(false)
+  }, [])
+
   const focusEditor = useCallback(() => {
     // Wait for the pane to mount the new document before taking focus.
     requestAnimationFrame(() => viewRef.current?.focus())
   }, [])
+
+  const createNote = useCallback(() => {
+    newNote()
+    openNote()
+    focusEditor()
+  }, [focusEditor, newNote, openNote])
 
   const step = useCallback(
     (delta: number) => {
@@ -154,9 +215,7 @@ function AppShell() {
         case 'n':
           if (event.shiftKey) return
           event.preventDefault()
-          newNote()
-          openNote()
-          focusEditor()
+          createNote()
           return
         case 'f':
           event.preventDefault()
@@ -209,11 +268,9 @@ function AppShell() {
     window.addEventListener('keydown', onKeyDown, true)
     return () => window.removeEventListener('keydown', onKeyDown, true)
   }, [
-    focusEditor,
+    createNote,
     narrow,
-    newNote,
     note,
-    openNote,
     preferences.listVisible,
     preferences.sidebarVisible,
     setPreferences,
@@ -228,6 +285,7 @@ function AppShell() {
       {sidebarOpen ? (
         <Sidebar
           onShowShortcuts={() => setShortcutsOpen(true)}
+          onNewNote={createNote}
           onNavigate={() => {
             if (narrow) {
               setMobileSidebar(false)
@@ -257,6 +315,7 @@ function AppShell() {
           note={note}
           viewRef={viewRef}
           onBack={narrow ? () => setMobilePane('list') : undefined}
+          onTagNavigate={narrow ? showList : undefined}
         />
       ) : null}
 

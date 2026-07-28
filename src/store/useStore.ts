@@ -17,6 +17,8 @@ export interface StoreState {
   toast: { id: number; message: string } | null
   /** Whether `notes` reflects the signed-in user's Supabase data yet. Gates sync-back writes. */
   notesHydrated: boolean
+  /** Set when the initial fetch fails; cleared on a successful hydrate or sign-out. */
+  notesError: string | null
 
   hydrateNotes: (userId: string) => Promise<void>
   resetNotes: () => void
@@ -62,23 +64,33 @@ export const useStore = create<StoreState>((set, get) => ({
   preferences: persisted?.preferences ?? { ...defaultPreferences },
   toast: null,
   notesHydrated: false,
+  notesError: null,
 
   hydrateNotes: async (userId) => {
-    let notes = await fetchNotes(userId)
-    if (notes.length === 0) notes = await insertNotes(welcomeNotes(), userId)
-    currentUserId = userId
-    markSynced(notes)
-    set((state) => ({
-      notes,
-      notesHydrated: true,
-      selectedId: notes.some((note) => note.id === state.selectedId) ? state.selectedId : (notes[0]?.id ?? null),
-    }))
+    set({ notesHydrated: false, notesError: null })
+    try {
+      let notes = await fetchNotes(userId)
+      if (notes.length === 0) notes = await insertNotes(welcomeNotes(), userId)
+      currentUserId = userId
+      markSynced(notes)
+      set((state) => ({
+        notes,
+        notesHydrated: true,
+        notesError: null,
+        selectedId: notes.some((note) => note.id === state.selectedId)
+          ? state.selectedId
+          : (notes[0]?.id ?? null),
+      }))
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Could not load notes'
+      set({ notesHydrated: false, notesError: message })
+    }
   },
 
   resetNotes: () => {
     currentUserId = null
     markSynced([])
-    set({ notes: [], notesHydrated: false, selectedId: null })
+    set({ notes: [], notesHydrated: false, notesError: null, selectedId: null })
   },
 
   newNote: (text) => {
@@ -261,9 +273,13 @@ useStore.subscribe((state) => {
     const currentIds = new Set(notes.map((note) => note.id))
     const removedIds = previous.filter((note) => !currentIds.has(note.id)).map((note) => note.id)
     const changed = notes.filter((note) => previous.find((prev) => prev.id === note.id) !== note)
+    // Mark synced up front so identical snapshots don't queue again; roll back
+    // on failure so the next edit (or a forced retry) can push again.
     markSynced(notes)
     void Promise.all([deleteNotes(removedIds), upsertNotes(changed, userId)]).catch((error) => {
       console.error('Failed to sync notes to Supabase', error)
+      if (lastSyncedNotes === notes) lastSyncedNotes = previous
+      useStore.getState().showToast("Couldn't sync notes — check your connection")
     })
   }, 400)
 })

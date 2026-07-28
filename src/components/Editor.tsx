@@ -20,6 +20,8 @@ interface EditorProps {
   text: string
   readOnly: boolean
   viewRef: RefObject<EditorView | null>
+  /** Fired after a hashtag pill is clicked (e.g. to show the filtered list on mobile). */
+  onTagNavigate?: () => void
 }
 
 function initialSelection(text: string): EditorSelection | undefined {
@@ -32,13 +34,15 @@ function initialSelection(text: string): EditorSelection | undefined {
  * pane; switching notes swaps the state so undo history never leaks across
  * notes.
  */
-export function Editor({ noteId, text, readOnly, viewRef }: EditorProps) {
+export function Editor({ noteId, text, readOnly, viewRef, onTagNavigate }: EditorProps) {
   const hostRef = useRef<HTMLDivElement>(null)
   const noteIdRef = useRef(noteId)
   const extensionsRef = useRef<Extension[] | null>(null)
   const syncingRef = useRef(false)
   const scrollPositions = useRef(new Map<string, number>())
   const readOnlyRef = useRef(readOnly)
+  const onTagNavigateRef = useRef(onTagNavigate)
+  onTagNavigateRef.current = onTagNavigate
 
   const updateNoteText = useStore((state) => state.updateNoteText)
   const setFilter = useStore((state) => state.setFilter)
@@ -65,7 +69,10 @@ export function Editor({ noteId, text, readOnly, viewRef }: EditorProps) {
         if (syncingRef.current) return
         updateNoteText(noteIdRef.current, value)
       },
-      onTagClick: (tag) => setFilter({ kind: 'tag', tag }),
+      onTagClick: (tag) => {
+        setFilter({ kind: 'tag', tag })
+        onTagNavigateRef.current?.()
+      },
       getTags,
       readOnly: readOnlyRef.current,
     })
