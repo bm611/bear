@@ -17,81 +17,117 @@
      an `em` here keeps that proportion when the reader steps the size. */
   --editor-measure: 43.5em;
 
+  /* Mono carries the "paper & sticker" identity across the chrome — labels,
+     titles, buttons. Note *content* stays on --editor-font. */
+  --font-display: var(--font-mono);
+
   --sidebar-width: 15rem;
   --list-width: 20rem;
   --radius: 8px;
   --transition: 140ms cubic-bezier(0.32, 0.72, 0, 1);
+  --bounce: 180ms cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Brand constants. These are deliberately theme-independent: dark mode
+     remaps the semantic tokens below, never the palette itself, so a honey
+     sticker stays honey on both papers. */
+  --ink: #171310;
+  --paper: #fdf3e3;
+  --paper-2: #fffaf1;
+  --honey: #ffc233;
+  --berry: #ff6b5b;
+  --mint: #5fdfa6;
+  --sky: #85c7ff;
+  --grape: #c5a8ff;
+
+  /* Sticker fills, shared by both themes so the app matches the landing. */
+  --row-active-bg: var(--sky);
+  --card-active-bg: var(--honey);
+  --sticker-fg: var(--ink);
 }
 
-/* Quiet blue-gray accent over a neutral graphite shell. */
+/* Warm paper, ink outlines, hard shadows — the "day" sheet. */
 :root,
 [data-theme='light'] {
   color-scheme: light;
-  --accent: #536b8f;
-  --accent-hover: #465c7d;
-  --list-marker: #2679c4;
-  --accent-soft: rgba(83, 107, 143, 0.42);
-  --accent-wash: rgba(83, 107, 143, 0.09);
-  --accent-wash-strong: rgba(83, 107, 143, 0.16);
 
-  --sidebar-bg: #f7f7f8;
-  --list-bg: #fcfcfd;
-  --surface: #ffffff;
-  --surface-raised: #ffffff;
-  --surface-hover: rgba(0, 0, 0, 0.04);
-  --surface-active: rgba(0, 0, 0, 0.07);
+  --edge-color: var(--ink);
+  --shadow-ink: var(--ink);
 
-  --text-primary: #1f2023;
-  --text-secondary: #5c5f66;
-  --text-tertiary: #9b9ea5;
-  --text-inverse: #ffffff;
+  /* A burnt-caramel accent: dark enough to read as text on paper *and* to
+     carry --text-inverse when it is used as a fill. Honey can do neither. */
+  --accent: #9a5a13;
+  --accent-hover: #7d470c;
+  --list-marker: #9a5a13;
+  --accent-soft: rgba(154, 90, 19, 0.45);
+  --accent-wash: rgba(255, 194, 51, 0.3);
+  --accent-wash-strong: rgba(255, 194, 51, 0.62);
 
-  --rule: #e4e4e8;
-  --rule-strong: #d3d3d9;
-  --selection: rgba(83, 107, 143, 0.18);
-  --syntax-mark: #c3c5cc;
-  --code-bg: rgba(120, 120, 130, 0.09);
-  --code-text: #405b78;
-  --todo-border: #b9bcc4;
-  --highlight: #ffe9a8;
-  --table-row: rgba(120, 120, 130, 0.055);
+  --sidebar-bg: #f7edd8;
+  --list-bg: #fdf5e7;
+  --surface: #fffaf1;
+  --surface-raised: #fffdf8;
+  --surface-hover: rgba(23, 19, 16, 0.06);
+  --surface-active: rgba(23, 19, 16, 0.11);
 
-  --shadow-pop: 0 12px 34px rgba(15, 17, 26, 0.14), 0 2px 6px rgba(15, 17, 26, 0.08);
+  --text-primary: #171310;
+  --text-secondary: #574c3f;
+  --text-tertiary: #8d8073;
+  --text-inverse: #fffaf1;
+
+  --rule: rgba(23, 19, 16, 0.14);
+  --rule-strong: var(--edge-color);
+  --selection: rgba(255, 194, 51, 0.5);
+  --syntax-mark: #b5a794;
+  --code-bg: rgba(23, 19, 16, 0.07);
+  --code-text: #9a5a13;
+  --todo-border: var(--ink);
+  --highlight: #ffe08a;
+  --table-row: rgba(23, 19, 16, 0.045);
+  --danger: #cc3a28;
+
+  --shadow-pop: 5px 5px 0 var(--shadow-ink);
 }
 
-/* "Charcoal" dark mode. */
+/* Same paper after dark: warm charcoal, lifted edges, identical stickers. */
 [data-theme='dark'] {
   color-scheme: dark;
-  --accent: #708ab2;
-  --accent-hover: #8099bf;
-  --list-marker: #91bdf0;
-  --accent-soft: rgba(112, 138, 178, 0.5);
-  --accent-wash: rgba(112, 138, 178, 0.14);
-  --accent-wash-strong: rgba(112, 138, 178, 0.24);
 
-  --sidebar-bg: #16171a;
-  --list-bg: #1b1c20;
-  --surface: #202126;
-  --surface-raised: #2a2b31;
-  --surface-hover: rgba(255, 255, 255, 0.06);
-  --surface-active: rgba(255, 255, 255, 0.1);
+  /* Black-on-black reads as nothing, so the outline lifts to a warm mid-tone
+     while the drop shadow goes the other way, to true black. */
+  --edge-color: #5d4f40;
+  --shadow-ink: #000000;
 
-  --text-primary: #e9e9ee;
-  --text-secondary: #a5a7b0;
-  --text-tertiary: #6f727c;
-  --text-inverse: #16171a;
+  --accent: #ffc233;
+  --accent-hover: #ffd166;
+  --list-marker: #ffc233;
+  --accent-soft: rgba(255, 194, 51, 0.5);
+  --accent-wash: rgba(255, 194, 51, 0.14);
+  --accent-wash-strong: rgba(255, 194, 51, 0.3);
 
-  --rule: #303138;
-  --rule-strong: #3d3f47;
-  --selection: rgba(112, 138, 178, 0.28);
-  --syntax-mark: #575a63;
-  --code-bg: rgba(255, 255, 255, 0.07);
-  --code-text: #b8cae0;
-  --todo-border: #565962;
-  --highlight: rgba(214, 178, 62, 0.32);
-  --table-row: rgba(255, 255, 255, 0.045);
+  --sidebar-bg: #191511;
+  --list-bg: #1f1a15;
+  --surface: #251f19;
+  --surface-raised: #2f2820;
+  --surface-hover: rgba(255, 248, 235, 0.07);
+  --surface-active: rgba(255, 248, 235, 0.12);
 
-  --shadow-pop: 0 14px 40px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.35);
+  --text-primary: #f4ece0;
+  --text-secondary: #bcae9c;
+  --text-tertiary: #857a6b;
+  --text-inverse: #171310;
+
+  --rule: rgba(255, 248, 235, 0.11);
+  --rule-strong: var(--edge-color);
+  --selection: rgba(255, 194, 51, 0.28);
+  --syntax-mark: #6b6153;
+  --code-bg: rgba(255, 248, 235, 0.08);
+  --code-text: #ffd88a;
+  --todo-border: #6d6152;
+  --highlight: rgba(255, 194, 51, 0.32);
+  --table-row: rgba(255, 248, 235, 0.045);
+  --danger: #ff6b5b;
+
+  --shadow-pop: 5px 5px 0 var(--shadow-ink);
 }
 
 /* ----------------------------------------------------------------- reset */
@@ -157,10 +193,12 @@ select {
   background-clip: content-box;
 }
 
+/* --rule-strong is full ink now; a solid black bar down the editor is far
+   too loud for a scrollbar, so this one keeps its own muted tone. */
 *:hover > ::-webkit-scrollbar-thumb,
 *:focus-within > ::-webkit-scrollbar-thumb,
 .scroll-host:hover::-webkit-scrollbar-thumb {
-  background: var(--rule-strong);
+  background: var(--text-tertiary);
   background-clip: content-box;
 }
 
@@ -183,9 +221,9 @@ select {
 }
 
 .pane-divider {
-  width: 1px;
-  flex: 0 0 1px;
-  background: var(--rule);
+  width: 2px;
+  flex: 0 0 2px;
+  background: var(--edge-color);
 }
 
 .icon-button {
@@ -194,18 +232,23 @@ select {
   justify-content: center;
   width: 1.85rem;
   height: 1.85rem;
-  border-radius: 6px;
+  border: 2px solid transparent;
+  border-radius: 8px;
   color: var(--text-secondary);
-  transition: background var(--transition), color var(--transition);
+  transition: background var(--transition), color var(--transition),
+    border-color var(--transition);
 }
 
 .icon-button:hover {
+  border-color: var(--edge-color);
   background: var(--surface-hover);
   color: var(--text-primary);
 }
 
 .icon-button[aria-pressed='true'] {
-  color: var(--accent);
+  border-color: var(--edge-color);
+  background: var(--honey);
+  color: var(--sticker-fg);
 }
 
 .icon-button:disabled {
@@ -238,8 +281,10 @@ select {
 
 .empty-state h2 {
   margin: 0;
+  font-family: var(--font-display);
   font-size: 1.05rem;
-  font-weight: 600;
+  font-weight: 800;
+  letter-spacing: -0.035em;
   color: var(--text-secondary);
 }
 
@@ -250,13 +295,14 @@ select {
 }
 
 .empty-state kbd {
-  font: inherit;
+  font-family: var(--font-display);
   font-size: 0.85em;
-  padding: 0.1em 0.35em;
-  border: 1px solid var(--rule-strong);
-  border-bottom-width: 2px;
-  border-radius: 5px;
-  color: var(--text-secondary);
+  font-weight: 600;
+  padding: 0.1em 0.4em;
+  border: 2px solid var(--edge-color);
+  border-radius: 6px;
+  box-shadow: 2px 2px 0 var(--shadow-ink);
+  color: var(--text-primary);
 }
 
 /* ---------------------------------------------------------------- sidebar */
@@ -267,7 +313,7 @@ select {
   flex: 0 0 var(--sidebar-width);
   width: var(--sidebar-width);
   background: var(--sidebar-bg);
-  border-right: 1px solid var(--rule);
+  border-right: 2px solid var(--edge-color);
   overflow: hidden;
 }
 
@@ -281,14 +327,27 @@ select {
 .sidebar-brand {
   display: flex;
   align-items: center;
-  gap: 0.45rem;
-  font-size: 0.95rem;
-  font-weight: 650;
-  letter-spacing: -0.01em;
+  gap: 0.5rem;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: -0.045em;
 }
 
+/* The mark sits in the same honey badge the landing nav uses. */
 .sidebar-brand svg {
-  color: var(--accent);
+  box-sizing: content-box;
+  padding: 0.2rem;
+  border: 2px solid var(--edge-color);
+  border-radius: 8px;
+  background: var(--honey);
+  color: var(--sticker-fg);
+  transform: rotate(-5deg);
+  transition: transform var(--bounce);
+}
+
+.sidebar-brand:hover svg {
+  transform: rotate(6deg);
 }
 
 .sidebar-header-actions {
@@ -305,9 +364,10 @@ select {
 
 .sidebar-section-label {
   padding: 0.9rem 0.55rem 0.3rem;
-  font-size: 0.7rem;
-  font-weight: 650;
-  letter-spacing: 0.06em;
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--text-tertiary);
 }
@@ -318,22 +378,28 @@ select {
   gap: 0.5rem;
   width: 100%;
   padding: 0.34rem 0.5rem;
-  border-radius: 6px;
+  border: 2px solid transparent;
+  border-radius: 8px;
   text-align: left;
   color: var(--text-primary);
-  transition: background var(--transition);
+  transition: background var(--transition), border-color var(--transition);
 }
 
 .sidebar-row:hover {
   background: var(--surface-hover);
 }
 
+/* Selected rows are stickers, not tints — same sky chip as the landing mock. */
 .sidebar-row[aria-current='true'] {
-  background: var(--accent-wash-strong);
+  border-color: var(--edge-color);
+  background: var(--row-active-bg);
+  color: var(--sticker-fg);
+  font-weight: 600;
 }
 
-.sidebar-row[aria-current='true'] .sidebar-row-icon {
-  color: var(--accent);
+.sidebar-row[aria-current='true'] .sidebar-row-icon,
+.sidebar-row[aria-current='true'] .count-badge {
+  color: var(--sticker-fg);
 }
 
 .sidebar-row-icon {
@@ -414,7 +480,7 @@ button.disclosure:hover {
   flex: 0 0 var(--list-width);
   width: var(--list-width);
   background: var(--list-bg);
-  border-right: 1px solid var(--rule);
+  border-right: 2px solid var(--edge-color);
   overflow: hidden;
 }
 
@@ -432,9 +498,10 @@ button.disclosure:hover {
 }
 
 .list-title {
-  font-size: 0.98rem;
-  font-weight: 650;
-  letter-spacing: -0.01em;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: -0.045em;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -450,16 +517,18 @@ button.disclosure:hover {
 .search-field {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
-  padding: 0.32rem 0.5rem;
-  border-radius: 7px;
-  background: var(--surface-hover);
+  gap: 0.45rem;
+  padding: 0.32rem 0.7rem;
+  border: 2px solid var(--edge-color);
+  border-radius: 999px;
+  background: var(--surface-raised);
   color: var(--text-tertiary);
-  transition: box-shadow var(--transition);
+  transition: box-shadow var(--transition), transform var(--transition);
 }
 
 .search-field:focus-within {
-  box-shadow: 0 0 0 2px var(--accent-soft);
+  box-shadow: 3px 3px 0 var(--shadow-ink);
+  transform: translate(-1px, -1px);
 }
 
 .search-field input {
@@ -486,10 +555,12 @@ button.disclosure:hover {
   display: block;
   width: 100%;
   padding: 0.82rem 0.65rem;
-  border-radius: var(--radius);
+  border: 2px solid transparent;
+  border-radius: 11px;
   text-align: left;
   color: inherit;
-  transition: background var(--transition);
+  transition: background var(--transition), border-color var(--transition),
+    box-shadow var(--transition), transform var(--transition);
 }
 
 .note-card + .note-card {
@@ -506,8 +577,34 @@ button.disclosure:hover {
   box-shadow: none;
 }
 
+/* The selected note is the honey sticker from the landing mock, so every
+   piece of text inside it has to flip to ink — the muted greys underneath
+   are tuned for paper, and two of them go white in dark mode. */
 .note-card[aria-current='true'] {
-  background: var(--accent-wash-strong);
+  border-color: var(--edge-color);
+  background: var(--card-active-bg);
+  box-shadow: 3px 3px 0 var(--shadow-ink);
+  transform: translate(-1px, -1px);
+}
+
+.note-card[aria-current='true'],
+.note-card[aria-current='true'] .note-card-date,
+.note-card[aria-current='true'] .note-card-preview,
+.note-card[aria-current='true'] .note-card-meta,
+.note-card[aria-current='true'] .note-card-icon {
+  color: var(--sticker-fg);
+}
+
+.note-card[aria-current='true'] .note-card-date,
+.note-card[aria-current='true'] .note-card-preview,
+.note-card[aria-current='true'] .note-card-meta {
+  opacity: 0.72;
+}
+
+/* A honey chip on a honey card would vanish; give it the paper back. */
+.note-card[aria-current='true'] .note-chip {
+  background: var(--paper-2);
+  color: var(--ink);
 }
 
 .note-card-top {
@@ -555,16 +652,19 @@ button.disclosure:hover {
 }
 
 .note-card[aria-current='true'] .note-card-title {
-  color: var(--accent);
+  color: var(--sticker-fg);
+  font-weight: 700;
 }
 
 .note-chip {
-  padding: 0.05rem 0.32rem;
-  border-radius: 4px;
+  padding: 0.05rem 0.4rem;
+  border: 1.5px solid var(--edge-color);
+  border-radius: 999px;
   background: var(--accent-wash);
-  color: var(--accent);
+  color: var(--text-primary);
+  font-family: var(--font-display);
   font-size: 0.68rem;
-  font-weight: 500;
+  font-weight: 600;
   max-width: 8rem;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -597,7 +697,7 @@ button.disclosure:hover {
 }
 
 .editor-toolbar[data-scrolled='true'] {
-  border-bottom-color: var(--rule);
+  border-bottom-color: var(--edge-color);
 }
 
 .toolbar-spacer {
@@ -627,9 +727,12 @@ button.disclosure:hover {
   align-items: center;
   gap: 0.6rem;
   padding: 0.55rem 1.1rem;
-  background: var(--accent-wash);
-  color: var(--accent);
+  border-bottom: 2px solid var(--edge-color);
+  background: var(--honey);
+  color: var(--sticker-fg);
+  font-family: var(--font-display);
   font-size: 0.8rem;
+  font-weight: 600;
 }
 
 .banner button {
@@ -654,8 +757,8 @@ button.disclosure:hover {
   z-index: 40;
   min-width: 12.5rem;
   padding: 0.3rem;
-  border: 1px solid var(--rule);
-  border-radius: 10px;
+  border: 2px solid var(--edge-color);
+  border-radius: 12px;
   background: var(--surface-raised);
   box-shadow: var(--shadow-pop);
   animation: pop var(--transition);
@@ -689,21 +792,22 @@ button.disclosure:hover {
 }
 
 .menu-item:hover {
-  background: var(--accent);
-  color: var(--text-inverse);
+  background: var(--honey);
+  color: var(--sticker-fg);
 }
 
 .menu-item:hover .menu-shortcut {
-  color: rgba(255, 255, 255, 0.75);
+  color: var(--sticker-fg);
+  opacity: 0.6;
 }
 
 .menu-item[data-danger='true'] {
-  color: var(--accent);
+  color: var(--danger);
 }
 
 .menu-item[data-danger='true']:hover {
-  background: var(--accent);
-  color: #fff;
+  background: var(--berry);
+  color: var(--sticker-fg);
 }
 
 .menu-item[aria-checked='true']::after {
@@ -727,9 +831,10 @@ button.disclosure:hover {
 
 .menu-label {
   padding: 0.4rem 0.5rem 0.2rem;
-  font-size: 0.68rem;
-  font-weight: 650;
-  letter-spacing: 0.05em;
+  font-family: var(--font-display);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--text-tertiary);
 }
@@ -745,8 +850,8 @@ button.disclosure:hover {
 .stepper button {
   width: 1.5rem;
   height: 1.5rem;
-  border: 1px solid var(--rule-strong);
-  border-radius: 5px;
+  border: 2px solid var(--edge-color);
+  border-radius: 7px;
   line-height: 1;
 }
 
@@ -786,9 +891,10 @@ button.disclosure:hover {
   max-height: 100%;
   overflow-y: auto;
   padding: 1.4rem 1.5rem 1.6rem;
-  border-radius: 14px;
+  border: 3px solid var(--edge-color);
+  border-radius: 18px;
   background: var(--surface-raised);
-  box-shadow: var(--shadow-pop);
+  box-shadow: 8px 8px 0 var(--shadow-ink);
 }
 
 .sheet-header {
@@ -799,7 +905,10 @@ button.disclosure:hover {
 
 .sheet-header h2 {
   margin: 0;
-  font-size: 1.05rem;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: -0.045em;
 }
 
 .sheet-header .icon-button {
@@ -821,17 +930,18 @@ button.disclosure:hover {
 
 .dialog-input {
   width: 100%;
-  padding: 0.5rem 0.6rem;
-  border: 1px solid var(--rule-strong);
-  border-radius: 7px;
+  padding: 0.55rem 0.75rem;
+  border: 2px solid var(--edge-color);
+  border-radius: 10px;
   background: var(--surface);
   font-size: 0.9rem;
+  transition: box-shadow var(--transition), transform var(--transition);
 }
 
 .dialog-input:focus {
   outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-wash);
+  box-shadow: 3px 3px 0 var(--shadow-ink);
+  transform: translate(-1px, -1px);
 }
 
 .dialog-actions {
@@ -842,66 +952,154 @@ button.disclosure:hover {
 }
 
 .button {
-  padding: 0.42rem 0.85rem;
-  border-radius: 7px;
-  border: 1px solid var(--rule-strong);
+  padding: 0.46rem 1rem;
+  border-radius: 999px;
+  border: 2px solid var(--edge-color);
+  background: var(--surface-raised);
+  box-shadow: 3px 3px 0 var(--shadow-ink);
+  font-family: var(--font-display);
   font-size: 0.85rem;
-  font-weight: 500;
-  transition: background var(--transition), border-color var(--transition);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  transition: background var(--transition), transform var(--transition),
+    box-shadow var(--transition);
 }
 
 .button:hover {
-  background: var(--surface-hover);
+  transform: translate(-1px, -1px);
+  box-shadow: 5px 5px 0 var(--shadow-ink);
 }
 
-.button-primary,
+.button:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 var(--shadow-ink);
+}
+
+.button-primary {
+  background: var(--honey);
+  color: var(--sticker-fg);
+}
+
 .button-danger {
-  border-color: transparent;
-  background: var(--accent);
-  color: #fff;
-}
-
-.button-primary:hover,
-.button-danger:hover {
-  background: var(--accent-hover);
+  background: var(--berry);
+  color: var(--sticker-fg);
 }
 
 .button:disabled {
   opacity: 0.5;
   cursor: default;
+  transform: none;
+  box-shadow: 3px 3px 0 var(--shadow-ink);
 }
 
 /* ----------------------------------------------------------------- auth */
 
+/* The sign-in screen is the handshake between the landing page and the app,
+   so it wears the landing's furniture — graph paper, blobs, a tilted card —
+   over the app's own themed tokens. */
+
 .auth-screen {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   height: 100%;
+  overflow: hidden;
   background: var(--sidebar-bg);
 }
 
+.auth-paper {
+  position: absolute;
+  inset: 0;
+  opacity: 0.5;
+  pointer-events: none;
+  background-image:
+    linear-gradient(var(--rule) 1px, transparent 1px),
+    linear-gradient(90deg, var(--rule) 1px, transparent 1px);
+  background-size: 30px 30px;
+}
+
+.auth-blobs {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.auth-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+  opacity: 0.42;
+}
+
+.auth-blob-a {
+  top: -10rem;
+  right: -6rem;
+  width: 26rem;
+  height: 26rem;
+  background: var(--honey);
+}
+
+.auth-blob-b {
+  bottom: -9rem;
+  left: -7rem;
+  width: 24rem;
+  height: 24rem;
+  background: var(--sky);
+}
+
 .auth-card {
+  position: relative;
   display: flex;
   flex-direction: column;
-  width: min(22rem, calc(100% - 2.5rem));
-  padding: 1.8rem 1.6rem;
-  border-radius: 14px;
+  width: min(23rem, calc(100% - 2.5rem));
+  padding: 2rem 1.7rem 1.8rem;
+  border: 3px solid var(--edge-color);
+  border-radius: 22px;
   background: var(--surface-raised);
-  box-shadow: var(--shadow-pop);
+  box-shadow: 10px 10px 0 var(--shadow-ink);
+  transform: rotate(-1.2deg);
+  transition: transform 320ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.auth-card:hover,
+.auth-card:focus-within {
+  transform: rotate(0deg);
 }
 
 .auth-brand {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 1.3rem;
+  gap: 0.6rem;
   color: var(--text-primary);
+}
+
+.auth-brand-mark {
+  display: grid;
+  place-items: center;
+  width: 2.6rem;
+  height: 2.6rem;
+  border: 3px solid var(--edge-color);
+  border-radius: 13px;
+  background: var(--honey);
+  color: var(--sticker-fg);
+  box-shadow: 3px 3px 0 var(--shadow-ink);
+  transform: rotate(-6deg);
 }
 
 .auth-brand h1 {
   margin: 0;
-  font-size: 1.1rem;
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: -0.05em;
+}
+
+.auth-tagline {
+  margin: 0.7rem 0 1.4rem;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
 }
 
 .auth-google {
@@ -915,75 +1113,112 @@ button.disclosure:hover {
 .auth-divider {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
-  margin: 1rem 0;
+  gap: 0.7rem;
+  margin: 1.1rem 0 0.3rem;
+  font-family: var(--font-display);
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
   color: var(--text-tertiary);
-  font-size: 0.78rem;
 }
 
 .auth-divider::before,
 .auth-divider::after {
   content: '';
   flex: 1;
-  height: 1px;
-  background: var(--rule);
+  height: 2px;
+  background: var(--edge-color);
+  opacity: 0.35;
 }
 
 .auth-label {
-  margin: 0.7rem 0 0.35rem;
-  font-size: 0.78rem;
+  margin: 0.9rem 0 0.4rem;
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
   color: var(--text-secondary);
+}
+
+/* Errors and notices are stickers too, so they read at a glance. */
+.auth-error,
+.auth-notice {
+  margin: 1rem 0 0;
+  padding: 0.55rem 0.8rem;
+  border: 2px solid var(--edge-color);
+  border-radius: 12px;
+  box-shadow: 3px 3px 0 var(--shadow-ink);
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: var(--sticker-fg);
 }
 
 .auth-error {
-  margin: 0.8rem 0 0;
-  font-size: 0.8rem;
-  color: #c0392b;
+  background: var(--berry);
+  transform: rotate(-0.8deg);
 }
 
 .auth-notice {
-  margin: 0.8rem 0 0;
-  font-size: 0.8rem;
-  color: var(--text-secondary);
+  background: var(--mint);
+  transform: rotate(0.8deg);
 }
 
 .auth-submit {
   width: 100%;
-  margin-top: 1.2rem;
+  margin-top: 1.4rem;
+  padding-block: 0.62rem;
+  font-size: 0.92rem;
 }
 
 .auth-toggle {
-  margin-top: 0.9rem;
-  font-size: 0.8rem;
-  color: var(--accent);
+  margin-top: 1.1rem;
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-secondary);
   text-align: center;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+  text-decoration-color: var(--honey);
+  transition: text-decoration-color var(--transition), color var(--transition);
 }
 
 .auth-toggle:hover {
-  text-decoration: underline;
-}
-
-.auth-screen {
-  position: relative;
+  color: var(--text-primary);
+  text-decoration-color: var(--edge-color);
 }
 
 .auth-back {
   position: absolute;
-  top: 1.1rem;
-  left: 1.2rem;
+  top: 1.2rem;
+  left: 1.3rem;
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
-  padding: 0.4rem 0.65rem;
-  border-radius: 7px;
-  font-size: 0.82rem;
-  color: var(--text-secondary);
-  transition: background var(--transition), color var(--transition);
+  gap: 0.4rem;
+  padding: 0.42rem 0.85rem;
+  border: 2px solid var(--edge-color);
+  border-radius: 999px;
+  background: var(--surface-raised);
+  box-shadow: 3px 3px 0 var(--shadow-ink);
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  transform: rotate(-2deg);
+  transition: transform var(--transition), box-shadow var(--transition);
 }
 
 .auth-back:hover {
-  background: var(--surface-hover);
-  color: var(--text-primary);
+  transform: rotate(-2deg) translate(-1px, -1px);
+  box-shadow: 5px 5px 0 var(--shadow-ink);
+}
+
+.auth-back:active {
+  transform: rotate(-2deg) translate(2px, 2px);
+  box-shadow: 1px 1px 0 var(--shadow-ink);
 }
 
 /* -------------------------------------------------------------- landing */
@@ -993,17 +1228,12 @@ button.disclosure:hover {
    the local tokens are fixed (no dark variant) — it's a brand moment. */
 
 .lp {
-  --paper: #fdf3e3;
-  --paper-2: #fffaf1;
-  --ink: #171310;
+  /* The palette itself comes from :root — those constants are theme-independent,
+     so the landing keeps its daylight look even when the app is in dark mode.
+     Only the landing's own heavier weights are local. */
   --ink-70: rgba(23, 19, 16, 0.72);
   --ink-55: rgba(23, 19, 16, 0.58);
-  --honey: #ffc233;
-  --berry: #ff6b5b;
-  --mint: #5fdfa6;
   --mint-ink: #10704a;
-  --sky: #85c7ff;
-  --grape: #c5a8ff;
 
   --edge: 3px;
   --sh-sm: 4px 4px 0 var(--ink);
@@ -2102,9 +2332,10 @@ button.disclosure:hover {
 
 .shortcut-group h3 {
   margin: 0 0 0.5rem;
-  font-size: 0.7rem;
-  font-weight: 650;
-  letter-spacing: 0.06em;
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--text-tertiary);
 }
@@ -2123,12 +2354,15 @@ button.disclosure:hover {
 }
 
 .shortcut-row kbd {
-  font-family: var(--font-ui);
-  font-size: 0.8rem;
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 600;
   color: var(--text-primary);
-  background: var(--surface-hover);
-  border-radius: 5px;
-  padding: 0.1rem 0.4rem;
+  background: var(--surface);
+  border: 2px solid var(--edge-color);
+  border-radius: 7px;
+  box-shadow: 2px 2px 0 var(--shadow-ink);
+  padding: 0.1rem 0.45rem;
   white-space: nowrap;
 }
 
@@ -2142,12 +2376,14 @@ button.disclosure:hover {
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  padding: 0.6rem 0.85rem;
-  border-radius: 10px;
+  padding: 0.6rem 0.95rem;
+  border-radius: 12px;
   background: var(--surface-raised);
-  border: 1px solid var(--rule);
+  border: 2px solid var(--edge-color);
   box-shadow: var(--shadow-pop);
-  font-size: 0.83rem;
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  font-weight: 600;
   animation: rise 180ms cubic-bezier(0.32, 0.72, 0, 1);
 }
 

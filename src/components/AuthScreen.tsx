@@ -71,6 +71,12 @@ export function AuthScreen({
 
   return (
     <div className="auth-screen">
+      <div className="auth-paper" aria-hidden="true" />
+      <div className="auth-blobs" aria-hidden="true">
+        <span className="auth-blob auth-blob-a" />
+        <span className="auth-blob auth-blob-b" />
+      </div>
+
       {onBack ? (
         <button type="button" className="auth-back" onClick={onBack}>
           <BackIcon size={15} />
@@ -79,9 +85,14 @@ export function AuthScreen({
       ) : null}
       <form className="auth-card" onSubmit={onSubmit}>
         <div className="auth-brand">
-          <BearMark size={28} />
+          <span className="auth-brand-mark">
+            <BearMark size={26} />
+          </span>
           <h1>Bear</h1>
         </div>
+        <p className="auth-tagline">
+          {mode === 'signIn' ? 'Welcome back to the den.' : 'Grab a corner of the den.'}
+        </p>
 
         <button type="button" className="button auth-google" onClick={onGoogle}>
           <GoogleGlyph />
