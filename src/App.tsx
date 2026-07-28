@@ -5,7 +5,8 @@ import { NoteList } from './components/NoteList'
 import { EditorPane } from './components/EditorPane'
 import { ShortcutsSheet } from './components/ShortcutsSheet'
 import { Toast } from './components/Toast'
-import { AuthScreen } from './components/AuthScreen'
+import { AuthScreen, type AuthMode } from './components/AuthScreen'
+import { LandingScreen } from './components/LandingScreen'
 import { useStore } from './store/useStore'
 import { useAuthStore } from './store/useAuthStore'
 import { useVisibleNotes } from './hooks/useVisibleNotes'
@@ -74,8 +75,24 @@ export function App() {
 
   const authStatus = useAuthStore((state) => state.status)
   const notesReady = useNotesSync()
+  const [entry, setEntry] = useState<'landing' | 'auth'>('landing')
+  const [authMode, setAuthMode] = useState<AuthMode>('signUp')
 
-  if (authStatus !== 'signedIn') return <AuthScreen />
+  if (authStatus !== 'signedIn') {
+    if (entry === 'landing') {
+      return (
+        <LandingScreen
+          onLaunch={(mode) => {
+            setAuthMode(mode)
+            setEntry('auth')
+          }}
+        />
+      )
+    }
+    return (
+      <AuthScreen key={authMode} initialMode={authMode} onBack={() => setEntry('landing')} />
+    )
+  }
   if (!notesReady) return null
 
   return <AppShell />

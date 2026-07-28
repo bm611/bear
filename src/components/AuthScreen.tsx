@@ -1,8 +1,8 @@
 import { useState, type FormEvent } from 'react'
 import { supabase } from '../lib/supabaseClient'
-import { BearMark } from './Icons'
+import { BackIcon, BearMark } from './Icons'
 
-type Mode = 'signIn' | 'signUp'
+export type AuthMode = 'signIn' | 'signUp'
 
 function GoogleGlyph() {
   return (
@@ -27,8 +27,14 @@ function GoogleGlyph() {
   )
 }
 
-export function AuthScreen() {
-  const [mode, setMode] = useState<Mode>('signIn')
+export function AuthScreen({
+  initialMode = 'signIn',
+  onBack,
+}: {
+  initialMode?: AuthMode
+  onBack?: () => void
+}) {
+  const [mode, setMode] = useState<AuthMode>(initialMode)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [pending, setPending] = useState(false)
@@ -65,6 +71,12 @@ export function AuthScreen() {
 
   return (
     <div className="auth-screen">
+      {onBack ? (
+        <button type="button" className="auth-back" onClick={onBack}>
+          <BackIcon size={15} />
+          Back
+        </button>
+      ) : null}
       <form className="auth-card" onSubmit={onSubmit}>
         <div className="auth-brand">
           <BearMark size={28} />

@@ -7,3 +7,5 @@
 - Prefers subtle/low-contrast selection highlighting (tinted accent wash) over solid accent fills — finds high-contrast selected states distracting. Confidence: 0.9
 - Dislikes ambiguous/duplicated UI controls (e.g., two identical icons for different actions) — prefers visually distinct, clearly differentiated controls. Confidence: 0.8
 - Prefers conventional toolbar toggle buttons over novel/edge-based controls (e.g., pane-border chevron rails) for panel management — rejected chevron collapse UX and asked to revert to original toolbar toggles. Confidence: 0.9
+- Stack: uses Supabase for auth and database, deploys web apps to Netlify. Confidence: 0.7
+- Wants distinctive, non-generic visual design — explicitly asks for pages to look "beautiful" and "unique" rather than boilerplate/templates. Confidence: 0.6

@@ -3,7 +3,17 @@
     "allow": [
       "Shell(npm:*)",
       "Shell(npx vitest run src/lib/storage.test.ts 2 >& 1)",
-      "Shell(git:*)"
+      "Shell(git:*)",
+      "Shell(grep:*)",
+      "Shell(find:*)",
+      "Shell(rm:*)",
+      "Shell(agent-browser:*)",
+      "Shell(sleep:*)",
+      "Shell(curl -s http://localhost:5173/)",
+      "Shell(npx -y agent-browser --version 2 >& 1)",
+      "Shell(npx -y agent-browser open http://localhost:5175/)",
+      "Shell(npx -y agent-browser wait 2500)",
+      "Shell(npx -y agent-browser screenshot /private/tmp/commandcode-501/-Users-broxdeez-Documents-Projects-WEB-DEV-bear/8838552f-a7ab-4bd6-8ed9-46ab7bb0692a/scratchpad/landing-light.png)"
     ],
     "deny": [],
     "defaultMode": "default"
