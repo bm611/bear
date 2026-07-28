@@ -2566,6 +2566,17 @@ button.disclosure:hover {
     padding-right: 1.1rem;
   }
 
+  /* Hide the editor's scrollbar on phones: the 10px track eats the narrow
+     column, and it lights up on every keystroke via the focus-within rule.
+     Touch scrolling needs no chrome. List and sidebar keep theirs. */
+  .editor-host .cm-scroller {
+    scrollbar-width: none;
+  }
+
+  .editor-host .cm-scroller::-webkit-scrollbar {
+    display: none;
+  }
+
   .editor-toolbar {
     padding-inline: 0.5rem;
   }
