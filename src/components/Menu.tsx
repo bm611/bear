@@ -1,4 +1,7 @@
-import { useEffect, useRef, type ReactNode } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react'
+
+/** Breathing room kept between a menu and the window edge. */
+const VIEWPORT_MARGIN = 8
 
 interface MenuProps {
   onClose: () => void
@@ -31,6 +34,29 @@ export function Menu({
   const previouslyFocused = useRef<HTMLElement | null>(null)
   const restoreFocusRef = useRef(restoreFocus)
   restoreFocusRef.current = restoreFocus
+  const [left, setLeft] = useState<number | null>(null)
+
+  /**
+   * `align` only says which way the menu prefers to open. A button sitting
+   * near a window edge — the formatting overflow on a phone, say — would still
+   * hang off it, so the menu measures itself once and slides back into view.
+   * Corrected through `left` rather than a transform, which the open animation
+   * would override for its first frames.
+   */
+  useLayoutEffect(() => {
+    const menu = ref.current
+    const anchor = menu?.offsetParent
+    if (!menu || !anchor) return
+
+    const rect = menu.getBoundingClientRect()
+    let shift = 0
+    const overflowRight = rect.right + VIEWPORT_MARGIN - window.innerWidth
+    if (overflowRight > 0) shift = -overflowRight
+    if (rect.left + shift < VIEWPORT_MARGIN) shift = VIEWPORT_MARGIN - rect.left
+    if (shift === 0) return
+
+    setLeft(rect.left + shift - anchor.getBoundingClientRect().left)
+  }, [])
 
   useEffect(() => {
     previouslyFocused.current = document.activeElement as HTMLElement | null
@@ -86,7 +112,14 @@ export function Menu({
   }, [])
 
   return (
-    <div className="menu" data-align={align} style={style} role="menu" aria-label={label} ref={ref}>
+    <div
+      className="menu"
+      data-align={align}
+      style={left === null ? style : { ...style, left, right: 'auto' }}
+      role="menu"
+      aria-label={label}
+      ref={ref}
+    >
       {children}
     </div>
   )

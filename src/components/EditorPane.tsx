@@ -342,9 +342,9 @@ export function EditorPane({ note, viewRef, onBack, onTagNavigate }: EditorPaneP
                 {overflowOpen ? (
                   <Menu
                     label="More formatting"
-                    // Right-aligned: this menu only exists in a narrow pane,
-                    // where opening leftward is what keeps it on screen.
-                    align="right"
+                    // The button sits in the left half of the toolbar, so
+                    // opening rightward is the direction with room in it.
+                    align="left"
                     restoreFocus={false}
                     onClose={() => setOverflowOpen(false)}
                     style={{ top: '2.3rem' }}
