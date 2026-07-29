@@ -279,3 +279,63 @@ export const toggleItalic = toggleWrap('*')
 export const toggleStrikethrough = toggleWrap('~~')
 export const toggleHighlight = toggleWrap('==')
 export const toggleInlineCode = toggleWrap('`')
+
+/** Which formatting the caret currently sits in, for the toolbar to reflect. */
+export interface ActiveFormats {
+  /** Heading level shared by every selected line, or null when there is none. */
+  heading: number | null
+  bold: boolean
+  italic: boolean
+  todo: boolean
+  bullet: boolean
+  quote: boolean
+}
+
+export const NO_FORMATS: ActiveFormats = {
+  heading: null,
+  bold: false,
+  italic: false,
+  todo: false,
+  bullet: false,
+  quote: false,
+}
+
+/** True when every range already sits between the given delimiters. */
+function isWrapped(state: EditorState, marker: string, endMarker = marker): boolean {
+  return state.selection.ranges.every((range) => {
+    const before = state.sliceDoc(Math.max(0, range.from - marker.length), range.from)
+    const after = state.sliceDoc(range.to, Math.min(state.doc.length, range.to + endMarker.length))
+    return before === marker && after === endMarker
+  })
+}
+
+/**
+ * What the toolbar should light up for the current selection. Each test
+ * mirrors the matching command's own "already applied, so strip it" branch, so
+ * a lit button is a promise that pressing it takes the formatting back off.
+ */
+export function activeFormats(state: EditorState): ActiveFormats {
+  const lines = selectedLines(state)
+  const everyLine = (test: RegExp) =>
+    lines.length > 0 && lines.every((line) => test.test(line.text))
+
+  const levels = lines.map((line) => HEADING_PREFIX.exec(line.text)?.[2].length ?? 0)
+  const heading =
+    levels.length > 0 && levels[0] > 0 && levels.every((level) => level === levels[0])
+      ? levels[0]
+      : null
+
+  const bold = isWrapped(state, '**')
+  const todo = everyLine(TODO_PREFIX)
+  return {
+    heading,
+    bold,
+    // The star either side of `**text**` belongs to the bold pair, not italics.
+    italic: !bold && isWrapped(state, '*'),
+    todo,
+    // A todo line opens with `- `, so it satisfies BULLET_PREFIX too. Only the
+    // more specific of the two claims the highlight.
+    bullet: !todo && everyLine(BULLET_PREFIX),
+    quote: everyLine(QUOTE_PREFIX),
+  }
+}

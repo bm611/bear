@@ -5,6 +5,11 @@ interface MenuProps {
   align?: 'left' | 'right'
   style?: React.CSSProperties
   label: string
+  /**
+   * Whether closing hands focus back to whatever opened the menu. Turn it off
+   * when the chosen item puts the caret somewhere better, such as the editor.
+   */
+  restoreFocus?: boolean
   children: ReactNode
 }
 
@@ -14,9 +19,18 @@ function menuItems(root: HTMLElement | null): HTMLButtonElement[] {
 }
 
 /** A lightweight popover: closes on outside click, Escape or scroll-away. */
-export function Menu({ onClose, align = 'right', style, label, children }: MenuProps) {
+export function Menu({
+  onClose,
+  align = 'right',
+  style,
+  label,
+  restoreFocus = true,
+  children,
+}: MenuProps) {
   const ref = useRef<HTMLDivElement>(null)
   const previouslyFocused = useRef<HTMLElement | null>(null)
+  const restoreFocusRef = useRef(restoreFocus)
+  restoreFocusRef.current = restoreFocus
 
   useEffect(() => {
     previouslyFocused.current = document.activeElement as HTMLElement | null
@@ -63,7 +77,7 @@ export function Menu({ onClose, align = 'right', style, label, children }: MenuP
     return () => {
       document.removeEventListener('pointerdown', onPointerDown, true)
       document.removeEventListener('keydown', onKeyDown, true)
-      previouslyFocused.current?.focus?.()
+      if (restoreFocusRef.current) previouslyFocused.current?.focus?.()
     }
   }, [onClose])
 

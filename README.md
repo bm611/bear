@@ -26,7 +26,10 @@ editable plain text. A heading's `#` is the one marker that folds away
 completely: it comes back the moment the cursor lands on that line, so the
 heading still reads as a heading the rest of the time. Built on CodeMirror 6
 with a custom highlight style, live todo checkboxes and inline tag pills. A
-formatting toolbar covers the common shortcuts when muscle memory fails.
+formatting toolbar covers the common shortcuts when muscle memory fails. Its
+buttons light up for whatever the caret is sitting in — the heading control
+says which level — and as the pane narrows it hands its rarer controls to a
+menu rather than letting them scroll out of reach.
 
 **Hashtags, not folders.** Write `#work` anywhere in a note and it appears in
 the sidebar. Tags nest with a slash (`#work/projects/slate`), and parent tags
