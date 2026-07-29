@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, type RefObject } from 'react'
 import { EditorSelection, EditorState, type Extension } from '@codemirror/state'
 import { EditorView } from '@codemirror/view'
+import { activeFormats, type ActiveFormats } from '../editor/commands'
 import { slateSetup, readOnlyCompartment } from '../editor/setup'
 import type { TagSuggestion } from '../editor/tagComplete'
 import { useStore } from '../store/useStore'
@@ -22,6 +23,8 @@ interface EditorProps {
   viewRef: RefObject<EditorView | null>
   /** Fired after a hashtag pill is clicked (e.g. to show the filtered list on mobile). */
   onTagNavigate?: () => void
+  /** Reports the formatting under the caret so the toolbar can reflect it. */
+  onFormatsChange?: (formats: ActiveFormats) => void
 }
 
 function initialSelection(text: string): EditorSelection | undefined {
@@ -34,7 +37,14 @@ function initialSelection(text: string): EditorSelection | undefined {
  * pane; switching notes swaps the state so undo history never leaks across
  * notes.
  */
-export function Editor({ noteId, text, readOnly, viewRef, onTagNavigate }: EditorProps) {
+export function Editor({
+  noteId,
+  text,
+  readOnly,
+  viewRef,
+  onTagNavigate,
+  onFormatsChange,
+}: EditorProps) {
   const hostRef = useRef<HTMLDivElement>(null)
   const noteIdRef = useRef(noteId)
   const extensionsRef = useRef<Extension[] | null>(null)
@@ -43,6 +53,8 @@ export function Editor({ noteId, text, readOnly, viewRef, onTagNavigate }: Edito
   const readOnlyRef = useRef(readOnly)
   const onTagNavigateRef = useRef(onTagNavigate)
   onTagNavigateRef.current = onTagNavigate
+  const onFormatsChangeRef = useRef(onFormatsChange)
+  onFormatsChangeRef.current = onFormatsChange
 
   const updateNoteText = useStore((state) => state.updateNoteText)
   const setFilter = useStore((state) => state.setFilter)
@@ -73,6 +85,7 @@ export function Editor({ noteId, text, readOnly, viewRef, onTagNavigate }: Edito
         setFilter({ kind: 'tag', tag })
         onTagNavigateRef.current?.()
       },
+      onFormatsChange: (formats) => onFormatsChangeRef.current?.(formats),
       getTags,
       readOnly: readOnlyRef.current,
     })
@@ -83,6 +96,8 @@ export function Editor({ noteId, text, readOnly, viewRef, onTagNavigate }: Edito
       state: EditorState.create({ doc: text, selection: initialSelection(text), extensions }),
     })
     viewRef.current = view
+    // No update has run yet, so seed the toolbar from the starting state.
+    onFormatsChangeRef.current?.(activeFormats(view.state))
 
     return () => {
       view.destroy()

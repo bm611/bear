@@ -13,6 +13,8 @@ import {
   rectangularSelection,
 } from '@codemirror/view'
 import {
+  activeFormats,
+  type ActiveFormats,
   insertCodeBlock,
   insertHorizontalRule,
   insertLink,
@@ -82,6 +84,8 @@ const formattingKeymap = keymap.of([
 export interface EditorSetupOptions {
   onChange: (text: string) => void
   onTagClick: (tag: string) => void
+  /** Fires whenever the caret moves or the text changes, for the toolbar. */
+  onFormatsChange?: (formats: ActiveFormats) => void
   getTags: () => TagSuggestion[]
   readOnly: boolean
 }
@@ -109,6 +113,14 @@ export function slateSetup(options: EditorSetupOptions): Extension[] {
     readOnlyCompartment.of(EditorState.readOnly.of(options.readOnly)),
     EditorView.updateListener.of((update) => {
       if (update.docChanged) options.onChange(update.state.doc.toString())
+      // Compared by identity rather than through `docChanged`/`selectionSet`,
+      // so swapping in another note's state counts as a change too.
+      if (
+        update.startState.doc !== update.state.doc ||
+        update.startState.selection !== update.state.selection
+      ) {
+        options.onFormatsChange?.(activeFormats(update.state))
+      }
     }),
   ]
 }

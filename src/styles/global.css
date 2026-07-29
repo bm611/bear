@@ -757,16 +757,18 @@ button.disclosure:hover {
   background: var(--surface);
 }
 
+/* The controls sit in outlined clusters — panes, formatting, this note — so
+   the row reads as three tools instead of a dozen loose buttons. Nothing
+   scrolls sideways: the formatting cluster sheds its rarer buttons into an
+   overflow menu as the pane narrows (see FORMAT_ACTIONS' tiers). */
 .editor-toolbar {
   display: flex;
   align-items: center;
-  gap: 0.15rem;
+  gap: 0.4rem;
   padding: 0.55rem 0.9rem;
   min-height: 3rem;
   border-bottom: 1px solid transparent;
   transition: border-color var(--transition);
-  overflow-x: auto;
-  scrollbar-width: thin;
 }
 
 .editor-toolbar[data-scrolled='true'] {
@@ -774,8 +776,22 @@ button.disclosure:hover {
 }
 
 .editor-toolbar > .icon-button,
-.editor-toolbar > .menu-anchor,
-.editor-toolbar > .toolbar-divider {
+.editor-toolbar > .toolbar-group {
+  flex-shrink: 0;
+}
+
+.toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 0.1rem;
+  padding: 0.15rem;
+  border: 2px solid var(--rule);
+  border-radius: 11px;
+  background: var(--surface-raised);
+}
+
+.toolbar-group > .icon-button,
+.toolbar-group > .menu-anchor {
   flex-shrink: 0;
 }
 
@@ -784,11 +800,32 @@ button.disclosure:hover {
   min-width: 0.5rem;
 }
 
-.toolbar-divider {
-  width: 1px;
-  height: 1.1rem;
-  margin: 0 0.35rem;
-  background: var(--rule);
+/* Heading is the one control carrying a value rather than a state, so it says
+   which level the caret is on instead of leaving it to be guessed. */
+.toolbar-heading {
+  width: auto;
+  gap: 0.05rem;
+  padding: 0 0.25rem 0 0.4rem;
+}
+
+.toolbar-heading-level {
+  min-width: 1.05rem;
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  text-align: left;
+}
+
+.toolbar-heading-caret {
+  transform: rotate(90deg);
+  opacity: 0.7;
+}
+
+.toolbar-heading[data-active='true'] {
+  border-color: var(--edge-color);
+  background: var(--honey);
+  color: var(--sticker-fg);
 }
 
 .editor-host {
@@ -892,8 +929,13 @@ button.disclosure:hover {
 
 .menu-item[aria-checked='true']::after {
   content: '✓';
-  margin-left: auto;
+  margin-left: 0.5rem;
   font-size: 0.8em;
+}
+
+/* Without a shortcut to sit beside, the tick takes the right edge itself. */
+.menu-item[aria-checked='true']:not(:has(.menu-shortcut))::after {
+  margin-left: auto;
 }
 
 .menu-shortcut {

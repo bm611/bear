@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { EditorSelection, EditorState } from '@codemirror/state'
 import type { Command, EditorView } from '@codemirror/view'
 import {
+  activeFormats,
   insertCodeBlock,
   insertHorizontalRule,
   insertLink,
@@ -235,5 +236,57 @@ describe('insertCodeBlock', () => {
     const h = at('«const value = 1»')
     expect(h.run(insertCodeBlock)).toBe('```\nconst value = 1\n```')
     expect(h.selection.head).toBe(4)
+  })
+})
+
+describe('activeFormats', () => {
+  const formats = (doc: string) => activeFormats(at(doc).view.state)
+
+  it('reports nothing on a plain line', () => {
+    expect(formats('Just some prose.|')).toEqual({
+      heading: null,
+      bold: false,
+      italic: false,
+      todo: false,
+      bullet: false,
+      quote: false,
+    })
+  })
+
+  it('reads the heading level off the cursor line', () => {
+    expect(formats('### Section|').heading).toBe(3)
+    expect(formats('#hashtag not a heading|').heading).toBe(null)
+  })
+
+  it('reports no heading when the selected lines disagree', () => {
+    expect(formats('«# One\n## Two»').heading).toBe(null)
+    expect(formats('«## One\n## Two»').heading).toBe(2)
+  })
+
+  it('reports bold and italics from the delimiters around the selection', () => {
+    expect(formats('a **«bold»** b').bold).toBe(true)
+    expect(formats('a *«italic»* b').italic).toBe(true)
+    expect(formats('a «loose» b').bold).toBe(false)
+  })
+
+  it('does not read the inner star of a bold pair as italics', () => {
+    expect(formats('**«bold»**').italic).toBe(false)
+  })
+
+  it('claims a todo line as a todo rather than a bullet', () => {
+    expect(formats('- [ ] Task|')).toMatchObject({ todo: true, bullet: false })
+    expect(formats('- Item|')).toMatchObject({ todo: false, bullet: true })
+  })
+
+  it('only reports a line format when every selected line has it', () => {
+    expect(formats('«> One\n> Two»').quote).toBe(true)
+    expect(formats('«> One\nTwo»').quote).toBe(false)
+  })
+
+  it('promises that a reported format is the one the command strips', () => {
+    const h = at('«> Quoted»')
+    expect(activeFormats(h.view.state).quote).toBe(true)
+    expect(h.run(toggleQuote)).toBe('Quoted')
+    expect(activeFormats(h.view.state).quote).toBe(false)
   })
 })
