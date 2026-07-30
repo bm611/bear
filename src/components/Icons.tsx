@@ -30,7 +30,7 @@ import {
   SidebarRight01Icon,
   SourceCodeIcon,
   Sun03Icon,
-  Table01Icon,
+  LayoutTable01Icon,
   Tag01Icon,
   TextBoldIcon,
   TextItalicIcon,
@@ -119,7 +119,7 @@ export const QuoteIcon = glyph(LeftToRightBlockQuoteIcon, 'QuoteIcon')
 export const BulletIcon = glyph(LeftToRightListBulletIcon, 'BulletIcon')
 export const HeadingIcon = glyph(Heading02Icon, 'HeadingIcon')
 export const LinkIcon = glyph(Link02Icon, 'LinkIcon')
-export const TableIcon = glyph(Table01Icon, 'TableIcon')
+export const TableIcon = glyph(LayoutTable01Icon, 'TableIcon')
 
 // Landing & navigation
 export const SyncIcon = glyph(RefreshIcon, 'SyncIcon')

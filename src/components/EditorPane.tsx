@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { EditorSelection } from '@codemirror/state'
 import type { EditorView } from '@codemirror/view'
 import { useStore } from '../store/useStore'
 import { Editor } from './Editor'
@@ -170,6 +171,8 @@ export function EditorPane({ note, viewRef, onBack, onTagNavigate }: EditorPaneP
   const [formats, setFormats] = useState<ActiveFormats>(NO_FORMATS)
 
   const toolbarRef = useRef<HTMLDivElement>(null)
+  /** Toolbar clicks steal focus; stash the selection so commands still see it. */
+  const pendingSelection = useRef<EditorSelection | null>(null)
   const tier = toolbarTier(useElementWidth(toolbarRef))
 
   const trashed = note?.trashedAt !== null && note !== null
@@ -209,15 +212,25 @@ export function EditorPane({ note, viewRef, onBack, onTagNavigate }: EditorPaneP
   const inlineActions = FORMAT_ACTIONS.filter((action) => tier >= action.tier)
   const overflowActions = FORMAT_ACTIONS.filter((action) => tier < action.tier)
 
+  const stashSelection = () => {
+    const view = viewRef.current
+    if (view) pendingSelection.current = view.state.selection
+  }
+
   const run = (command: (view: EditorView) => boolean) => () => {
     const view = viewRef.current
     if (!view || readOnly) return
+    const saved = pendingSelection.current
+    pendingSelection.current = null
+    view.focus()
+    if (saved) view.dispatch({ selection: saved })
     command(view)
     view.focus()
   }
 
   const keepEditorFocus = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault()
+    stashSelection()
   }
 
   const exportMarkdown = () => {
@@ -269,6 +282,7 @@ export function EditorPane({ note, viewRef, onBack, onTagNavigate }: EditorPaneP
                 }
                 aria-expanded={headingOpen}
                 title="Heading level"
+                onMouseDown={keepEditorFocus}
                 onClick={() => setHeadingOpen((open) => !open)}
               >
                 <span className="toolbar-heading-level">
@@ -324,6 +338,7 @@ export function EditorPane({ note, viewRef, onBack, onTagNavigate }: EditorPaneP
                   aria-label="More formatting"
                   aria-expanded={overflowOpen}
                   title="More formatting"
+                  onMouseDown={keepEditorFocus}
                   onClick={() => setOverflowOpen((open) => !open)}
                 >
                   <MoreIcon />

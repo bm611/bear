@@ -1,0 +1,128 @@
+const STORAGE_KEY = 'slate.library.v1';
+/** The key used before the rename. Read once, then retired. */
+const LEGACY_STORAGE_KEY = 'bear.library.v1';
+/**
+ * 2 moved the library out of the pinned sidebar and into the note list title.
+ * The `sidebarVisible` flag that tracked it is retired — payloads that still
+ * carry one simply have it ignored.
+ */
+const SCHEMA_VERSION = 2;
+export const defaultPreferences = {
+    theme: 'system',
+    font: 'sans',
+    fontSize: 17,
+    sort: 'modified',
+    listVisible: true,
+};
+function isRecord(value) {
+    return typeof value === 'object' && value !== null;
+}
+function coerceNote(value) {
+    if (!isRecord(value))
+        return null;
+    const { id, text, createdAt, updatedAt } = value;
+    if (typeof id !== 'string' || typeof text !== 'string')
+        return null;
+    const created = typeof createdAt === 'number' ? createdAt : Date.now();
+    return {
+        id,
+        text,
+        createdAt: created,
+        updatedAt: typeof updatedAt === 'number' ? updatedAt : created,
+        pinned: value.pinned === true,
+        archived: value.archived === true,
+        trashedAt: typeof value.trashedAt === 'number' ? value.trashedAt : null,
+    };
+}
+function coerceFilter(value) {
+    if (!isRecord(value) || typeof value.kind !== 'string')
+        return { kind: 'all' };
+    if (value.kind === 'tag') {
+        return typeof value.tag === 'string' && value.tag ? { kind: 'tag', tag: value.tag } : { kind: 'all' };
+    }
+    const kinds = ['all', 'untagged', 'todo', 'today', 'archive', 'trash'];
+    const kind = kinds.find((candidate) => candidate === value.kind);
+    return kind ? { kind } : { kind: 'all' };
+}
+function coercePreferences(value) {
+    if (!isRecord(value))
+        return { ...defaultPreferences };
+    const themes = ['light', 'dark', 'system'];
+    const fonts = ['sans', 'inter', 'system', 'mono'];
+    const sorts = ['modified', 'created', 'title'];
+    const size = typeof value.fontSize === 'number' ? value.fontSize : defaultPreferences.fontSize;
+    const font = fonts.find((f) => f === value.font) ??
+        (value.font === 'serif' ? 'sans' : defaultPreferences.font);
+    return {
+        theme: themes.find((t) => t === value.theme) ?? defaultPreferences.theme,
+        font,
+        fontSize: Math.min(24, Math.max(13, Math.round(size))),
+        sort: sorts.find((s) => s === value.sort) ?? defaultPreferences.sort,
+        listVisible: value.listVisible !== false,
+    };
+}
+/**
+ * Reads the current key, falling back to the pre-rename one and moving the
+ * value across so the next write lands under a single key.
+ */
+function readRaw() {
+    try {
+        const current = localStorage.getItem(STORAGE_KEY);
+        if (current)
+            return current;
+        const legacy = localStorage.getItem(LEGACY_STORAGE_KEY);
+        if (!legacy)
+            return null;
+        localStorage.setItem(STORAGE_KEY, legacy);
+        localStorage.removeItem(LEGACY_STORAGE_KEY);
+        return legacy;
+    }
+    catch {
+        return null;
+    }
+}
+export function loadLibrary() {
+    if (typeof localStorage === 'undefined')
+        return null;
+    const raw = readRaw();
+    if (!raw)
+        return null;
+    try {
+        const parsed = JSON.parse(raw);
+        if (!isRecord(parsed))
+            return null;
+        return {
+            version: SCHEMA_VERSION,
+            preferences: coercePreferences(parsed.preferences),
+            filter: coerceFilter(parsed.filter),
+            selectedId: typeof parsed.selectedId === 'string' ? parsed.selectedId : null,
+        };
+    }
+    catch {
+        return null;
+    }
+}
+export function saveLibrary(library) {
+    if (typeof localStorage === 'undefined')
+        return;
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({ version: SCHEMA_VERSION, ...library }));
+    }
+    catch {
+        // Quota exceeded or private-mode storage — the session stays usable in memory.
+    }
+}
+export function exportLibrary(notes) {
+    return JSON.stringify({ version: SCHEMA_VERSION, exportedAt: Date.now(), notes }, null, 2);
+}
+/** Reads a `slate-notes.json` backup back into a list of notes. */
+export function parseLibraryFile(contents) {
+    const parsed = JSON.parse(contents);
+    const list = isRecord(parsed) && Array.isArray(parsed.notes) ? parsed.notes : parsed;
+    if (!Array.isArray(list))
+        throw new Error('Unrecognised backup file');
+    const notes = list.map(coerceNote).filter((note) => note !== null);
+    if (notes.length === 0)
+        throw new Error('No notes found in backup');
+    return notes;
+}

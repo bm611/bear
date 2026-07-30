@@ -58,12 +58,15 @@ function coerceFilter(value: unknown): Filter {
 function coercePreferences(value: unknown): Preferences {
   if (!isRecord(value)) return { ...defaultPreferences }
   const themes = ['light', 'dark', 'system'] as const
-  const fonts = ['sans', 'serif', 'mono'] as const
+  const fonts = ['sans', 'inter', 'system', 'mono'] as const
   const sorts = ['modified', 'created', 'title'] as const
   const size = typeof value.fontSize === 'number' ? value.fontSize : defaultPreferences.fontSize
+  const font =
+    fonts.find((f) => f === value.font) ??
+    (value.font === 'serif' ? 'sans' : defaultPreferences.font)
   return {
     theme: themes.find((t) => t === value.theme) ?? defaultPreferences.theme,
-    font: fonts.find((f) => f === value.font) ?? defaultPreferences.font,
+    font,
     fontSize: Math.min(24, Math.max(13, Math.round(size))),
     sort: sorts.find((s) => s === value.sort) ?? defaultPreferences.sort,
     listVisible: value.listVisible !== false,

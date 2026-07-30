@@ -196,22 +196,27 @@ export function setHeading(level: number): Command {
     )
 }
 
+const URL_RE = /^(?:[a-z][a-z0-9+.-]*:|www\.)[^\s]+$/i
+
 /** ⌘K — wrap the selection in a link, leaving the cursor in the URL slot. */
 export const insertLink: Command = (view) => {
+  if (!view.hasFocus) view.focus()
   const range = view.state.selection.main
   const text = view.state.sliceDoc(range.from, range.to)
-  const isUrl = /^[a-z][a-z0-9+.-]*:\/\/\S+$/i.test(text)
-  const insert = isUrl ? `[](${text})` : `[${text}](url)`
-  const cursor = isUrl ? range.from + 1 : range.from + text.length + 3
+  const isUrl = URL_RE.test(text.trim())
+  const url = isUrl ? text.trim() : 'url'
+  const insert = isUrl ? `[](${url})` : `[${text}](url)`
+  const urlFrom = isUrl ? range.from + 3 : range.from + text.length + 3
 
   view.dispatch({
     changes: { from: range.from, to: range.to, insert },
     selection: isUrl
-      ? EditorSelection.cursor(cursor)
-      : EditorSelection.range(cursor, cursor + 3),
+      ? EditorSelection.cursor(range.from + 1)
+      : EditorSelection.range(urlFrom, urlFrom + 3),
     scrollIntoView: true,
     userEvent: 'input.format',
   })
+  if (!view.hasFocus) view.focus()
   return true
 }
 

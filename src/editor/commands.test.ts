@@ -187,6 +187,12 @@ describe('insertLink', () => {
     expect(h.selection.head).toBe(1)
   })
 
+  it('recognises www urls', () => {
+    const h = at('«www.example.com»')
+    expect(h.run(insertLink)).toBe('[](www.example.com)')
+    expect(h.selection.head).toBe(1)
+  })
+
   it('inserts an empty link at the cursor', () => {
     const h = at('link here: |')
     expect(h.run(insertLink)).toBe('link here: [](url)')

@@ -20,7 +20,7 @@ export type Filter =
   | { kind: 'tag'; tag: string }
 
 export type ThemeMode = 'light' | 'dark' | 'system'
-export type EditorFont = 'sans' | 'serif' | 'mono'
+export type EditorFont = 'sans' | 'inter' | 'system' | 'mono'
 export type SortMode = 'modified' | 'created' | 'title'
 
 export interface Preferences {

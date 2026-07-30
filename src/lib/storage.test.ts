@@ -70,7 +70,7 @@ describe('loadLibrary', () => {
 
     const loaded = loadLibrary()
     expect(loaded?.preferences).not.toHaveProperty('sidebarVisible')
-    expect(loaded?.preferences.font).toBe('serif')
+    expect(loaded?.preferences.font).toBe('sans')
   })
 
   it('shows the note list when its preference was never stored', () => {

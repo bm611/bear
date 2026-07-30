@@ -16,7 +16,8 @@ import { hasMod } from './lib/platform'
 
 const FONT_STACKS = {
   sans: 'var(--font-ui)',
-  serif: 'var(--font-serif)',
+  inter: 'var(--font-inter)',
+  system: 'var(--font-system)',
   mono: 'var(--font-mono)',
 } as const
 
