@@ -10,6 +10,12 @@ interface MenuProps {
    * when the chosen item puts the caret somewhere better, such as the editor.
    */
   restoreFocus?: boolean
+  /**
+   * The control that opened the menu. Given one, a press on it is left alone so
+   * its own handler can toggle: closing here as well would reopen on the click
+   * that follows, and the menu would never dismiss.
+   */
+  triggerRef?: React.RefObject<HTMLElement | null>
   children: ReactNode
 }
 
@@ -25,6 +31,7 @@ export function Menu({
   style,
   label,
   restoreFocus = true,
+  triggerRef,
   children,
 }: MenuProps) {
   const ref = useRef<HTMLDivElement>(null)
@@ -36,7 +43,9 @@ export function Menu({
     previouslyFocused.current = document.activeElement as HTMLElement | null
 
     const onPointerDown = (event: PointerEvent) => {
-      if (!ref.current?.contains(event.target as Node)) onClose()
+      const target = event.target as Node
+      if (ref.current?.contains(target) || triggerRef?.current?.contains(target)) return
+      onClose()
     }
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
@@ -79,7 +88,7 @@ export function Menu({
       document.removeEventListener('keydown', onKeyDown, true)
       if (restoreFocusRef.current) previouslyFocused.current?.focus?.()
     }
-  }, [onClose])
+  }, [onClose, triggerRef])
 
   useEffect(() => {
     menuItems(ref.current)[0]?.focus()

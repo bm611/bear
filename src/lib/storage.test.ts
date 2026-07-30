@@ -60,6 +60,20 @@ describe('loadLibrary', () => {
     expect(localStorage.getItem(LEGACY_KEY)).toBeNull()
   })
 
+  it('keeps a pinned sidebar pinned', () => {
+    localStorage.setItem(KEY, JSON.stringify({ preferences: { sidebarVisible: true } }))
+    expect(loadLibrary()?.preferences.sidebarVisible).toBe(true)
+  })
+
+  it('leaves the sidebar unpinned when the preference was never stored', () => {
+    // The note list title carries the library instead, so an absent value must
+    // not read as "pinned" the way a missing `listVisible` reads as "shown".
+    localStorage.setItem(KEY, JSON.stringify({ preferences: { theme: 'dark' } }))
+    const loaded = loadLibrary()
+    expect(loaded?.preferences.sidebarVisible).toBe(false)
+    expect(loaded?.preferences.listVisible).toBe(true)
+  })
+
   it('prefers the current key when both are present', () => {
     localStorage.setItem(LEGACY_KEY, JSON.stringify({ preferences: { theme: 'dark' } }))
     localStorage.setItem(KEY, JSON.stringify({ preferences: { theme: 'light' } }))

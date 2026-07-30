@@ -6,8 +6,22 @@ import { listDate } from '../lib/date'
 import { mod } from '../lib/platform'
 import type { Filter, Note, SortMode } from '../lib/types'
 import { ConfirmDialog } from './Dialog'
+import { LibraryPanel } from './LibraryPanel'
 import { Menu, MenuItem, MenuLabel, MenuSeparator } from './Menu'
-import { CloseIcon, MenuIcon, MoreIcon, PinIcon, PlusIcon, SearchIcon, TodoIcon, TrashIcon } from './Icons'
+import { Popover } from './Popover'
+import { SettingsMenu } from './SettingsMenu'
+import {
+  ChevronDown,
+  CloseIcon,
+  MenuIcon,
+  MoreIcon,
+  PinIcon,
+  PlusIcon,
+  SearchIcon,
+  SettingsIcon,
+  TodoIcon,
+  TrashIcon,
+} from './Icons'
 
 function filterTitle(filter: Filter): string {
   switch (filter.kind) {
@@ -33,9 +47,21 @@ interface NoteListProps {
   onOpenNote?: () => void
   /** Provided only in the stacked layout, where the sidebar slides over. */
   onOpenSidebar?: () => void
+  /**
+   * Turns the title into the library trigger. Set when the sidebar is not pinned,
+   * so the tag tree stays one click away without holding a pane open for it.
+   */
+  libraryMenu?: boolean
+  onShowShortcuts?: () => void
 }
 
-export function NoteList({ searchRef, onOpenNote, onOpenSidebar }: NoteListProps) {
+export function NoteList({
+  searchRef,
+  onOpenNote,
+  onOpenSidebar,
+  libraryMenu,
+  onShowShortcuts,
+}: NoteListProps) {
   const filter = useStore((state) => state.filter)
   const query = useStore((state) => state.query)
   const selectedId = useStore((state) => state.selectedId)
@@ -47,8 +73,13 @@ export function NoteList({ searchRef, onOpenNote, onOpenSidebar }: NoteListProps
   const emptyTrash = useStore((state) => state.emptyTrash)
 
   const [menuOpen, setMenuOpen] = useState(false)
+  const [settingsOpen, setSettingsOpen] = useState(false)
+  const [libraryOpen, setLibraryOpen] = useState(false)
   const [confirmEmpty, setConfirmEmpty] = useState(false)
   const listRef = useRef<HTMLDivElement>(null)
+  const libraryTriggerRef = useRef<HTMLButtonElement>(null)
+  const settingsTriggerRef = useRef<HTMLButtonElement>(null)
+  const menuTriggerRef = useRef<HTMLButtonElement>(null)
 
   const visible = useVisibleNotes()
 
@@ -66,6 +97,11 @@ export function NoteList({ searchRef, onOpenNote, onOpenSidebar }: NoteListProps
 
   const title = filterTitle(filter)
 
+  const createNote = () => {
+    newNote()
+    onOpenNote?.()
+  }
+
   return (
     <section className="note-list" aria-label={`${title} notes`}>
       <div className="list-header">
@@ -75,16 +111,80 @@ export function NoteList({ searchRef, onOpenNote, onOpenSidebar }: NoteListProps
               <MenuIcon />
             </button>
           ) : null}
-          <h1 className="list-title" title={title}>
-            {title}
-          </h1>
+
+          {libraryMenu ? (
+            <div className="list-title-group menu-anchor">
+              <h1 className="list-title">
+                <button
+                  ref={libraryTriggerRef}
+                  type="button"
+                  className="list-title-trigger"
+                  aria-label={`${title} — browse library`}
+                  aria-expanded={libraryOpen}
+                  title={title}
+                  onClick={() => setLibraryOpen((open) => !open)}
+                >
+                  <span className="list-title-text">{title}</span>
+                  <ChevronDown size={14} />
+                </button>
+              </h1>
+
+              {libraryOpen ? (
+                <Popover
+                  className="library-popover"
+                  label="Library"
+                  triggerRef={libraryTriggerRef}
+                  onClose={() => setLibraryOpen(false)}
+                >
+                  <LibraryPanel variant="popover" onNavigate={() => setLibraryOpen(false)} />
+                </Popover>
+              ) : null}
+            </div>
+          ) : (
+            <h1 className="list-title" title={title}>
+              {title}
+            </h1>
+          )}
+
           <div className="list-title-actions menu-anchor">
+            {/* Without the sidebar pinned, its footer controls have no home. */}
+            {libraryMenu ? (
+              <>
+                <button
+                  ref={settingsTriggerRef}
+                  type="button"
+                  className="icon-button"
+                  aria-label="Settings"
+                  aria-expanded={settingsOpen}
+                  title="Settings"
+                  onClick={() => {
+                    setMenuOpen(false)
+                    setSettingsOpen((open) => !open)
+                  }}
+                >
+                  <SettingsIcon />
+                </button>
+                {settingsOpen ? (
+                  <SettingsMenu
+                    style={{ top: '2rem' }}
+                    align="right"
+                    triggerRef={settingsTriggerRef}
+                    onClose={() => setSettingsOpen(false)}
+                    onShowShortcuts={onShowShortcuts}
+                  />
+                ) : null}
+              </>
+            ) : null}
             <button
+              ref={menuTriggerRef}
               type="button"
               className="icon-button"
               aria-label="List options"
               aria-expanded={menuOpen}
-              onClick={() => setMenuOpen((open) => !open)}
+              onClick={() => {
+                setSettingsOpen(false)
+                setMenuOpen((open) => !open)
+              }}
             >
               <MoreIcon />
             </button>
@@ -93,16 +193,18 @@ export function NoteList({ searchRef, onOpenNote, onOpenSidebar }: NoteListProps
               className="icon-button"
               title={`New note (${mod('N')})`}
               aria-label="New note"
-              onClick={() => {
-                newNote()
-                onOpenNote?.()
-              }}
+              onClick={createNote}
             >
               <PlusIcon />
             </button>
 
             {menuOpen ? (
-              <Menu label="List options" onClose={() => setMenuOpen(false)} style={{ top: '2rem' }}>
+              <Menu
+                label="List options"
+                triggerRef={menuTriggerRef}
+                onClose={() => setMenuOpen(false)}
+                style={{ top: '2rem' }}
+              >
                 <MenuLabel>Sort by</MenuLabel>
                 {sortOptions.map(({ value, label }) => (
                   <MenuItem

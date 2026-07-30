@@ -10,7 +10,10 @@ export const defaultPreferences: Preferences = {
   font: 'sans',
   fontSize: 17,
   sort: 'modified',
-  sidebarVisible: true,
+  // The library starts unpinned: the note list title drops the same tag tree on
+  // demand, and the width goes to the editor instead. Anyone who prefers the pane
+  // pins it back with the sidebar shortcut, and that choice persists.
+  sidebarVisible: false,
   listVisible: true,
 }
 
@@ -62,7 +65,9 @@ function coercePreferences(value: unknown): Preferences {
     font: fonts.find((f) => f === value.font) ?? defaultPreferences.font,
     fontSize: Math.min(24, Math.max(13, Math.round(size))),
     sort: sorts.find((s) => s === value.sort) ?? defaultPreferences.sort,
-    sidebarVisible: value.sidebarVisible !== false,
+    // Existing readers have this stored either way, so they keep the layout they
+    // had; only a missing value falls through to the new default.
+    sidebarVisible: value.sidebarVisible === true,
     listVisible: value.listVisible !== false,
   }
 }

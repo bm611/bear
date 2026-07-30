@@ -10,7 +10,7 @@ const GROUPS: Array<{ title: string; rows: Array<[string, string]> }> = [
       ['Search', mod('F')],
       ['Previous note', combo(MOD, ALT, '↑')],
       ['Next note', combo(MOD, ALT, '↓')],
-      ['Toggle sidebar', mod('1')],
+      ['Pin / unpin library', mod('1')],
       ['Toggle note list', mod('2')],
       ['Pin / unpin', combo(MOD, SHIFT, 'P')],
       ['Move to trash', combo(MOD, BACKSPACE)],

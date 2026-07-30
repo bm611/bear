@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { Filter, TagNode } from '../lib/types'
 import { ChevronRight, MoreIcon, TagIcon, TrashIcon, PencilIcon } from './Icons'
 import { Menu, MenuItem, MenuSeparator } from './Menu'
@@ -40,6 +40,7 @@ function TagRow({ node, filter, onSelect, onRename, onDelete, depth = 0 }: TagRo
   const containsSelection = activePath.startsWith(node.path.toLowerCase() + '/')
   const [open, setOpen] = useState(containsSelection)
   const [menuOpen, setMenuOpen] = useState(false)
+  const menuTriggerRef = useRef<HTMLButtonElement>(null)
   const hasChildren = node.children.length > 0
 
   // Reveal the branch when a nested tag is selected from elsewhere.
@@ -84,6 +85,7 @@ function TagRow({ node, filter, onSelect, onRename, onDelete, depth = 0 }: TagRo
         </button>
 
         <button
+          ref={menuTriggerRef}
           type="button"
           className="icon-button tag-row-more"
           aria-label={`Actions for #${node.path}`}
@@ -98,6 +100,7 @@ function TagRow({ node, filter, onSelect, onRename, onDelete, depth = 0 }: TagRo
         <Menu
           align="right"
           label={`Actions for #${node.path}`}
+          triggerRef={menuTriggerRef}
           onClose={() => setMenuOpen(false)}
           style={{ top: '1.9rem' }}
         >

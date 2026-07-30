@@ -32,6 +32,13 @@ export interface Preferences {
   listVisible: boolean
 }
 
+/**
+ * A pending tag edit. It lives in the store rather than in the sidebar because
+ * the library popover closes the moment one of these opens, and the dialog has
+ * to outlive it.
+ */
+export type TagDialog = { kind: 'rename' | 'delete'; tag: string }
+
 /** A node in the nested tag tree derived from every `#tag` in every note. */
 export interface TagNode {
   /** Full path, e.g. `work/projects`. */

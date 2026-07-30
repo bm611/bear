@@ -585,6 +585,87 @@ button.disclosure:hover {
   margin-left: auto;
 }
 
+/* The title doubles as the library trigger whenever the sidebar is not pinned. */
+.list-title-group {
+  flex: 1;
+  min-width: 0;
+}
+
+/* The trigger bleeds left to line its label up with the plain title, so the
+   heading must not clip it — truncation moves to the label itself. */
+.list-title-group .list-title {
+  overflow: visible;
+}
+
+.list-title-trigger {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  /* Hug the label, but never outgrow the header — the label truncates instead. */
+  width: max-content;
+  max-width: 100%;
+  margin-left: -0.35rem;
+  padding: 0.1rem 0.35rem;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  font: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.list-title-trigger:hover {
+  background: var(--surface-hover);
+}
+
+.list-title-trigger[aria-expanded='true'] {
+  border-color: var(--edge-color);
+  background: var(--row-active-bg);
+  color: var(--sticker-fg);
+}
+
+.list-title-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.list-title-trigger svg {
+  flex: 0 0 auto;
+  color: var(--text-tertiary);
+  transition: transform var(--transition);
+}
+
+.list-title-trigger[aria-expanded='true'] svg {
+  color: inherit;
+  transform: rotate(180deg);
+}
+
+/*
+ * The sidebar's contents, dropped from the title. Deliberately not clipped: the
+ * tag rows carry menus that need to escape, and the scroll sits on the inner
+ * `.sidebar-scroll` instead.
+ */
+.library-popover {
+  position: absolute;
+  z-index: 40;
+  top: calc(100% + 0.45rem);
+  left: -0.35rem;
+  display: flex;
+  flex-direction: column;
+  width: var(--sidebar-width);
+  max-height: min(26rem, calc(100vh - 8rem));
+  border: 2px solid var(--edge-color);
+  border-radius: 12px;
+  background: var(--surface-raised);
+  box-shadow: var(--shadow-pop);
+  animation: pop var(--transition);
+}
+
+.library-popover .sidebar-scroll {
+  padding: 0.4rem 0.4rem 0.5rem;
+}
+
 .search-field {
   display: flex;
   align-items: center;

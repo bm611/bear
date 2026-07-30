@@ -1,7 +1,7 @@
 # Slate
 
-A note taking app: three panes, plain markdown, and hashtags instead of
-folders. Sign in to keep notes in sync across devices via Supabase;
+A note taking app: plain markdown, hashtags instead of folders, and a list
+beside the editor. Sign in to keep notes in sync across devices via Supabase;
 preferences (theme, font, layout) still live in the browser's `localStorage`.
 
 ```bash
@@ -31,8 +31,8 @@ buttons light up for whatever the caret is sitting in — the heading control
 says which level — and as the pane narrows it hands its rarer controls to a
 menu rather than letting them scroll out of reach.
 
-**Hashtags, not folders.** Write `#work` anywhere in a note and it appears in
-the sidebar. Tags nest with a slash (`#work/projects/slate`), and parent tags
+**Hashtags, not folders.** Write `#work` anywhere in a note and it joins the
+library. Tags nest with a slash (`#work/projects/slate`), and parent tags
 count everything filed underneath them. Spaces are allowed if you close the tag
 with a second hash: `#reading list#`. Tags inside code spans, fenced blocks and
 URLs are left alone. Renaming a tag rewrites every note that uses it, including
@@ -46,6 +46,18 @@ almost everything (press <kbd>⌘/</kbd> to see them).
 
 Clicking a tag pill inside a note filters the library by it. Clicking a checkbox
 ticks the todo off in the document itself.
+
+## The library
+
+Smart filters and the tag tree live behind the note list's title: click it — or
+whatever tag you are browsing — and the whole library drops down, one click from
+anywhere without a pane of its own. Everything the old sidebar held is there,
+counts included, and picking something dismisses it.
+
+Prefer it pinned? <kbd>⌘1</kbd> puts it back as a permanent pane, and that choice
+sticks. Pinned or not, one `LibraryPanel` renders both, so the two routes cannot
+drift apart. Below 720px neither applies: the panes stack and the hamburger slides
+the library over, as before.
 
 ## Type and icons
 
@@ -71,7 +83,7 @@ src/
                 search, markdown rendering, persistence
   editor/       CodeMirror setup: highlight style, decorations
                 (tag pills, todo checkboxes), formatting commands
-  components/   the three panes, dialogs, menus
+  components/   the panes, dialogs, menus
   store/        Zustand store — the single source of truth
   hooks/        shared React hooks
 ```
