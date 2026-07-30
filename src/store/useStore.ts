@@ -285,12 +285,27 @@ function markSynced(notes: Note[]) {
   lastSyncedNotes = notes
 }
 
+/** Set while the status write below is in flight, so the subscriber can sit it out. */
+let announcingStatus = false
+
 /**
- * Only writes on a real change. The subscriber below runs on every `set`, this
- * one included, so an unguarded write here would recurse without end.
+ * Zustand notifies subscribers synchronously from inside `setState`, so this
+ * write re-enters the subscriber below before its caller has finished. Left
+ * alone that re-entry restarts both debounces — the sync one it would go on to
+ * arm anyway, and the localStorage one, which has nothing to do with sync and
+ * would be pushed out another 400ms by every 'saving' → 'saved' transition.
+ * Neither is a correctness bug, but both make timing hard to reason about, so
+ * the subscriber ignores this write outright. Writing only on a real change
+ * keeps it from recursing on top of that.
  */
 function setSyncStatus(status: SyncStatus) {
-  if (useStore.getState().syncStatus !== status) useStore.setState({ syncStatus: status })
+  if (useStore.getState().syncStatus === status) return
+  announcingStatus = true
+  try {
+    useStore.setState({ syncStatus: status })
+  } finally {
+    announcingStatus = false
+  }
 }
 
 /** Pushes whatever has changed since the last successful write. */
@@ -320,6 +335,10 @@ function pushNotes() {
 }
 
 useStore.subscribe((state) => {
+  // Nothing below reacts to the sync status, and `setSyncStatus` re-enters here
+  // from inside its own `setState`; see the note there.
+  if (announcingStatus) return
+
   clearTimeout(saveTimer)
   saveTimer = setTimeout(() => {
     saveLibrary({
@@ -331,9 +350,10 @@ useStore.subscribe((state) => {
 
   if (!state.notesHydrated || !currentUserId || state.notes === lastSyncedNotes) return
   // A failed push rolls the marker back, which leaves this snapshot looking
-  // unsynced for good — without this it would re-queue itself off its own
-  // status write and spin against a server that is down. The snapshot waits
-  // for a fresh edit or for Retry; either one supersedes it.
+  // unsynced for good — so any later `set` at all, an auto-dismissed toast
+  // included, would quietly re-queue it against a server that is down and flip
+  // the footer off 'error' while doing it. The snapshot waits for a fresh edit
+  // or for Retry; either one supersedes it.
   if (state.notes === failedNotes) return
   // Says "Saving…" from the keystroke rather than from the request, so the
   // footer never claims the note is safe while an edit is still sitting in the

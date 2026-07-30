@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { deleteNotes, fetchNotes, insertNotes, upsertNotes } from '../lib/notesApi'
+import { saveLibrary } from '../lib/storage'
 import { useStore } from './useStore'
 import { createNote, noteTitle } from '../lib/notes'
 import type { Note } from '../lib/types'
@@ -9,6 +10,12 @@ vi.mock('../lib/notesApi', () => ({
   insertNotes: vi.fn(),
   upsertNotes: vi.fn(),
   deleteNotes: vi.fn(),
+}))
+
+// Only the write is stubbed; the store reads real preferences at module load.
+vi.mock('../lib/storage', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('../lib/storage')>()),
+  saveLibrary: vi.fn(),
 }))
 
 function reset(notes: Note[] = []) {
@@ -304,6 +311,34 @@ describe('sync status', () => {
 
     get().syncNow()
     await vi.waitFor(() => expect(get().syncStatus).toBe('saved'))
+  })
+
+  // Zustand notifies subscribers synchronously from inside setState, so the
+  // store's own status write re-enters the subscriber that made it. That
+  // subscriber also debounces the localStorage flush, which has nothing to do
+  // with sync — left unguarded, every 'saving' → 'saved' pushed the flush out
+  // another 400ms. The deferred push here puts the status write squarely inside
+  // the flush's debounce window, where a restart would be visible.
+  it('leaves the persistence debounce alone when only the sync status changes', async () => {
+    let settlePush!: () => void
+    vi.mocked(upsertNotes).mockReturnValue(
+      new Promise<void>((resolve) => {
+        settlePush = resolve
+      }),
+    )
+    vi.mocked(saveLibrary).mockClear()
+
+    get().updateNoteText(get().notes[0].id, '# Edited') // arms the 400ms flush
+    get().syncNow()
+
+    await new Promise((resolve) => setTimeout(resolve, 250))
+    expect(saveLibrary).not.toHaveBeenCalled()
+    settlePush()
+    await vi.waitFor(() => expect(get().syncStatus).toBe('saved'))
+
+    // ~500ms since the edit: the flush is due at 400 and must already have run.
+    await new Promise((resolve) => setTimeout(resolve, 250))
+    expect(saveLibrary).toHaveBeenCalled()
   })
 
   it('picks the failed edit back up on the next keystroke', async () => {
