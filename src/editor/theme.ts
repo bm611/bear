@@ -254,6 +254,8 @@ export const slateEditorTheme = EditorView.theme({
     borderRadius: '3px',
     padding: '0.08em 0',
   },
+  '.cm-subscript': { fontSize: '0.85em', verticalAlign: 'sub' },
+  '.cm-superscript': { fontSize: '0.85em', verticalAlign: 'super' },
 
   '.cm-todo': {
     display: 'inline-block',

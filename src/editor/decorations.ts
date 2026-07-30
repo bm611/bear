@@ -116,7 +116,9 @@ const listMark = Decoration.mark({ class: 'cm-list-marker' })
 const bulletMark = Decoration.replace({ widget: new BulletWidget() })
 const todoDoneMark = Decoration.mark({ class: 'cm-todo-done' })
 const highlightMark = Decoration.mark({ class: 'cm-highlight' })
-const SYNTAX_MARK_NODES = /^(EmphasisMark|StrikethroughMark|CodeMark|QuoteMark|LinkMark)$/
+const subscriptMark = Decoration.mark({ class: 'cm-subscript' })
+const superscriptMark = Decoration.mark({ class: 'cm-superscript' })
+const SYNTAX_MARK_NODES = /^(EmphasisMark|StrikethroughMark|SubscriptMark|SuperscriptMark|CodeMark|QuoteMark|LinkMark)$/
 
 /**
  * Where a marker sits: how many lists deep, counting from 0 at the top level,
@@ -269,11 +271,26 @@ function build(view: EditorView): DecorationSets {
           fold(node.from, markTo)
         }
         if (node.name === 'CodeInfo') fold(node.from, node.to)
-        if (
-          node.name === 'URL' &&
-          doc.sliceString(node.from - 1, node.from) === '(' &&
-          doc.sliceString(node.to, node.to + 1) === ')'
-        ) {
+        if (node.name === 'Subscript') {
+          decorations.push(subscriptMark.range(node.from, node.to))
+        }
+        if (node.name === 'Superscript') {
+          decorations.push(superscriptMark.range(node.from, node.to))
+        }
+        if (node.name === 'LinkTitle') {
+          let from = node.from
+          if (doc.sliceString(from - 1, from) === ' ') from -= 1
+          fold(from, node.to)
+        }
+        if (node.name === 'LinkReference') fold(node.from, node.to)
+        if (node.name === 'LinkLabel') {
+          let parent: SyntaxNode | null = node.node.parent
+          while (parent && parent.name !== 'Link' && parent.name !== 'LinkReference') {
+            parent = parent.parent
+          }
+          if (parent?.name === 'Link') fold(node.from, node.to)
+        }
+        if (node.name === 'URL' && doc.sliceString(node.from - 1, node.from) === '(') {
           fold(node.from, node.to)
         }
       },

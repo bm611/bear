@@ -1,8 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import { EditorState } from '@codemirror/state'
 import { EditorView } from '@codemirror/view'
-import { markdown } from '@codemirror/lang-markdown'
+import { markdown, markdownLanguage } from '@codemirror/lang-markdown'
 import { slateDecorations, headingMarkRanges } from './decorations'
+import { slateSyntax } from './theme'
+import { slateTables } from './tables'
 
 /** Replaces the folded ranges with `·` so the expectations read like the line. */
 function folded(text: string) {
@@ -57,15 +59,42 @@ function mountedEditor(doc: string): EditorView {
     parent,
     state: EditorState.create({
       doc,
-      extensions: [markdown(), slateDecorations({ onTagClick: () => {} })],
+      extensions: [
+        markdown({ base: markdownLanguage, addKeymap: false }),
+        slateSyntax,
+        slateDecorations({ onTagClick: () => {} }),
+        ...slateTables(),
+      ],
     }),
   })
+}
+
+function visibleText(view: EditorView): string {
+  return (view.contentDOM.textContent ?? '').replace(/\u00a0/g, ' ')
 }
 
 describe('slateDecorations', () => {
   it('folds rendered emphasis and link syntax in the editor', () => {
     const view = mountedEditor('**bold** and *italic* with [a link](https://example.com)')
-    expect(view.contentDOM.textContent).toBe('bold and italic with a link')
+    expect(visibleText(view)).toBe('bold and italic with a link')
+    view.destroy()
+  })
+
+  it('folds link titles and URLs together', () => {
+    const view = mountedEditor('[text](https://x.com "title")')
+    expect(visibleText(view)).toBe('text')
+    view.destroy()
+  })
+
+  it('folds reference link labels and definitions', () => {
+    const view = mountedEditor('[text][ref]\n\n[ref]: https://x.com')
+    expect(visibleText(view)).toBe('text')
+    view.destroy()
+  })
+
+  it('folds subscript and superscript markers', () => {
+    const view = mountedEditor('H~2~O and x^2^')
+    expect(visibleText(view)).toBe('H2O and x2')
     view.destroy()
   })
 
