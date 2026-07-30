@@ -60,15 +60,39 @@ describe('loadLibrary', () => {
     expect(localStorage.getItem(LEGACY_KEY)).toBeNull()
   })
 
-  it('keeps a pinned sidebar pinned', () => {
+  it('unpins the sidebar once when upgrading from the first schema', () => {
+    // v1 stored `true` for everyone because that was the default, so preserving
+    // it would hide the library-in-the-title layout from every existing reader.
+    localStorage.setItem(
+      KEY,
+      JSON.stringify({ version: 1, preferences: { ...defaultPreferences, sidebarVisible: true, font: 'serif' } }),
+    )
+
+    const loaded = loadLibrary()
+    expect(loaded?.preferences.sidebarVisible).toBe(false)
+    // The reset is surgical: every other preference survives the upgrade.
+    expect(loaded?.preferences.font).toBe('serif')
+  })
+
+  it('treats an unversioned payload as the first schema', () => {
     localStorage.setItem(KEY, JSON.stringify({ preferences: { sidebarVisible: true } }))
+    expect(loadLibrary()?.preferences.sidebarVisible).toBe(false)
+  })
+
+  it('keeps the pin once it has been chosen under the current schema', () => {
+    saveLibrary({
+      preferences: { ...defaultPreferences, sidebarVisible: true },
+      filter: { kind: 'all' },
+      selectedId: null,
+    })
+
     expect(loadLibrary()?.preferences.sidebarVisible).toBe(true)
   })
 
   it('leaves the sidebar unpinned when the preference was never stored', () => {
-    // The note list title carries the library instead, so an absent value must
-    // not read as "pinned" the way a missing `listVisible` reads as "shown".
-    localStorage.setItem(KEY, JSON.stringify({ preferences: { theme: 'dark' } }))
+    // An absent value must not read as "pinned" the way a missing `listVisible`
+    // reads as "shown".
+    localStorage.setItem(KEY, JSON.stringify({ version: 2, preferences: { theme: 'dark' } }))
     const loaded = loadLibrary()
     expect(loaded?.preferences.sidebarVisible).toBe(false)
     expect(loaded?.preferences.listVisible).toBe(true)

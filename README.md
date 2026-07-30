@@ -102,3 +102,9 @@ rather than thrown away. A value left under the pre-rename key
 (`bear.library.v1`) is adopted once on first load and then removed, so the
 rename does not reset anyone's preferences. Use **Settings → Export backup**
 for a JSON copy of the library as an extra safety net.
+
+Preference defaults occasionally change, and the stored schema version says when.
+Version 2 moved the library into the note list title: a payload written before it
+pinned the sidebar only because that was the default, so the upgrade drops that
+one field and keeps the rest. Pin it again with <kbd>⌘1</kbd> and the choice
+persists, because it was then made under the current schema.
