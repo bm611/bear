@@ -3,7 +3,12 @@ import type { Filter, Note, Preferences } from './types'
 const STORAGE_KEY = 'slate.library.v1'
 /** The key used before the rename. Read once, then retired. */
 const LEGACY_STORAGE_KEY = 'bear.library.v1'
-const SCHEMA_VERSION = 1
+/**
+ * 2 moved the library into the note list title. A payload written before that
+ * carries `sidebarVisible: true` only because it used to be the default, so the
+ * upgrade drops it rather than preserving a choice nobody made.
+ */
+const SCHEMA_VERSION = 2
 
 export const defaultPreferences: Preferences = {
   theme: 'system',
@@ -54,7 +59,7 @@ function coerceFilter(value: unknown): Filter {
   return kind ? { kind } : { kind: 'all' }
 }
 
-function coercePreferences(value: unknown): Preferences {
+function coercePreferences(value: unknown, storedVersion: number): Preferences {
   if (!isRecord(value)) return { ...defaultPreferences }
   const themes = ['light', 'dark', 'system'] as const
   const fonts = ['sans', 'serif', 'mono'] as const
@@ -65,9 +70,9 @@ function coercePreferences(value: unknown): Preferences {
     font: fonts.find((f) => f === value.font) ?? defaultPreferences.font,
     fontSize: Math.min(24, Math.max(13, Math.round(size))),
     sort: sorts.find((s) => s === value.sort) ?? defaultPreferences.sort,
-    // Existing readers have this stored either way, so they keep the layout they
-    // had; only a missing value falls through to the new default.
-    sidebarVisible: value.sidebarVisible === true,
+    // Honour the pin only once it has been chosen under the current schema —
+    // see SCHEMA_VERSION. Reset payloads keep every other preference.
+    sidebarVisible: storedVersion >= 2 && value.sidebarVisible === true,
     listVisible: value.listVisible !== false,
   }
 }
@@ -98,9 +103,11 @@ export function loadLibrary(): PersistedLibrary | null {
   try {
     const parsed: unknown = JSON.parse(raw)
     if (!isRecord(parsed)) return null
+    // An unversioned payload predates the field, so read it as the first schema.
+    const storedVersion = typeof parsed.version === 'number' ? parsed.version : 1
     return {
       version: SCHEMA_VERSION,
-      preferences: coercePreferences(parsed.preferences),
+      preferences: coercePreferences(parsed.preferences, storedVersion),
       filter: coerceFilter(parsed.filter),
       selectedId: typeof parsed.selectedId === 'string' ? parsed.selectedId : null,
     }
