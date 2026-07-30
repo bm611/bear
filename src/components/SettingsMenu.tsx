@@ -4,7 +4,7 @@ import { exportLibrary, parseLibraryFile } from '../lib/storage'
 import { downloadFile } from '../lib/download'
 import { supabase } from '../lib/supabaseClient'
 import { mod } from '../lib/platform'
-import type { ThemeMode } from '../lib/types'
+import type { ListDensity, PreviewLines, ThemeMode } from '../lib/types'
 import { Menu, MenuItem, MenuLabel, MenuSeparator } from './Menu'
 import { DownloadIcon, KeyboardIcon, MoonIcon, SunIcon, UploadIcon } from './Icons'
 
@@ -12,6 +12,17 @@ const THEMES: Array<{ value: ThemeMode; label: string }> = [
   { value: 'light', label: 'Light' },
   { value: 'dark', label: 'Dark' },
   { value: 'system', label: 'Match system' },
+]
+
+const DENSITIES: Array<{ value: ListDensity; label: string }> = [
+  { value: 'comfortable', label: 'Comfortable' },
+  { value: 'compact', label: 'Compact' },
+]
+
+const PREVIEWS: Array<{ value: PreviewLines; label: string }> = [
+  { value: 2, label: 'Two lines' },
+  { value: 1, label: 'One line' },
+  { value: 0, label: 'Title only' },
 ]
 
 interface SettingsMenuProps {
@@ -98,6 +109,28 @@ export function SettingsMenu({
         </button>
         <span>{preferences.fontSize}px</span>
       </div>
+
+      <MenuSeparator />
+      <MenuLabel>Note list</MenuLabel>
+      {DENSITIES.map(({ value, label }) => (
+        <MenuItem
+          key={value}
+          checked={preferences.density === value}
+          onSelect={() => setPreferences({ density: value })}
+        >
+          {label}
+        </MenuItem>
+      ))}
+      <MenuLabel>Preview</MenuLabel>
+      {PREVIEWS.map(({ value, label }) => (
+        <MenuItem
+          key={value}
+          checked={preferences.previewLines === value}
+          onSelect={() => setPreferences({ previewLines: value })}
+        >
+          {label}
+        </MenuItem>
+      ))}
 
       <MenuSeparator />
       <MenuLabel>Library</MenuLabel>

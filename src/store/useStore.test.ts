@@ -1,5 +1,6 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { fetchNotes, insertNotes } from '../lib/notesApi'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { deleteNotes, fetchNotes, insertNotes, upsertNotes } from '../lib/notesApi'
+import { saveLibrary } from '../lib/storage'
 import { useStore } from './useStore'
 import { createNote, noteTitle } from '../lib/notes'
 import type { Note } from '../lib/types'
@@ -9,6 +10,12 @@ vi.mock('../lib/notesApi', () => ({
   insertNotes: vi.fn(),
   upsertNotes: vi.fn(),
   deleteNotes: vi.fn(),
+}))
+
+// Only the write is stubbed; the store reads real preferences at module load.
+vi.mock('../lib/storage', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('../lib/storage')>()),
+  saveLibrary: vi.fn(),
 }))
 
 function reset(notes: Note[] = []) {
@@ -249,6 +256,101 @@ describe('hydrateNotes', () => {
     expect(get().notesError).toBeNull()
     expect(get().notesHydrated).toBe(true)
     expect(get().notes).toEqual([note])
+  })
+})
+
+describe('sync status', () => {
+  beforeEach(async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {})
+    vi.mocked(upsertNotes).mockReset().mockResolvedValue(undefined)
+    vi.mocked(deleteNotes).mockReset().mockResolvedValue(undefined)
+    vi.mocked(fetchNotes).mockResolvedValue([createNote('# One')])
+    reset()
+    await get().hydrateNotes('user-sync')
+  })
+
+  // Clears the module's pending debounce and user id, so a timer armed by one
+  // test cannot fire into the next one's mocks.
+  afterEach(() => {
+    get().resetNotes()
+    vi.restoreAllMocks()
+  })
+
+  it('runs saved → saving → saved around a push', async () => {
+    expect(get().syncStatus).toBe('saved')
+
+    get().updateNoteText(get().notes[0].id, '# Edited')
+    expect(get().syncStatus).toBe('saving')
+
+    get().syncNow()
+    await vi.waitFor(() => expect(get().syncStatus).toBe('saved'))
+    expect(upsertNotes).toHaveBeenCalledTimes(1)
+  })
+
+  it('settles on error after a failed push rather than retrying on a loop', async () => {
+    vi.mocked(upsertNotes).mockRejectedValue(new Error('offline'))
+
+    get().updateNoteText(get().notes[0].id, '# Edited')
+    get().syncNow()
+    await vi.waitFor(() => expect(get().syncStatus).toBe('error'))
+
+    // The rollback leaves the snapshot looking unsynced; nothing may re-queue
+    // it off the back of its own status write.
+    const attempts = vi.mocked(upsertNotes).mock.calls.length
+    await new Promise((resolve) => setTimeout(resolve, 30))
+    expect(get().syncStatus).toBe('error')
+    expect(vi.mocked(upsertNotes).mock.calls.length).toBe(attempts)
+  })
+
+  it('pushes again when the reader retries', async () => {
+    vi.mocked(upsertNotes).mockRejectedValueOnce(new Error('offline'))
+
+    get().updateNoteText(get().notes[0].id, '# Edited')
+    get().syncNow()
+    await vi.waitFor(() => expect(get().syncStatus).toBe('error'))
+
+    get().syncNow()
+    await vi.waitFor(() => expect(get().syncStatus).toBe('saved'))
+  })
+
+  // Zustand notifies subscribers synchronously from inside setState, so the
+  // store's own status write re-enters the subscriber that made it. That
+  // subscriber also debounces the localStorage flush, which has nothing to do
+  // with sync — left unguarded, every 'saving' → 'saved' pushed the flush out
+  // another 400ms. The deferred push here puts the status write squarely inside
+  // the flush's debounce window, where a restart would be visible.
+  it('leaves the persistence debounce alone when only the sync status changes', async () => {
+    let settlePush!: () => void
+    vi.mocked(upsertNotes).mockReturnValue(
+      new Promise<void>((resolve) => {
+        settlePush = resolve
+      }),
+    )
+    vi.mocked(saveLibrary).mockClear()
+
+    get().updateNoteText(get().notes[0].id, '# Edited') // arms the 400ms flush
+    get().syncNow()
+
+    await new Promise((resolve) => setTimeout(resolve, 250))
+    expect(saveLibrary).not.toHaveBeenCalled()
+    settlePush()
+    await vi.waitFor(() => expect(get().syncStatus).toBe('saved'))
+
+    // ~500ms since the edit: the flush is due at 400 and must already have run.
+    await new Promise((resolve) => setTimeout(resolve, 250))
+    expect(saveLibrary).toHaveBeenCalled()
+  })
+
+  it('picks the failed edit back up on the next keystroke', async () => {
+    vi.mocked(upsertNotes).mockRejectedValueOnce(new Error('offline'))
+
+    get().updateNoteText(get().notes[0].id, '# Edited')
+    get().syncNow()
+    await vi.waitFor(() => expect(get().syncStatus).toBe('error'))
+
+    get().updateNoteText(get().notes[0].id, '# Edited again')
+    get().syncNow()
+    await vi.waitFor(() => expect(get().syncStatus).toBe('saved'))
   })
 })
 

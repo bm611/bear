@@ -16,6 +16,8 @@ export const defaultPreferences: Preferences = {
   fontSize: 17,
   sort: 'modified',
   listVisible: true,
+  density: 'comfortable',
+  previewLines: 2,
 }
 
 export interface PersistedLibrary {
@@ -60,6 +62,8 @@ function coercePreferences(value: unknown): Preferences {
   const themes = ['light', 'dark', 'system'] as const
   const fonts = ['sans', 'inter', 'system', 'mono'] as const
   const sorts = ['modified', 'created', 'title'] as const
+  const densities = ['comfortable', 'compact'] as const
+  const previewLines = [0, 1, 2] as const
   const size = typeof value.fontSize === 'number' ? value.fontSize : defaultPreferences.fontSize
   const font =
     fonts.find((f) => f === value.font) ??
@@ -70,6 +74,9 @@ function coercePreferences(value: unknown): Preferences {
     fontSize: Math.min(24, Math.max(13, Math.round(size))),
     sort: sorts.find((s) => s === value.sort) ?? defaultPreferences.sort,
     listVisible: value.listVisible !== false,
+    density: densities.find((d) => d === value.density) ?? defaultPreferences.density,
+    previewLines:
+      previewLines.find((n) => n === value.previewLines) ?? defaultPreferences.previewLines,
   }
 }
 
