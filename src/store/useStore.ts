@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import type { Filter, Note, Preferences, SortMode } from '../lib/types'
+import type { Filter, Note, Preferences, SortMode, TagDialog } from '../lib/types'
 import { createNote, isEmptyNote, sortNotes } from '../lib/notes'
 import { matchesFilter } from '../lib/search'
 import { removeTagFromText, renameTagInText } from '../lib/tags'
@@ -15,6 +15,8 @@ export interface StoreState {
   preferences: Preferences
   /** Transient toast message shown in the bottom-right corner. */
   toast: { id: number; message: string } | null
+  /** The open tag rename / remove dialog, rendered at the app root. */
+  tagDialog: TagDialog | null
   /** Whether `notes` reflects the signed-in user's Supabase data yet. Gates sync-back writes. */
   notesHydrated: boolean
   /** Set when the initial fetch fails; cleared on a successful hydrate or sign-out. */
@@ -38,6 +40,8 @@ export interface StoreState {
 
   renameTag: (from: string, to: string) => void
   deleteTag: (tag: string) => void
+  openTagDialog: (dialog: TagDialog) => void
+  closeTagDialog: () => void
 
   setPreferences: (patch: Partial<Preferences>) => void
   importNotes: (notes: Note[]) => number
@@ -63,6 +67,7 @@ export const useStore = create<StoreState>((set, get) => ({
   query: '',
   preferences: persisted?.preferences ?? { ...defaultPreferences },
   toast: null,
+  tagDialog: null,
   notesHydrated: false,
   notesError: null,
 
@@ -207,6 +212,9 @@ export const useStore = create<StoreState>((set, get) => ({
     }))
     get().showToast(`Removed #${tag} from all notes`)
   },
+
+  openTagDialog: (dialog) => set({ tagDialog: dialog }),
+  closeTagDialog: () => set({ tagDialog: null }),
 
   setPreferences: (patch) => set((state) => ({ preferences: { ...state.preferences, ...patch } })),
 

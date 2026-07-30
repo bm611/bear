@@ -1,6 +1,7 @@
 import { HugeiconsIcon, type HugeiconsIconProps, type IconSvgElement } from '@hugeicons/react'
 import {
   Archive02Icon,
+  ArrowDown01Icon,
   ArrowLeft01Icon,
   ArrowRight01Icon,
   BookmarkOff02Icon,
@@ -97,6 +98,7 @@ export const ListIcon = glyph(SidebarRight01Icon, 'ListIcon')
 export const MenuIcon = glyph(Menu01Icon, 'MenuIcon')
 export const MoreIcon = glyph(MoreHorizontalIcon, 'MoreIcon')
 export const ChevronRight = glyph(ArrowRight01Icon, 'ChevronRight')
+export const ChevronDown = glyph(ArrowDown01Icon, 'ChevronDown')
 export const CloseIcon = glyph(Cancel01Icon, 'CloseIcon')
 export const CheckIcon = glyph(Tick02Icon, 'CheckIcon')
 export const PinIcon = glyph(PinGlyph, 'PinIcon')

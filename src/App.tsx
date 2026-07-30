@@ -4,6 +4,7 @@ import { Sidebar } from './components/Sidebar'
 import { NoteList } from './components/NoteList'
 import { EditorPane } from './components/EditorPane'
 import { ShortcutsSheet } from './components/ShortcutsSheet'
+import { TagDialogs } from './components/TagDialogs'
 import { Toast } from './components/Toast'
 import { AuthScreen, type AuthMode } from './components/AuthScreen'
 import { LandingScreen } from './components/LandingScreen'
@@ -307,6 +308,10 @@ function AppShell() {
             focusEditor()
           }}
           onOpenSidebar={narrow ? () => setMobileSidebar(true) : undefined}
+          // Unpinned, the library moves into the list title rather than costing a
+          // pane. Narrow keeps its drawer, which the hamburger already opens.
+          libraryMenu={!narrow && !sidebarOpen}
+          onShowShortcuts={() => setShortcutsOpen(true)}
         />
       ) : null}
 
@@ -320,6 +325,7 @@ function AppShell() {
       ) : null}
 
       {shortcutsOpen ? <ShortcutsSheet onClose={() => setShortcutsOpen(false)} /> : null}
+      <TagDialogs />
       <Toast />
     </div>
   )
