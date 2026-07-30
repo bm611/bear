@@ -35,6 +35,8 @@ export function NoteList({ searchRef, onOpenNote, onShowShortcuts }) {
     const query = useStore((state) => state.query);
     const selectedId = useStore((state) => state.selectedId);
     const sort = useStore((state) => state.preferences.sort);
+    const density = useStore((state) => state.preferences.density);
+    const previewLines = useStore((state) => state.preferences.previewLines);
     const setQuery = useStore((state) => state.setQuery);
     const selectNote = useStore((state) => state.selectNote);
     const newNote = useStore((state) => state.newNote);
@@ -65,7 +67,7 @@ export function NoteList({ searchRef, onOpenNote, onShowShortcuts }) {
         newNote();
         onOpenNote?.();
     };
-    return (_jsxs("section", { className: "note-list", "aria-label": `${title} notes`, children: [_jsxs("div", { className: "list-header", children: [_jsxs("div", { className: "list-brand-row", children: [_jsxs("span", { className: "list-brand", children: [_jsx(SlateMark, { size: 20 }), "Slate"] }), _jsx("div", { className: "list-brand-actions", children: _jsx("button", { type: "button", className: "icon-button", title: `New note (${mod('N')})`, "aria-label": "New note", onClick: createNote, children: _jsx(PlusIcon, {}) }) })] }), _jsxs("div", { className: "list-title-row", children: [_jsxs("div", { className: "list-title-group menu-anchor", children: [_jsx("h1", { className: "list-title", children: _jsxs("button", { ref: libraryTriggerRef, type: "button", className: "list-title-trigger", "aria-label": `${title} — browse library`, "aria-expanded": libraryOpen, title: title, onClick: () => setLibraryOpen((open) => !open), children: [_jsx("span", { className: "list-title-text", children: title }), _jsx(ChevronDown, { size: 14 })] }) }), libraryOpen ? (_jsx(Popover, { className: "library-popover", label: "Library", triggerRef: libraryTriggerRef, onClose: () => setLibraryOpen(false), children: _jsx(LibraryPanel, { onNavigate: () => setLibraryOpen(false) }) })) : null] }), _jsxs("div", { className: "list-title-actions menu-anchor", children: [_jsx("button", { ref: settingsTriggerRef, type: "button", className: "icon-button", "aria-label": "Settings", "aria-expanded": settingsOpen, title: "Settings", onClick: () => {
+    return (_jsxs("section", { className: "note-list", "aria-label": `${title} notes`, "data-density": density, style: { '--preview-lines': previewLines }, children: [_jsxs("div", { className: "list-header", children: [_jsxs("div", { className: "list-brand-row", children: [_jsxs("span", { className: "list-brand", children: [_jsx(SlateMark, { size: 20 }), "Slate"] }), _jsx("div", { className: "list-brand-actions", children: _jsx("button", { type: "button", className: "icon-button", title: `New note (${mod('N')})`, "aria-label": "New note", onClick: createNote, children: _jsx(PlusIcon, {}) }) })] }), _jsxs("div", { className: "list-title-row", children: [_jsx("div", { className: "list-title-group", children: _jsx("h1", { className: "list-title", children: _jsxs("button", { ref: libraryTriggerRef, type: "button", className: "list-title-trigger", "aria-label": `${title} — browse library`, "aria-expanded": libraryOpen, title: title, onClick: () => setLibraryOpen((open) => !open), children: [_jsx("span", { className: "list-title-text", children: title }), _jsx(ChevronDown, { size: 14 })] }) }) }), _jsxs("div", { className: "list-title-actions menu-anchor", children: [_jsx("button", { ref: settingsTriggerRef, type: "button", className: "icon-button", "aria-label": "Settings", "aria-expanded": settingsOpen, title: "Settings", onClick: () => {
                                             setMenuOpen(false);
                                             setSettingsOpen((open) => !open);
                                         }, children: _jsx(SettingsIcon, {}) }), settingsOpen ? (_jsx(SettingsMenu, { style: { top: '2rem' }, align: "right", triggerRef: settingsTriggerRef, onClose: () => setSettingsOpen(false), onShowShortcuts: onShowShortcuts })) : null, _jsx("button", { ref: menuTriggerRef, type: "button", className: "icon-button", "aria-label": "List options", "aria-expanded": menuOpen, onClick: () => {
@@ -87,21 +89,40 @@ export function NoteList({ searchRef, onOpenNote, onShowShortcuts }) {
                                         selectNote(visible[0].id);
                                         listRef.current?.querySelector('.note-card')?.focus();
                                     }
-                                } }), query ? (_jsx("button", { type: "button", className: "icon-button", "aria-label": "Clear search", onClick: () => setQuery(''), children: _jsx(CloseIcon, { size: 13 }) })) : null] })] }), _jsx("div", { className: "list-scroll scroll-host", ref: listRef, children: visible.length === 0 ? (_jsxs("div", { className: "empty-state", children: [_jsx("h2", { children: query ? 'No matches' : 'Nothing here yet' }), _jsx("p", { children: query
+                                } }), query ? (_jsx("button", { type: "button", className: "icon-button", "aria-label": "Clear search", onClick: () => setQuery(''), children: _jsx(CloseIcon, { size: 13 }) })) : null] }), libraryOpen ? (_jsx(Popover, { className: "library-popover", label: "Library", triggerRef: libraryTriggerRef, onClose: () => setLibraryOpen(false), children: _jsx(LibraryPanel, { onNavigate: () => setLibraryOpen(false) }) })) : null] }), _jsx("div", { className: "list-scroll scroll-host", ref: listRef, children: visible.length === 0 ? (_jsxs("div", { className: "empty-state", children: [_jsx("h2", { children: query ? 'No matches' : 'Nothing here yet' }), _jsx("p", { children: query
                                 ? 'Try a different word, or search a #tag.'
                                 : filter.kind === 'trash'
                                     ? 'Deleted notes will collect here.'
                                     : `Press ${mod('N')} to start a new note.` })] })) : (visible.map((note) => (_jsx(NoteCard, { note: note, selected: note.id === selectedId, onSelect: () => {
                         selectNote(note.id);
                         onOpenNote?.();
-                    } }, note.id)))) }), _jsx("div", { className: "list-footer", children: _jsxs("span", { className: "list-footer-count", children: [liveCount, " note", liveCount === 1 ? '' : 's'] }) }), confirmEmpty ? (_jsx(ConfirmDialog, { title: "Empty trash?", description: `${visible.length} note${visible.length === 1 ? '' : 's'} will be deleted permanently. This cannot be undone.`, confirmLabel: "Delete permanently", destructive: true, onCancel: () => setConfirmEmpty(false), onConfirm: () => {
+                    } }, note.id)))) }), _jsxs("div", { className: "list-footer", children: [_jsxs("span", { className: "list-footer-count", children: [liveCount, " note", liveCount === 1 ? '' : 's'] }), _jsx(SyncIndicator, {})] }), confirmEmpty ? (_jsx(ConfirmDialog, { title: "Empty trash?", description: `${visible.length} note${visible.length === 1 ? '' : 's'} will be deleted permanently. This cannot be undone.`, confirmLabel: "Delete permanently", destructive: true, onCancel: () => setConfirmEmpty(false), onConfirm: () => {
                     emptyTrash();
                     setConfirmEmpty(false);
                 } })) : null] }));
 }
+const SYNC_LABEL = {
+    saved: 'Saved',
+    saving: 'Saving…',
+    error: 'Not saved',
+};
+/**
+ * Whether your writing has reached the server. A failed push used to announce
+ * itself only through a toast that cleared after 2.6 seconds, which meant the
+ * one piece of state you cannot afford to miss was also the easiest to miss.
+ */
+function SyncIndicator() {
+    const status = useStore((state) => state.syncStatus);
+    const syncNow = useStore((state) => state.syncNow);
+    return (_jsxs("span", { className: "list-footer-sync", "data-state": status, "aria-live": "polite", children: [_jsx("span", { className: "sync-dot", "aria-hidden": "true" }), SYNC_LABEL[status], status === 'error' ? (_jsx("button", { type: "button", className: "sync-retry", onClick: syncNow, children: "Retry" })) : null] }));
+}
 function NoteCard({ note, selected, onSelect }) {
+    const previewLines = useStore((state) => state.preferences.previewLines);
     const title = noteTitle(note);
-    const preview = notePreview(note);
+    // At zero the preview is dropped rather than clamped: a clamped-to-nothing
+    // box still carries its top margin, which would leave a strip of empty space
+    // where the preview used to be.
+    const preview = previewLines === 0 ? '' : notePreview(note);
     const todos = todoStats(note.text);
     return (_jsxs("button", { type: "button", className: "note-card", "aria-current": selected ? 'true' : undefined, onClick: onSelect, "data-note-id": note.id, children: [_jsxs("span", { className: "note-card-top", children: [_jsx("span", { className: "note-card-title", style: title === UNTITLED ? { opacity: 0.55 } : undefined, children: title }), note.pinned ? (_jsx("span", { className: "note-card-icon", title: "Pinned", children: _jsx(PinIcon, { size: 13 }) })) : null, _jsx("span", { className: "note-card-date", children: listDate(note.updatedAt) })] }), preview ? _jsx("span", { className: "note-card-preview", children: preview }) : null, todos.total > 0 ? (_jsxs("span", { className: "note-card-meta", children: [_jsx(TodoIcon, { size: 12 }), todos.done, "/", todos.total] })) : null] }));
 }

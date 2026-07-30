@@ -41,8 +41,9 @@ nested children; removing one strips the hashtag and keeps the prose.
 **Everything else you would expect.** Full-text and `#tag` search, pinning,
 smart lists (Todo / Today / Untagged), archive, trash with restore, duplicate,
 markdown and HTML export, JSON backup and import, light and dark themes,
-sans/serif/mono editor fonts with adjustable size, and a keyboard shortcut for
-almost everything (press <kbd>⌘/</kbd> to see them).
+sans/serif/mono editor fonts with adjustable size, a comfortable or compact note
+list showing however much of each note you want to read before opening it, and a
+keyboard shortcut for almost everything (press <kbd>⌘/</kbd> to see them).
 
 Clicking a tag pill inside a note filters the library by it. Clicking a checkbox
 ticks the todo off in the document itself.
@@ -51,13 +52,16 @@ ticks the todo off in the document itself.
 
 There is one sidebar: the note list. Smart filters and the tag tree live behind
 its title — click "Notes", or whatever tag you are browsing, and the whole
-library drops down, one click from anywhere without a pane of its own.
-Everything is there, counts included, and picking something dismisses it.
+library drops down from under the search field, one click from anywhere without
+a pane of its own. Everything is there, counts included, and picking something
+dismisses it; search stays put beside it rather than disappearing underneath.
 
 The list pane carries the rest of what a sidebar used to: the brand and the
-new-note button up top, a note count along the bottom, settings behind the gear
-by the title. Below 720px the two panes stack and the same dropdown serves the
-narrow layout.
+new-note button up top, settings behind the gear by the title, and along the
+bottom a note count and whether your writing has reached the server — "Saved",
+"Saving…", or "Not saved" with a retry, because a sync that quietly fails is the
+one thing a notes app must not keep to itself. Below 720px the two panes stack
+and the same dropdown serves the narrow layout.
 
 ## Type and icons
 

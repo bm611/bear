@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import type { Filter, Note, Preferences, SortMode, TagDialog } from '../lib/types'
+import type { Filter, Note, Preferences, SortMode, SyncStatus, TagDialog } from '../lib/types'
 import { createNote, isEmptyNote, sortNotes } from '../lib/notes'
 import { matchesFilter } from '../lib/search'
 import { removeTagFromText, renameTagInText } from '../lib/tags'
@@ -21,8 +21,12 @@ export interface StoreState {
   notesHydrated: boolean
   /** Set when the initial fetch fails; cleared on a successful hydrate or sign-out. */
   notesError: string | null
+  /** Whether the current notes have reached Supabase. Surfaced in the list footer. */
+  syncStatus: SyncStatus
 
   hydrateNotes: (userId: string) => Promise<void>
+  /** Pushes pending changes now, rather than waiting out the debounce. */
+  syncNow: () => void
   resetNotes: () => void
   newNote: (text?: string) => string
   updateNoteText: (id: string, text: string) => void
@@ -70,6 +74,13 @@ export const useStore = create<StoreState>((set, get) => ({
   tagDialog: null,
   notesHydrated: false,
   notesError: null,
+  syncStatus: 'saved',
+
+  syncNow: () => {
+    clearTimeout(notesSyncTimer)
+    failedNotes = null
+    pushNotes()
+  },
 
   hydrateNotes: async (userId) => {
     set({ notesHydrated: false, notesError: null })
@@ -78,10 +89,12 @@ export const useStore = create<StoreState>((set, get) => ({
       if (notes.length === 0) notes = await insertNotes(welcomeNotes(), userId)
       currentUserId = userId
       markSynced(notes)
+      failedNotes = null
       set((state) => ({
         notes,
         notesHydrated: true,
         notesError: null,
+        syncStatus: 'saved',
         selectedId: notes.some((note) => note.id === state.selectedId)
           ? state.selectedId
           : (notes[0]?.id ?? null),
@@ -95,7 +108,15 @@ export const useStore = create<StoreState>((set, get) => ({
   resetNotes: () => {
     currentUserId = null
     markSynced([])
-    set({ notes: [], notesHydrated: false, notesError: null, selectedId: null })
+    failedNotes = null
+    clearTimeout(notesSyncTimer)
+    set({
+      notes: [],
+      notesHydrated: false,
+      notesError: null,
+      selectedId: null,
+      syncStatus: 'saved',
+    })
   },
 
   newNote: (text) => {
@@ -256,10 +277,46 @@ let saveTimer: ReturnType<typeof setTimeout> | undefined
 let notesSyncTimer: ReturnType<typeof setTimeout> | undefined
 let currentUserId: string | null = null
 let lastSyncedNotes: Note[] = []
+/** The snapshot whose push failed, held so it is not retried on a loop. */
+let failedNotes: Note[] | null = null
 
 /** Marks `notes` as already reflecting Supabase, so the sync-back effect skips it. */
 function markSynced(notes: Note[]) {
   lastSyncedNotes = notes
+}
+
+/**
+ * Only writes on a real change. The subscriber below runs on every `set`, this
+ * one included, so an unguarded write here would recurse without end.
+ */
+function setSyncStatus(status: SyncStatus) {
+  if (useStore.getState().syncStatus !== status) useStore.setState({ syncStatus: status })
+}
+
+/** Pushes whatever has changed since the last successful write. */
+function pushNotes() {
+  const { notes, notesHydrated } = useStore.getState()
+  const userId = currentUserId
+  if (!notesHydrated || !userId) return
+  const previous = lastSyncedNotes
+  if (notes === previous) return
+
+  const currentIds = new Set(notes.map((note) => note.id))
+  const removedIds = previous.filter((note) => !currentIds.has(note.id)).map((note) => note.id)
+  const changed = notes.filter((note) => previous.find((prev) => prev.id === note.id) !== note)
+  // Mark synced up front so identical snapshots don't queue again; roll back
+  // on failure so the next edit (or a forced retry) can push again.
+  markSynced(notes)
+  failedNotes = null
+  setSyncStatus('saving')
+  void Promise.all([deleteNotes(removedIds), upsertNotes(changed, userId)])
+    .then(() => setSyncStatus('saved'))
+    .catch((error) => {
+      console.error('Failed to sync notes to Supabase', error)
+      if (lastSyncedNotes === notes) lastSyncedNotes = previous
+      failedNotes = notes
+      setSyncStatus('error')
+    })
 }
 
 useStore.subscribe((state) => {
@@ -273,23 +330,17 @@ useStore.subscribe((state) => {
   }, 400)
 
   if (!state.notesHydrated || !currentUserId || state.notes === lastSyncedNotes) return
-  const notes = state.notes
-  const userId = currentUserId
+  // A failed push rolls the marker back, which leaves this snapshot looking
+  // unsynced for good — without this it would re-queue itself off its own
+  // status write and spin against a server that is down. The snapshot waits
+  // for a fresh edit or for Retry; either one supersedes it.
+  if (state.notes === failedNotes) return
+  // Says "Saving…" from the keystroke rather than from the request, so the
+  // footer never claims the note is safe while an edit is still sitting in the
+  // debounce.
+  setSyncStatus('saving')
   clearTimeout(notesSyncTimer)
-  notesSyncTimer = setTimeout(() => {
-    const previous = lastSyncedNotes
-    const currentIds = new Set(notes.map((note) => note.id))
-    const removedIds = previous.filter((note) => !currentIds.has(note.id)).map((note) => note.id)
-    const changed = notes.filter((note) => previous.find((prev) => prev.id === note.id) !== note)
-    // Mark synced up front so identical snapshots don't queue again; roll back
-    // on failure so the next edit (or a forced retry) can push again.
-    markSynced(notes)
-    void Promise.all([deleteNotes(removedIds), upsertNotes(changed, userId)]).catch((error) => {
-      console.error('Failed to sync notes to Supabase', error)
-      if (lastSyncedNotes === notes) lastSyncedNotes = previous
-      useStore.getState().showToast("Couldn't sync notes — check your connection")
-    })
-  }, 400)
+  notesSyncTimer = setTimeout(pushNotes, 400)
 })
 
 export function selectedNote(state: StoreState): Note | null {

@@ -1,5 +1,5 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { fetchNotes, insertNotes } from '../lib/notesApi';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { deleteNotes, fetchNotes, insertNotes, upsertNotes } from '../lib/notesApi';
 import { useStore } from './useStore';
 import { createNote, noteTitle } from '../lib/notes';
 vi.mock('../lib/notesApi', () => ({
@@ -201,6 +201,59 @@ describe('hydrateNotes', () => {
         expect(get().notesError).toBeNull();
         expect(get().notesHydrated).toBe(true);
         expect(get().notes).toEqual([note]);
+    });
+});
+describe('sync status', () => {
+    beforeEach(async () => {
+        vi.spyOn(console, 'error').mockImplementation(() => { });
+        vi.mocked(upsertNotes).mockReset().mockResolvedValue(undefined);
+        vi.mocked(deleteNotes).mockReset().mockResolvedValue(undefined);
+        vi.mocked(fetchNotes).mockResolvedValue([createNote('# One')]);
+        reset();
+        await get().hydrateNotes('user-sync');
+    });
+    // Clears the module's pending debounce and user id, so a timer armed by one
+    // test cannot fire into the next one's mocks.
+    afterEach(() => {
+        get().resetNotes();
+        vi.restoreAllMocks();
+    });
+    it('runs saved → saving → saved around a push', async () => {
+        expect(get().syncStatus).toBe('saved');
+        get().updateNoteText(get().notes[0].id, '# Edited');
+        expect(get().syncStatus).toBe('saving');
+        get().syncNow();
+        await vi.waitFor(() => expect(get().syncStatus).toBe('saved'));
+        expect(upsertNotes).toHaveBeenCalledTimes(1);
+    });
+    it('settles on error after a failed push rather than retrying on a loop', async () => {
+        vi.mocked(upsertNotes).mockRejectedValue(new Error('offline'));
+        get().updateNoteText(get().notes[0].id, '# Edited');
+        get().syncNow();
+        await vi.waitFor(() => expect(get().syncStatus).toBe('error'));
+        // The rollback leaves the snapshot looking unsynced; nothing may re-queue
+        // it off the back of its own status write.
+        const attempts = vi.mocked(upsertNotes).mock.calls.length;
+        await new Promise((resolve) => setTimeout(resolve, 30));
+        expect(get().syncStatus).toBe('error');
+        expect(vi.mocked(upsertNotes).mock.calls.length).toBe(attempts);
+    });
+    it('pushes again when the reader retries', async () => {
+        vi.mocked(upsertNotes).mockRejectedValueOnce(new Error('offline'));
+        get().updateNoteText(get().notes[0].id, '# Edited');
+        get().syncNow();
+        await vi.waitFor(() => expect(get().syncStatus).toBe('error'));
+        get().syncNow();
+        await vi.waitFor(() => expect(get().syncStatus).toBe('saved'));
+    });
+    it('picks the failed edit back up on the next keystroke', async () => {
+        vi.mocked(upsertNotes).mockRejectedValueOnce(new Error('offline'));
+        get().updateNoteText(get().notes[0].id, '# Edited');
+        get().syncNow();
+        await vi.waitFor(() => expect(get().syncStatus).toBe('error'));
+        get().updateNoteText(get().notes[0].id, '# Edited again');
+        get().syncNow();
+        await vi.waitFor(() => expect(get().syncStatus).toBe('saved'));
     });
 });
 describe('import', () => {

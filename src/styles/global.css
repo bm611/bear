@@ -13,10 +13,16 @@
   /* Body copy sits at 17px by default. */
   --editor-font-size: 17px;
   /* The readable column is deliberately compact: it keeps prose from
-     spreading too wide and holds the wrap points steady. It lands at ~740px
-     against 17px copy, and an `em` here keeps that proportion when the reader
-     steps the size. */
-  --editor-measure: 43.5em;
+     spreading too wide and holds the wrap points steady. It lands at ~680px
+     against 17px copy — around 70 characters, inside the 66–75 that reads
+     most easily — and staying proportional to the body size keeps that when
+     the reader steps the size.
+     The scale is kept separately because `em` resolves against whichever
+     element reads it: inside the editor that is the 17px body, but the toolbar
+     lining up with the column runs on 14px UI type, so it has to multiply by
+     --editor-font-size itself rather than borrow the `em`. */
+  --editor-measure-scale: 40;
+  --editor-measure: calc(var(--editor-measure-scale) * 1em);
 
   /* Mono carries the "paper & sticker" identity across the chrome — labels,
      titles, buttons. Note *content* stays on --editor-font. */
@@ -40,9 +46,12 @@
   --sky: #85c7ff;
   --grape: #c5a8ff;
 
-  /* Sticker fills, shared by both themes so the app matches the landing. */
+  /* Sticker fills, shared by both themes so the app matches the landing.
+     The library row is a full sticker — you meet it once per navigation. The
+     note list is scanned continuously, so the selected card gets the accent as
+     a bar rather than a fill; see `.note-card[aria-current='true']`. */
   --row-active-bg: var(--sky);
-  --card-active-bg: var(--honey);
+  --card-active-accent: var(--honey);
   --sticker-fg: var(--ink);
 }
 
@@ -72,7 +81,10 @@
 
   --text-primary: #171310;
   --text-secondary: #574c3f;
-  --text-tertiary: #8d8073;
+  /* Tertiary carries dates, counts and placeholders at 11–12px, so it has to
+     clear 4.5:1 on the two warmest papers it lands on — 5.09 on --list-bg,
+     4.74 on --sidebar-bg. */
+  --text-tertiary: #736759;
   --text-inverse: #fffaf1;
 
   --rule: rgba(23, 19, 16, 0.14);
@@ -81,7 +93,9 @@
   --rule-pane: rgba(23, 19, 16, 0.22);
   --rule-strong: var(--edge-color);
   --selection: rgba(255, 194, 51, 0.5);
-  --syntax-mark: #b5a794;
+  /* Markdown markers recede, but they are editable text and not decoration:
+     they have to stay findable, so they hold ~3:1 rather than fading out. */
+  --syntax-mark: #9e8f79;
   --code-bg: rgba(23, 19, 16, 0.07);
   --code-text: #9a5a13;
   --todo-border: var(--ink);
@@ -97,8 +111,10 @@
   color-scheme: dark;
 
   /* Black-on-black reads as nothing, so the outline lifts to a warm mid-tone
-     while the drop shadow goes the other way, to true black. */
-  --edge-color: #5d4f40;
+     while the drop shadow goes the other way, to true black. The outline is
+     what identifies a button or a menu here, so it holds ~3:1 against the
+     surfaces it is drawn on. */
+  --edge-color: #7d6e5c;
   --shadow-ink: #000000;
 
   --accent: #ffc233;
@@ -117,17 +133,19 @@
 
   --text-primary: #f4ece0;
   --text-secondary: #bcae9c;
-  --text-tertiary: #857a6b;
+  /* As in light: 4.5:1 against every surface it sits on, --surface-raised
+     (menus, popovers) included. */
+  --text-tertiary: #9d9182;
   --text-inverse: #171310;
 
   --rule: rgba(255, 248, 235, 0.11);
   --rule-pane: rgba(255, 248, 235, 0.18);
   --rule-strong: var(--edge-color);
   --selection: rgba(255, 194, 51, 0.28);
-  --syntax-mark: #6b6153;
+  --syntax-mark: #7b7162;
   --code-bg: rgba(255, 248, 235, 0.08);
   --code-text: #ffd88a;
-  --todo-border: #6d6152;
+  --todo-border: #7b6f5f;
   --highlight: rgba(255, 194, 51, 0.32);
   --table-row: rgba(255, 248, 235, 0.045);
   --danger: #ff6b5b;
@@ -452,12 +470,14 @@ select {
   }
 }
 
+/* 24px square: the smallest target WCAG 2.2 accepts, and this one was a 15×18
+   arrow. The spacer twin keeps unexpandable rows in the same column. */
 .disclosure {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 0.95rem;
-  height: 1.1rem;
+  width: 1.5rem;
+  height: 1.5rem;
   flex: 0 0 auto;
   color: var(--text-tertiary);
   transition: transform var(--transition);
@@ -488,6 +508,7 @@ button.disclosure:hover {
 }
 
 .list-header {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 0.55rem;
@@ -543,6 +564,47 @@ button.disclosure:hover {
 
 .list-footer-count {
   font-variant-numeric: tabular-nums;
+}
+
+/*
+ * Whether your writing has actually reached the server. This used to be a
+ * 2.6-second toast and nothing else, which is the one piece of state in the app
+ * you cannot afford to miss, so it lives here permanently instead.
+ */
+.list-footer-sync {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-left: auto;
+}
+
+.sync-dot {
+  width: 0.45rem;
+  height: 0.45rem;
+  flex: 0 0 auto;
+  border: 1px solid var(--edge-color);
+  border-radius: 50%;
+  background: var(--mint);
+}
+
+.list-footer-sync[data-state='saving'] .sync-dot {
+  background: var(--honey);
+}
+
+.list-footer-sync[data-state='error'] .sync-dot {
+  background: var(--berry);
+}
+
+.list-footer-sync[data-state='error'] {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+.sync-retry {
+  padding: 0 0.15rem;
+  color: inherit;
+  font-weight: 600;
+  text-decoration: underline;
 }
 
 .list-title-row {
@@ -625,19 +687,24 @@ button.disclosure:hover {
 }
 
 /*
- * The library's contents, dropped from the title. Deliberately not clipped: the
- * tag rows carry menus that need to escape, and the scroll sits on the inner
- * `.sidebar-scroll` instead.
+ * The library's contents, opened by the title but dropped from the foot of the
+ * whole header — clear of the search field, which is the control you most often
+ * want next to it and which a title-anchored panel covered outright. Squaring
+ * up with the note cards below rather than hugging the trigger also stops it
+ * reading as a stray tooltip over the list.
+ *
+ * Deliberately not clipped: the tag rows carry menus that need to escape, and
+ * the scroll sits on the inner `.sidebar-scroll` instead.
  */
 .library-popover {
   position: absolute;
   z-index: 40;
-  top: calc(100% + 0.45rem);
-  left: -0.35rem;
+  top: calc(100% - 0.1rem);
+  left: 0.5rem;
+  right: 0.5rem;
   display: flex;
   flex-direction: column;
-  width: var(--sidebar-width);
-  max-height: min(26rem, calc(100vh - 8rem));
+  max-height: min(26rem, calc(100vh - 12rem));
   border: 2px solid var(--edge-color);
   border-radius: 12px;
   background: var(--surface-raised);
@@ -689,13 +756,26 @@ button.disclosure:hover {
 .note-card {
   display: block;
   width: 100%;
-  padding: 0.82rem 0.65rem;
+  padding: var(--card-padding, 0.82rem) 0.65rem;
   border: 2px solid transparent;
   border-radius: 11px;
   text-align: left;
   color: inherit;
   transition: background var(--transition), border-color var(--transition),
     box-shadow var(--transition), transform var(--transition);
+}
+
+/* The list is the only navigation this app has, so how many notes fit on a
+   screen is a real preference rather than a detail. Compact drops the card to
+   roughly two thirds the height; the preview line count is chosen separately
+   because the two answer different questions — how much fits, and how much of
+   each note you want to read before opening it. */
+.note-list[data-density='compact'] {
+  --card-padding: 0.5rem;
+}
+
+.note-list[data-density='compact'] .note-card-meta {
+  margin-top: 0.2rem;
 }
 
 .note-card + .note-card {
@@ -712,34 +792,16 @@ button.disclosure:hover {
   box-shadow: none;
 }
 
-/* The selected note is the honey sticker from the landing mock, so every
-   piece of text inside it has to flip to ink — the muted greys underneath
-   are tuned for paper, and two of them go white in dark mode. */
+/* The selected note used to be a solid honey sticker. In the list that is the
+   loudest thing on screen for as long as you are reading the note beside it,
+   so the card keeps the outline and the hard shadow — it is still a sticker —
+   but takes the accent as a bar down its edge and leaves the paper, and every
+   colour on top of it, alone. */
 .note-card[aria-current='true'] {
   border-color: var(--edge-color);
-  background: var(--card-active-bg);
-  box-shadow: 3px 3px 0 var(--shadow-ink);
+  background: var(--surface-raised);
+  box-shadow: inset 5px 0 0 var(--card-active-accent), 3px 3px 0 var(--shadow-ink);
   transform: translate(-1px, -1px);
-}
-
-.note-card[aria-current='true'],
-.note-card[aria-current='true'] .note-card-date,
-.note-card[aria-current='true'] .note-card-preview,
-.note-card[aria-current='true'] .note-card-meta,
-.note-card[aria-current='true'] .note-card-icon {
-  color: var(--sticker-fg);
-}
-
-.note-card[aria-current='true'] .note-card-date,
-.note-card[aria-current='true'] .note-card-preview,
-.note-card[aria-current='true'] .note-card-meta {
-  opacity: 0.72;
-}
-
-/* A honey chip on a honey card would vanish; give it the paper back. */
-.note-card[aria-current='true'] .note-chip {
-  background: var(--paper-2);
-  color: var(--ink);
 }
 
 .note-card-top {
@@ -771,8 +833,8 @@ button.disclosure:hover {
   line-height: 1.45;
   color: var(--text-secondary);
   display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
+  -webkit-line-clamp: var(--preview-lines, 2);
+  line-clamp: var(--preview-lines, 2);
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -787,7 +849,6 @@ button.disclosure:hover {
 }
 
 .note-card[aria-current='true'] .note-card-title {
-  color: var(--sticker-fg);
   font-weight: 700;
 }
 
@@ -826,22 +887,56 @@ button.disclosure:hover {
    scrolls sideways: the formatting cluster sheds its rarer buttons into an
    overflow menu as the pane narrows (see FORMAT_ACTIONS' tiers). */
 .editor-toolbar {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.55rem 0.9rem;
+  /* The rule spans the pane, so the bar keeps the full width and hands the
+     gutter to the row inside it. */
+  padding: 0.55rem 1.6rem;
   min-height: 3rem;
   border-bottom: 1px solid transparent;
   transition: border-color var(--transition);
+}
+
+/*
+ * The controls sit over the writing column rather than out at the pane edges:
+ * same measure, same centring and the same 1.6rem gutter as `.editor-host`, so
+ * the toolbar and the text under it read as one object. Left to the pane the
+ * clusters drift ~150px clear of the column on a wide screen, and further
+ * every time the note list is hidden.
+ */
+.editor-toolbar-inner {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  max-width: calc(var(--editor-measure-scale) * var(--editor-font-size));
+  margin: 0 auto;
 }
 
 .editor-toolbar[data-scrolled='true'] {
   border-bottom-color: var(--edge-color);
 }
 
-.editor-toolbar > .icon-button,
-.editor-toolbar > .toolbar-group {
+.editor-toolbar-inner > .icon-button,
+.editor-toolbar-inner > .toolbar-group {
   flex-shrink: 0;
+}
+
+/*
+ * Which note you are in, for the layouts where the list is not on screen to
+ * say so — the stacked phone layout, and the desktop one with the list hidden.
+ * It takes the spacer's place rather than adding a row.
+ */
+.toolbar-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0 0.4rem;
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  text-align: center;
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .toolbar-group {
@@ -1013,6 +1108,15 @@ button.disclosure:hover {
   height: 1px;
   margin: 0.3rem 0.15rem;
   background: var(--rule);
+}
+
+/* A fact rather than a control: same rhythm as a menu item, none of its
+   affordances. */
+.menu-info {
+  padding: 0.36rem 0.5rem;
+  font-size: 0.78rem;
+  color: var(--text-tertiary);
+  white-space: nowrap;
 }
 
 .menu-label {
@@ -2617,5 +2721,43 @@ button.disclosure:hover {
 
   .editor-toolbar {
     padding-inline: 0.5rem;
+  }
+
+  /*
+   * Every icon button was 30×30 on a phone as well as on a desktop. That clears
+   * WCAG 2.2's 24px floor but sits well under the 44px both Apple and Material
+   * ask for, and these are the controls — new note, settings, list options,
+   * back — that get hit most on touch. The toolbar's own buttons stop at 40:
+   * by this width the formatting cluster is down to its tier-1 set, and 44
+   * across the row would not fit a 390px screen.
+   */
+  .icon-button {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+
+  .editor-toolbar .icon-button {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .editor-toolbar .toolbar-heading {
+    width: auto;
+  }
+
+  /* The library opener is a text button rather than an icon one, so it needs
+     the height taking on separately. */
+  .list-title-trigger {
+    padding-block: 0.5rem;
+  }
+
+  .disclosure {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .tag-row-more {
+    width: 2.5rem;
+    height: 2.5rem;
   }
 }

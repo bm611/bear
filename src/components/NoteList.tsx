@@ -4,7 +4,7 @@ import { useVisibleNotes } from '../hooks/useVisibleNotes'
 import { noteTitle, notePreview, todoStats, UNTITLED } from '../lib/notes'
 import { listDate } from '../lib/date'
 import { mod } from '../lib/platform'
-import type { Filter, Note, SortMode } from '../lib/types'
+import type { Filter, Note, SortMode, SyncStatus } from '../lib/types'
 import { ConfirmDialog } from './Dialog'
 import { LibraryPanel } from './LibraryPanel'
 import { Menu, MenuItem, MenuLabel, MenuSeparator } from './Menu'
@@ -54,6 +54,8 @@ export function NoteList({ searchRef, onOpenNote, onShowShortcuts }: NoteListPro
   const query = useStore((state) => state.query)
   const selectedId = useStore((state) => state.selectedId)
   const sort = useStore((state) => state.preferences.sort)
+  const density = useStore((state) => state.preferences.density)
+  const previewLines = useStore((state) => state.preferences.previewLines)
   const setQuery = useStore((state) => state.setQuery)
   const selectNote = useStore((state) => state.selectNote)
   const newNote = useStore((state) => state.newNote)
@@ -95,7 +97,12 @@ export function NoteList({ searchRef, onOpenNote, onShowShortcuts }: NoteListPro
   }
 
   return (
-    <section className="note-list" aria-label={`${title} notes`}>
+    <section
+      className="note-list"
+      aria-label={`${title} notes`}
+      data-density={density}
+      style={{ '--preview-lines': previewLines } as React.CSSProperties}
+    >
       <div className="list-header">
         <div className="list-brand-row">
           <span className="list-brand">
@@ -116,7 +123,7 @@ export function NoteList({ searchRef, onOpenNote, onShowShortcuts }: NoteListPro
         </div>
 
         <div className="list-title-row">
-          <div className="list-title-group menu-anchor">
+          <div className="list-title-group">
             <h1 className="list-title">
               <button
                 ref={libraryTriggerRef}
@@ -131,17 +138,6 @@ export function NoteList({ searchRef, onOpenNote, onShowShortcuts }: NoteListPro
                 <ChevronDown size={14} />
               </button>
             </h1>
-
-            {libraryOpen ? (
-              <Popover
-                className="library-popover"
-                label="Library"
-                triggerRef={libraryTriggerRef}
-                onClose={() => setLibraryOpen(false)}
-              >
-                <LibraryPanel onNavigate={() => setLibraryOpen(false)} />
-              </Popover>
-            ) : null}
           </div>
 
           <div className="list-title-actions menu-anchor">
@@ -249,6 +245,19 @@ export function NoteList({ searchRef, onOpenNote, onShowShortcuts }: NoteListPro
             </button>
           ) : null}
         </div>
+
+        {/* Anchored to the header rather than to the title that opens it, so it
+            drops clear of the search field instead of over it. */}
+        {libraryOpen ? (
+          <Popover
+            className="library-popover"
+            label="Library"
+            triggerRef={libraryTriggerRef}
+            onClose={() => setLibraryOpen(false)}
+          >
+            <LibraryPanel onNavigate={() => setLibraryOpen(false)} />
+          </Popover>
+        ) : null}
       </div>
 
       <div className="list-scroll scroll-host" ref={listRef}>
@@ -282,6 +291,7 @@ export function NoteList({ searchRef, onOpenNote, onShowShortcuts }: NoteListPro
         <span className="list-footer-count">
           {liveCount} note{liveCount === 1 ? '' : 's'}
         </span>
+        <SyncIndicator />
       </div>
 
       {confirmEmpty ? (
@@ -301,6 +311,34 @@ export function NoteList({ searchRef, onOpenNote, onShowShortcuts }: NoteListPro
   )
 }
 
+const SYNC_LABEL: Record<SyncStatus, string> = {
+  saved: 'Saved',
+  saving: 'Saving…',
+  error: 'Not saved',
+}
+
+/**
+ * Whether your writing has reached the server. A failed push used to announce
+ * itself only through a toast that cleared after 2.6 seconds, which meant the
+ * one piece of state you cannot afford to miss was also the easiest to miss.
+ */
+function SyncIndicator() {
+  const status = useStore((state) => state.syncStatus)
+  const syncNow = useStore((state) => state.syncNow)
+
+  return (
+    <span className="list-footer-sync" data-state={status} aria-live="polite">
+      <span className="sync-dot" aria-hidden="true" />
+      {SYNC_LABEL[status]}
+      {status === 'error' ? (
+        <button type="button" className="sync-retry" onClick={syncNow}>
+          Retry
+        </button>
+      ) : null}
+    </span>
+  )
+}
+
 interface NoteCardProps {
   note: Note
   selected: boolean
@@ -308,8 +346,12 @@ interface NoteCardProps {
 }
 
 function NoteCard({ note, selected, onSelect }: NoteCardProps) {
+  const previewLines = useStore((state) => state.preferences.previewLines)
   const title = noteTitle(note)
-  const preview = notePreview(note)
+  // At zero the preview is dropped rather than clamped: a clamped-to-nothing
+  // box still carries its top margin, which would leave a strip of empty space
+  // where the preview used to be.
+  const preview = previewLines === 0 ? '' : notePreview(note)
   const todos = todoStats(note.text)
 
   return (

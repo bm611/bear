@@ -22,6 +22,9 @@ export type Filter =
 export type ThemeMode = 'light' | 'dark' | 'system'
 export type EditorFont = 'sans' | 'inter' | 'system' | 'mono'
 export type SortMode = 'modified' | 'created' | 'title'
+export type ListDensity = 'comfortable' | 'compact'
+/** How many lines of a note's body the list shows under its title. */
+export type PreviewLines = 0 | 1 | 2
 
 export interface Preferences {
   theme: ThemeMode
@@ -29,7 +32,12 @@ export interface Preferences {
   fontSize: number
   sort: SortMode
   listVisible: boolean
+  density: ListDensity
+  previewLines: PreviewLines
 }
+
+/** Whether the open library has reached the server yet. */
+export type SyncStatus = 'saved' | 'saving' | 'error'
 
 /**
  * A pending tag edit. It lives in the store rather than in the library popover

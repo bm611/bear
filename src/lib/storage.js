@@ -13,6 +13,8 @@ export const defaultPreferences = {
     fontSize: 17,
     sort: 'modified',
     listVisible: true,
+    density: 'comfortable',
+    previewLines: 2,
 };
 function isRecord(value) {
     return typeof value === 'object' && value !== null;
@@ -50,6 +52,8 @@ function coercePreferences(value) {
     const themes = ['light', 'dark', 'system'];
     const fonts = ['sans', 'inter', 'system', 'mono'];
     const sorts = ['modified', 'created', 'title'];
+    const densities = ['comfortable', 'compact'];
+    const previewLines = [0, 1, 2];
     const size = typeof value.fontSize === 'number' ? value.fontSize : defaultPreferences.fontSize;
     const font = fonts.find((f) => f === value.font) ??
         (value.font === 'serif' ? 'sans' : defaultPreferences.font);
@@ -59,6 +63,8 @@ function coercePreferences(value) {
         fontSize: Math.min(24, Math.max(13, Math.round(size))),
         sort: sorts.find((s) => s === value.sort) ?? defaultPreferences.sort,
         listVisible: value.listVisible !== false,
+        density: densities.find((d) => d === value.density) ?? defaultPreferences.density,
+        previewLines: previewLines.find((n) => n === value.previewLines) ?? defaultPreferences.previewLines,
     };
 }
 /**

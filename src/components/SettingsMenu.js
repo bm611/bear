@@ -12,6 +12,15 @@ const THEMES = [
     { value: 'dark', label: 'Dark' },
     { value: 'system', label: 'Match system' },
 ];
+const DENSITIES = [
+    { value: 'comfortable', label: 'Comfortable' },
+    { value: 'compact', label: 'Compact' },
+];
+const PREVIEWS = [
+    { value: 2, label: 'Two lines' },
+    { value: 1, label: 'One line' },
+    { value: 0, label: 'Title only' },
+];
 /**
  * Theme, editor type, backup and sign-out. Tall enough that it has to open where
  * there is room, so its placement is left to whoever anchors it.
@@ -33,7 +42,7 @@ export function SettingsMenu({ onClose, align = 'left', style, onShowShortcuts, 
             showToast('That file could not be imported');
         }
     };
-    return (_jsxs(Menu, { align: align, label: "Settings", onClose: onClose, style: style, triggerRef: triggerRef, children: [_jsx(MenuLabel, { children: "Theme" }), THEMES.map(({ value, label }) => (_jsx(MenuItem, { checked: preferences.theme === value, icon: value === 'dark' ? _jsx(MoonIcon, { size: 15 }) : _jsx(SunIcon, { size: 15 }), onSelect: () => setPreferences({ theme: value }), children: label }, value))), _jsx(MenuSeparator, {}), _jsx(MenuLabel, { children: "Editor font" }), _jsx(MenuItem, { checked: preferences.font === 'sans', onSelect: () => setPreferences({ font: 'sans' }), children: "Google Sans" }), _jsx(MenuItem, { checked: preferences.font === 'inter', onSelect: () => setPreferences({ font: 'inter' }), children: "Inter" }), _jsx(MenuItem, { checked: preferences.font === 'system', onSelect: () => setPreferences({ font: 'system' }), children: "System" }), _jsx(MenuItem, { checked: preferences.font === 'mono', onSelect: () => setPreferences({ font: 'mono' }), children: "Mono" }), _jsxs("div", { className: "stepper", children: [_jsx("button", { type: "button", "aria-label": "Smaller text", onClick: () => setPreferences({ fontSize: Math.max(13, preferences.fontSize - 1) }), children: "\u2212" }), _jsx("button", { type: "button", "aria-label": "Larger text", onClick: () => setPreferences({ fontSize: Math.min(24, preferences.fontSize + 1) }), children: "+" }), _jsxs("span", { children: [preferences.fontSize, "px"] })] }), _jsx(MenuSeparator, {}), _jsx(MenuLabel, { children: "Library" }), _jsx(MenuItem, { icon: _jsx(DownloadIcon, { size: 15 }), onSelect: () => {
+    return (_jsxs(Menu, { align: align, label: "Settings", onClose: onClose, style: style, triggerRef: triggerRef, children: [_jsx(MenuLabel, { children: "Theme" }), THEMES.map(({ value, label }) => (_jsx(MenuItem, { checked: preferences.theme === value, icon: value === 'dark' ? _jsx(MoonIcon, { size: 15 }) : _jsx(SunIcon, { size: 15 }), onSelect: () => setPreferences({ theme: value }), children: label }, value))), _jsx(MenuSeparator, {}), _jsx(MenuLabel, { children: "Editor font" }), _jsx(MenuItem, { checked: preferences.font === 'sans', onSelect: () => setPreferences({ font: 'sans' }), children: "Google Sans" }), _jsx(MenuItem, { checked: preferences.font === 'inter', onSelect: () => setPreferences({ font: 'inter' }), children: "Inter" }), _jsx(MenuItem, { checked: preferences.font === 'system', onSelect: () => setPreferences({ font: 'system' }), children: "System" }), _jsx(MenuItem, { checked: preferences.font === 'mono', onSelect: () => setPreferences({ font: 'mono' }), children: "Mono" }), _jsxs("div", { className: "stepper", children: [_jsx("button", { type: "button", "aria-label": "Smaller text", onClick: () => setPreferences({ fontSize: Math.max(13, preferences.fontSize - 1) }), children: "\u2212" }), _jsx("button", { type: "button", "aria-label": "Larger text", onClick: () => setPreferences({ fontSize: Math.min(24, preferences.fontSize + 1) }), children: "+" }), _jsxs("span", { children: [preferences.fontSize, "px"] })] }), _jsx(MenuSeparator, {}), _jsx(MenuLabel, { children: "Note list" }), DENSITIES.map(({ value, label }) => (_jsx(MenuItem, { checked: preferences.density === value, onSelect: () => setPreferences({ density: value }), children: label }, value))), _jsx(MenuLabel, { children: "Preview" }), PREVIEWS.map(({ value, label }) => (_jsx(MenuItem, { checked: preferences.previewLines === value, onSelect: () => setPreferences({ previewLines: value }), children: label }, value))), _jsx(MenuSeparator, {}), _jsx(MenuLabel, { children: "Library" }), _jsx(MenuItem, { icon: _jsx(DownloadIcon, { size: 15 }), onSelect: () => {
                     onClose();
                     downloadFile('slate-notes.json', exportLibrary(notes), 'application/json');
                     showToast('Backup downloaded');
