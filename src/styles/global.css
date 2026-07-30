@@ -351,56 +351,7 @@ select {
   font-size: 0.9rem;
 }
 
-/* ---------------------------------------------------------------- sidebar */
-
-.sidebar {
-  display: flex;
-  flex-direction: column;
-  flex: 0 0 var(--sidebar-width);
-  width: var(--sidebar-width);
-  background: var(--sidebar-bg);
-  border-right: 1px solid var(--rule-pane);
-  overflow: hidden;
-}
-
-.sidebar-header {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.85rem 0.9rem 0.6rem;
-}
-
-.sidebar-brand {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-family: var(--font-display);
-  font-size: 1rem;
-  font-weight: 800;
-  letter-spacing: -0.045em;
-}
-
-/* The mark sits in the same honey badge the landing nav uses. */
-.sidebar-brand svg {
-  box-sizing: content-box;
-  padding: 0.2rem;
-  border: 2px solid var(--edge-color);
-  border-radius: 8px;
-  background: var(--honey);
-  color: var(--sticker-fg);
-  transform: rotate(-5deg);
-  transition: transform var(--bounce);
-}
-
-.sidebar-brand:hover svg {
-  transform: rotate(6deg);
-}
-
-.sidebar-header-actions {
-  display: flex;
-  gap: 0.1rem;
-  margin-left: auto;
-}
+/* ---------------------------------------------------------------- library */
 
 .sidebar-scroll {
   flex: 1;
@@ -523,26 +474,6 @@ button.disclosure:hover {
   padding-left: 0.85rem;
 }
 
-.sidebar-footer {
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-  padding: 0.5rem 0.7rem;
-  border-top: 1px solid var(--rule);
-  color: var(--text-tertiary);
-  font-size: 0.75rem;
-}
-
-.sidebar-footer .icon-button {
-  width: 1.6rem;
-  height: 1.6rem;
-}
-
-.sidebar-footer-count {
-  margin-left: auto;
-  font-variant-numeric: tabular-nums;
-}
-
 /* -------------------------------------------------------------- note list */
 
 .note-list {
@@ -560,6 +491,57 @@ button.disclosure:hover {
   flex-direction: column;
   gap: 0.55rem;
   padding: 0.8rem 0.85rem 0.6rem;
+}
+
+.list-brand-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.list-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: -0.045em;
+}
+
+/* The mark sits in the same honey badge the landing nav uses. */
+.list-brand svg {
+  box-sizing: content-box;
+  padding: 0.2rem;
+  border: 2px solid var(--edge-color);
+  border-radius: 8px;
+  background: var(--honey);
+  color: var(--sticker-fg);
+  transform: rotate(-5deg);
+  transition: transform var(--bounce);
+}
+
+.list-brand:hover svg {
+  transform: rotate(6deg);
+}
+
+.list-brand-actions {
+  display: flex;
+  gap: 0.1rem;
+  margin-left: auto;
+}
+
+.list-footer {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0.95rem;
+  border-top: 1px solid var(--rule);
+  color: var(--text-tertiary);
+  font-size: 0.75rem;
+}
+
+.list-footer-count {
+  font-variant-numeric: tabular-nums;
 }
 
 .list-title-row {
@@ -585,7 +567,7 @@ button.disclosure:hover {
   margin-left: auto;
 }
 
-/* The title doubles as the library trigger whenever the sidebar is not pinned. */
+/* The title doubles as the library trigger: the tag tree drops down behind it. */
 .list-title-group {
   flex: 1;
   min-width: 0;
@@ -642,7 +624,7 @@ button.disclosure:hover {
 }
 
 /*
- * The sidebar's contents, dropped from the title. Deliberately not clipped: the
+ * The library's contents, dropped from the title. Deliberately not clipped: the
  * tag rows carry menus that need to escape, and the scroll sits on the inner
  * `.sidebar-scroll` instead.
  */
@@ -1809,62 +1791,9 @@ button.disclosure:hover {
 
 .lp .mock-body {
   display: grid;
-  grid-template-columns: 5.6rem 7.6rem minmax(0, 1fr);
+  grid-template-columns: 7.6rem minmax(0, 1fr);
   min-height: 19rem;
   font-size: 11px;
-}
-
-.lp .mock-sidebar {
-  display: flex;
-  flex-direction: column;
-  gap: 0.28rem;
-  padding: 0.7rem 0.5rem;
-  border-right: 2px solid var(--ink);
-  background: var(--paper);
-}
-
-.lp .mock-side-brand {
-  display: flex;
-  align-items: center;
-  gap: 0.3rem;
-  margin-bottom: 0.4rem;
-  font-family: var(--display);
-  font-weight: 800;
-  letter-spacing: -0.03em;
-}
-
-.lp .mock-side-row {
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-  padding: 0.2rem 0.32rem;
-  border: 2px solid transparent;
-  border-radius: 7px;
-  color: var(--ink-55);
-}
-
-.lp .mock-side-row[data-active='true'] {
-  border-color: var(--ink);
-  background: var(--sky);
-  color: var(--ink);
-  font-weight: 700;
-}
-
-.lp .mock-side-ico {
-  width: 8px;
-  height: 8px;
-  border: 2px solid currentColor;
-  border-radius: 3px;
-  opacity: 0.65;
-}
-
-.lp .mock-side-label {
-  margin-top: 0.5rem;
-  font-size: 8.5px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--ink-55);
 }
 
 .lp .mock-list {
@@ -1874,6 +1803,16 @@ button.disclosure:hover {
   padding: 0.6rem 0.45rem;
   border-right: 2px solid var(--ink);
   background: var(--paper-2);
+}
+
+.lp .mock-list-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-bottom: 0.2rem;
+  font-family: var(--display);
+  font-weight: 800;
+  letter-spacing: -0.03em;
 }
 
 .lp .mock-search {
@@ -2482,7 +2421,6 @@ button.disclosure:hover {
     grid-template-columns: 1fr;
   }
 
-  .lp .mock-sidebar,
   .lp .mock-list {
     display: none;
   }
@@ -2610,14 +2548,6 @@ button.disclosure:hover {
   }
 }
 
-.sidebar-scrim {
-  position: fixed;
-  inset: 0;
-  z-index: 25;
-  background: rgba(10, 11, 15, 0.35);
-  animation: fade var(--transition);
-}
-
 @media (max-width: 720px) {
   .mobile-only {
     display: inline-flex;
@@ -2629,22 +2559,6 @@ button.disclosure:hover {
 
   .app {
     position: relative;
-  }
-
-  .sidebar {
-    position: absolute;
-    inset: 0 auto 0 0;
-    z-index: 30;
-    flex-basis: min(17rem, 82vw);
-    width: min(17rem, 82vw);
-    box-shadow: var(--shadow-pop);
-    animation: slide-in 180ms cubic-bezier(0.32, 0.72, 0, 1);
-  }
-
-  @keyframes slide-in {
-    from {
-      transform: translateX(-100%);
-    }
   }
 
   .note-list,
@@ -2691,7 +2605,7 @@ button.disclosure:hover {
 
   /* Hide the editor's scrollbar on phones: the 10px track eats the narrow
      column, and it lights up on every keystroke via the focus-within rule.
-     Touch scrolling needs no chrome. List and sidebar keep theirs. */
+     Touch scrolling needs no chrome. The list keeps its own. */
   .editor-host .cm-scroller {
     scrollbar-width: none;
   }

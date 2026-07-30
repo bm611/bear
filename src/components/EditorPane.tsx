@@ -20,7 +20,6 @@ import {
   PinIcon,
   QuoteIcon,
   RestoreIcon,
-  SidebarIcon,
   TableIcon,
   TodoIcon,
   TrashIcon,
@@ -246,16 +245,6 @@ export function EditorPane({ note, viewRef, onBack, onTagNavigate }: EditorPaneP
         ) : null}
 
         <div className="toolbar-group desktop-only" role="group" aria-label="Panes">
-          <button
-            type="button"
-            className="icon-button"
-            aria-label="Toggle sidebar"
-            aria-pressed={preferences.sidebarVisible}
-            title={`Toggle sidebar (${mod('1')})`}
-            onClick={() => setPreferences({ sidebarVisible: !preferences.sidebarVisible })}
-          >
-            <SidebarIcon />
-          </button>
           <button
             type="button"
             className="icon-button"

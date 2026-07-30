@@ -55,7 +55,7 @@ export function matchesFilter(note: Note, filter: Filter, now = Date.now()): boo
   }
 }
 
-/** Notes visible for the current sidebar selection and search box. */
+/** Notes visible for the current library selection and search box. */
 export function visibleNotes(notes: Note[], filter: Filter, query: string, now = Date.now()): Note[] {
   const parsed = parseQuery(query)
   const searching = parsed.terms.length > 0 || parsed.tags.length > 0

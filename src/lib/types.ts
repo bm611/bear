@@ -28,14 +28,13 @@ export interface Preferences {
   font: EditorFont
   fontSize: number
   sort: SortMode
-  sidebarVisible: boolean
   listVisible: boolean
 }
 
 /**
- * A pending tag edit. It lives in the store rather than in the sidebar because
- * the library popover closes the moment one of these opens, and the dialog has
- * to outlive it.
+ * A pending tag edit. It lives in the store rather than in the library popover
+ * because that closes the moment one of these opens, and the dialog has to
+ * outlive it.
  */
 export type TagDialog = { kind: 'rename' | 'delete'; tag: string }
 

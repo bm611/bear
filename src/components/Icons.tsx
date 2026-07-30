@@ -19,7 +19,6 @@ import {
   LeftToRightBlockQuoteIcon,
   LeftToRightListBulletIcon,
   Link02Icon,
-  Menu01Icon,
   MoreHorizontalIcon,
   Note01Icon,
   PinIcon as PinGlyph,
@@ -28,7 +27,6 @@ import {
   RefreshIcon,
   Search01Icon,
   Settings01Icon,
-  SidebarLeft01Icon,
   SidebarRight01Icon,
   SourceCodeIcon,
   Sun03Icon,
@@ -69,7 +67,7 @@ export function SlateMark({ size = 20, ...rest }: { size?: number } & React.SVGP
       {...rest}
     >
       {/* The frame is set lighter than the writing on it, so the three strokes
-          stay legible where the mark is small (12px in the sidebar mock). */}
+          stay legible where the mark is small (12px in the list mock). */}
       <rect x="3.2" y="3.2" width="17.6" height="17.6" rx="4.2" strokeWidth={1.25} />
       <g strokeWidth={1.85}>
         <path d="M7.6 15.4 9.7 8.9" />
@@ -93,9 +91,7 @@ export const RestoreIcon = glyph(DeletePutBackIcon, 'RestoreIcon')
 // Chrome
 export const SearchIcon = glyph(Search01Icon, 'SearchIcon')
 export const PlusIcon = glyph(PlusSignIcon, 'PlusIcon')
-export const SidebarIcon = glyph(SidebarLeft01Icon, 'SidebarIcon')
 export const ListIcon = glyph(SidebarRight01Icon, 'ListIcon')
-export const MenuIcon = glyph(Menu01Icon, 'MenuIcon')
 export const MoreIcon = glyph(MoreHorizontalIcon, 'MoreIcon')
 export const ChevronRight = glyph(ArrowRight01Icon, 'ChevronRight')
 export const ChevronDown = glyph(ArrowDown01Icon, 'ChevronDown')

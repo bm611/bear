@@ -49,15 +49,15 @@ ticks the todo off in the document itself.
 
 ## The library
 
-Smart filters and the tag tree live behind the note list's title: click it — or
-whatever tag you are browsing — and the whole library drops down, one click from
-anywhere without a pane of its own. Everything the old sidebar held is there,
-counts included, and picking something dismisses it.
+There is one sidebar: the note list. Smart filters and the tag tree live behind
+its title — click "Notes", or whatever tag you are browsing, and the whole
+library drops down, one click from anywhere without a pane of its own.
+Everything is there, counts included, and picking something dismisses it.
 
-Prefer it pinned? <kbd>⌘1</kbd> puts it back as a permanent pane, and that choice
-sticks. Pinned or not, one `LibraryPanel` renders both, so the two routes cannot
-drift apart. Below 720px neither applies: the panes stack and the hamburger slides
-the library over, as before.
+The list pane carries the rest of what a sidebar used to: the brand and the
+new-note button up top, a note count along the bottom, settings behind the gear
+by the title. Below 720px the two panes stack and the same dropdown serves the
+narrow layout.
 
 ## Type and icons
 
@@ -72,8 +72,8 @@ Icons come from [Hugeicons](https://hugeicons.com) (free set) via
 `@hugeicons/react`. `src/components/Icons.tsx` maps each Hugeicons glyph to a
 named component so the rest of the app imports `TrashIcon` rather than
 `Delete02Icon`, and one wrapper fixes the size and stroke weight everywhere.
-The slate in the sidebar is the app's own mark, drawn in the same 24×24 grid
-and stroke weight as the Hugeicons set so it sits with them cleanly.
+The slate in the list header is the app's own mark, drawn in the same 24×24
+grid and stroke weight as the Hugeicons set so it sits with them cleanly.
 
 ## Layout
 
@@ -104,7 +104,6 @@ rename does not reset anyone's preferences. Use **Settings → Export backup**
 for a JSON copy of the library as an extra safety net.
 
 Preference defaults occasionally change, and the stored schema version says when.
-Version 2 moved the library into the note list title: a payload written before it
-pinned the sidebar only because that was the default, so the upgrade drops that
-one field and keeps the rest. Pin it again with <kbd>⌘1</kbd> and the choice
-persists, because it was then made under the current schema.
+Version 2 moved the library out of its own sidebar and into the note list title;
+the pinned-sidebar flag payloads carried before that is retired, and stale values
+are ignored on load.

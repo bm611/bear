@@ -144,15 +144,13 @@ function MockEditorText({ text }: { text: string }) {
   )
 }
 
-const SIDEBAR_ROWS = ['Notes', 'Today', 'Todo', 'Archive']
-const SIDEBAR_TAGS = ['#recipes', '#ideas', '#reading']
 const LIST_NOTES = [
   { title: 'Sourdough, take four', meta: 'Just now', width: '82%', active: true },
   { title: 'Reading list', meta: 'Tuesday', width: '64%', active: false },
   { title: 'Weekly review', meta: 'Sunday', width: '74%', active: false },
 ]
 
-/** A miniature of the real three-pane app, typing a note to itself. */
+/** A miniature of the real two-pane app, typing a note to itself. */
 function MockWindow() {
   const typed = useTypewriter(SNIPPET)
 
@@ -166,27 +164,11 @@ function MockWindow() {
           <span className="mock-titlebar-title">sourdough-take-four.md</span>
         </div>
         <div className="mock-body">
-          <div className="mock-sidebar">
-            <div className="mock-side-brand">
+          <div className="mock-list">
+            <span className="mock-list-brand">
               <SlateMark size={12} />
               Slate
-            </div>
-            {SIDEBAR_ROWS.map((row) => (
-              <span className="mock-side-row" data-active={row === 'Notes'} key={row}>
-                <span className="mock-side-ico" />
-                {row}
-              </span>
-            ))}
-            <span className="mock-side-label">Tags</span>
-            {SIDEBAR_TAGS.map((tag) => (
-              <span className="mock-side-row" key={tag}>
-                <span className="mock-side-ico" />
-                {tag}
-              </span>
-            ))}
-          </div>
-
-          <div className="mock-list">
+            </span>
             <span className="mock-search" />
             {LIST_NOTES.map((note) => (
               <span className="mock-note" data-active={note.active} key={note.title}>

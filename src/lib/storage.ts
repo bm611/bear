@@ -4,9 +4,9 @@ const STORAGE_KEY = 'slate.library.v1'
 /** The key used before the rename. Read once, then retired. */
 const LEGACY_STORAGE_KEY = 'bear.library.v1'
 /**
- * 2 moved the library into the note list title. A payload written before that
- * carries `sidebarVisible: true` only because it used to be the default, so the
- * upgrade drops it rather than preserving a choice nobody made.
+ * 2 moved the library out of the pinned sidebar and into the note list title.
+ * The `sidebarVisible` flag that tracked it is retired — payloads that still
+ * carry one simply have it ignored.
  */
 const SCHEMA_VERSION = 2
 
@@ -15,10 +15,6 @@ export const defaultPreferences: Preferences = {
   font: 'sans',
   fontSize: 17,
   sort: 'modified',
-  // The library starts unpinned: the note list title drops the same tag tree on
-  // demand, and the width goes to the editor instead. Anyone who prefers the pane
-  // pins it back with the sidebar shortcut, and that choice persists.
-  sidebarVisible: false,
   listVisible: true,
 }
 
@@ -59,7 +55,7 @@ function coerceFilter(value: unknown): Filter {
   return kind ? { kind } : { kind: 'all' }
 }
 
-function coercePreferences(value: unknown, storedVersion: number): Preferences {
+function coercePreferences(value: unknown): Preferences {
   if (!isRecord(value)) return { ...defaultPreferences }
   const themes = ['light', 'dark', 'system'] as const
   const fonts = ['sans', 'serif', 'mono'] as const
@@ -70,9 +66,6 @@ function coercePreferences(value: unknown, storedVersion: number): Preferences {
     font: fonts.find((f) => f === value.font) ?? defaultPreferences.font,
     fontSize: Math.min(24, Math.max(13, Math.round(size))),
     sort: sorts.find((s) => s === value.sort) ?? defaultPreferences.sort,
-    // Honour the pin only once it has been chosen under the current schema —
-    // see SCHEMA_VERSION. Reset payloads keep every other preference.
-    sidebarVisible: storedVersion >= 2 && value.sidebarVisible === true,
     listVisible: value.listVisible !== false,
   }
 }
@@ -103,11 +96,9 @@ export function loadLibrary(): PersistedLibrary | null {
   try {
     const parsed: unknown = JSON.parse(raw)
     if (!isRecord(parsed)) return null
-    // An unversioned payload predates the field, so read it as the first schema.
-    const storedVersion = typeof parsed.version === 'number' ? parsed.version : 1
     return {
       version: SCHEMA_VERSION,
-      preferences: coercePreferences(parsed.preferences, storedVersion),
+      preferences: coercePreferences(parsed.preferences),
       filter: coerceFilter(parsed.filter),
       selectedId: typeof parsed.selectedId === 'string' ? parsed.selectedId : null,
     }

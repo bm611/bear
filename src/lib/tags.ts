@@ -113,7 +113,7 @@ export function noteHasTag(note: Note, filter: string): boolean {
 }
 
 /**
- * Builds the nested sidebar tree. Counts include notes tagged with any
+ * Builds the nested tag tree. Counts include notes tagged with any
  * descendant, so `#work` shows everything filed under `work/*` too.
  */
 export function buildTagTree(notes: Note[]): TagNode[] {

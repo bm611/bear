@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { EditorView } from '@codemirror/view'
-import { Sidebar } from './components/Sidebar'
 import { NoteList } from './components/NoteList'
 import { EditorPane } from './components/EditorPane'
 import { ShortcutsSheet } from './components/ShortcutsSheet'
@@ -167,22 +166,18 @@ function AppShell() {
   const searchRef = useRef<HTMLInputElement>(null)
   const [shortcutsOpen, setShortcutsOpen] = useState(false)
   const [mobilePane, setMobilePane] = useState<'list' | 'editor'>('list')
-  const [mobileSidebar, setMobileSidebar] = useState(false)
 
-  // Below the breakpoint the three panes stack: one at a time, sidebar on top.
+  // Below the breakpoint the two panes stack: one at a time.
   const narrow = useMediaQuery(NARROW_QUERY)
-  const sidebarOpen = narrow ? mobileSidebar : preferences.sidebarVisible
   const listOpen = narrow ? mobilePane === 'list' : preferences.listVisible
   const editorOpen = narrow ? mobilePane === 'editor' : true
 
   const openNote = useCallback(() => {
     setMobilePane('editor')
-    setMobileSidebar(false)
   }, [])
 
   const showList = useCallback(() => {
     setMobilePane('list')
-    setMobileSidebar(false)
   }, [])
 
   const focusEditor = useCallback(() => {
@@ -221,15 +216,8 @@ function AppShell() {
         case 'f':
           event.preventDefault()
           setMobilePane('list')
-          setMobileSidebar(false)
           if (!preferences.listVisible) setPreferences({ listVisible: true })
           requestAnimationFrame(() => searchRef.current?.focus())
-          return
-        case '1':
-          if (event.altKey) return
-          event.preventDefault()
-          if (narrow) setMobileSidebar((open) => !open)
-          else setPreferences({ sidebarVisible: !preferences.sidebarVisible })
           return
         case '2':
           if (event.altKey) return
@@ -273,7 +261,6 @@ function AppShell() {
     narrow,
     note,
     preferences.listVisible,
-    preferences.sidebarVisible,
     setPreferences,
     showToast,
     step,
@@ -283,23 +270,6 @@ function AppShell() {
 
   return (
     <div className="app">
-      {sidebarOpen ? (
-        <Sidebar
-          onShowShortcuts={() => setShortcutsOpen(true)}
-          onNewNote={createNote}
-          onNavigate={() => {
-            if (narrow) {
-              setMobileSidebar(false)
-              setMobilePane('list')
-            }
-          }}
-        />
-      ) : null}
-
-      {narrow && sidebarOpen ? (
-        <div className="sidebar-scrim" role="presentation" onPointerDown={() => setMobileSidebar(false)} />
-      ) : null}
-
       {listOpen ? (
         <NoteList
           searchRef={searchRef}
@@ -307,10 +277,6 @@ function AppShell() {
             openNote()
             focusEditor()
           }}
-          onOpenSidebar={narrow ? () => setMobileSidebar(true) : undefined}
-          // Unpinned, the library moves into the list title rather than costing a
-          // pane. Narrow keeps its drawer, which the hamburger already opens.
-          libraryMenu={!narrow && !sidebarOpen}
           onShowShortcuts={() => setShortcutsOpen(true)}
         />
       ) : null}

@@ -60,42 +60,22 @@ describe('loadLibrary', () => {
     expect(localStorage.getItem(LEGACY_KEY)).toBeNull()
   })
 
-  it('unpins the sidebar once when upgrading from the first schema', () => {
-    // v1 stored `true` for everyone because that was the default, so preserving
-    // it would hide the library-in-the-title layout from every existing reader.
+  it('ignores a stale sidebar flag when upgrading from the first schema', () => {
+    // v1 stored a pinned-sidebar flag that no longer exists in the type; the
+    // load must skip it without disturbing anything else.
     localStorage.setItem(
       KEY,
       JSON.stringify({ version: 1, preferences: { ...defaultPreferences, sidebarVisible: true, font: 'serif' } }),
     )
 
     const loaded = loadLibrary()
-    expect(loaded?.preferences.sidebarVisible).toBe(false)
-    // The reset is surgical: every other preference survives the upgrade.
+    expect(loaded?.preferences).not.toHaveProperty('sidebarVisible')
     expect(loaded?.preferences.font).toBe('serif')
   })
 
-  it('treats an unversioned payload as the first schema', () => {
-    localStorage.setItem(KEY, JSON.stringify({ preferences: { sidebarVisible: true } }))
-    expect(loadLibrary()?.preferences.sidebarVisible).toBe(false)
-  })
-
-  it('keeps the pin once it has been chosen under the current schema', () => {
-    saveLibrary({
-      preferences: { ...defaultPreferences, sidebarVisible: true },
-      filter: { kind: 'all' },
-      selectedId: null,
-    })
-
-    expect(loadLibrary()?.preferences.sidebarVisible).toBe(true)
-  })
-
-  it('leaves the sidebar unpinned when the preference was never stored', () => {
-    // An absent value must not read as "pinned" the way a missing `listVisible`
-    // reads as "shown".
+  it('shows the note list when its preference was never stored', () => {
     localStorage.setItem(KEY, JSON.stringify({ version: 2, preferences: { theme: 'dark' } }))
-    const loaded = loadLibrary()
-    expect(loaded?.preferences.sidebarVisible).toBe(false)
-    expect(loaded?.preferences.listVisible).toBe(true)
+    expect(loadLibrary()?.preferences.listVisible).toBe(true)
   })
 
   it('prefers the current key when both are present', () => {

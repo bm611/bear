@@ -6,7 +6,7 @@ const WELCOME = `# Welcome to Slate
 A small, fast place to keep everything you write. Notes are plain markdown and they save as you type, synced to your account.
 
 ## Organise with hashtags
-Forget folders. Just write a tag anywhere in a note and it appears in the sidebar:
+Forget folders. Just write a tag anywhere in a note and it appears in the library — click the list's title to open it:
 
 #welcome #ideas/writing
 
@@ -38,7 +38,7 @@ Headings, numbered lists, tables and horizontal rules all work the way you would
 | --- | --- |
 | ⌘N | New note |
 | ⌘F | Search |
-| ⌘1 / ⌘2 | Toggle sidebar and note list |
+| ⌘2 | Show or hide the note list |
 | ⌘/ | Every other shortcut |
 
 Delete this note whenever you like — press ⌘⌫.`

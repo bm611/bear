@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useStore } from '../store/useStore'
 import { useVisibleNotes } from '../hooks/useVisibleNotes'
 import { noteTitle, notePreview, todoStats, UNTITLED } from '../lib/notes'
@@ -13,12 +13,12 @@ import { SettingsMenu } from './SettingsMenu'
 import {
   ChevronDown,
   CloseIcon,
-  MenuIcon,
   MoreIcon,
   PinIcon,
   PlusIcon,
   SearchIcon,
   SettingsIcon,
+  SlateMark,
   TodoIcon,
   TrashIcon,
 } from './Icons'
@@ -45,24 +45,12 @@ function filterTitle(filter: Filter): string {
 interface NoteListProps {
   searchRef: React.RefObject<HTMLInputElement | null>
   onOpenNote?: () => void
-  /** Provided only in the stacked layout, where the sidebar slides over. */
-  onOpenSidebar?: () => void
-  /**
-   * Turns the title into the library trigger. Set when the sidebar is not pinned,
-   * so the tag tree stays one click away without holding a pane open for it.
-   */
-  libraryMenu?: boolean
   onShowShortcuts?: () => void
 }
 
-export function NoteList({
-  searchRef,
-  onOpenNote,
-  onOpenSidebar,
-  libraryMenu,
-  onShowShortcuts,
-}: NoteListProps) {
+export function NoteList({ searchRef, onOpenNote, onShowShortcuts }: NoteListProps) {
   const filter = useStore((state) => state.filter)
+  const notes = useStore((state) => state.notes)
   const query = useStore((state) => state.query)
   const selectedId = useStore((state) => state.selectedId)
   const sort = useStore((state) => state.preferences.sort)
@@ -82,6 +70,10 @@ export function NoteList({
   const menuTriggerRef = useRef<HTMLButtonElement>(null)
 
   const visible = useVisibleNotes()
+  const liveCount = useMemo(
+    () => notes.filter((note) => note.trashedAt === null && !note.archived).length,
+    [notes],
+  )
 
   // Keep the selected card in view when selection moves by keyboard.
   useEffect(() => {
@@ -105,75 +97,76 @@ export function NoteList({
   return (
     <section className="note-list" aria-label={`${title} notes`}>
       <div className="list-header">
-        <div className="list-title-row">
-          {onOpenSidebar ? (
-            <button type="button" className="icon-button" aria-label="Show library" onClick={onOpenSidebar}>
-              <MenuIcon />
+        <div className="list-brand-row">
+          <span className="list-brand">
+            <SlateMark size={20} />
+            Slate
+          </span>
+          <div className="list-brand-actions">
+            <button
+              type="button"
+              className="icon-button"
+              title={`New note (${mod('N')})`}
+              aria-label="New note"
+              onClick={createNote}
+            >
+              <PlusIcon />
             </button>
-          ) : null}
+          </div>
+        </div>
 
-          {libraryMenu ? (
-            <div className="list-title-group menu-anchor">
-              <h1 className="list-title">
-                <button
-                  ref={libraryTriggerRef}
-                  type="button"
-                  className="list-title-trigger"
-                  aria-label={`${title} — browse library`}
-                  aria-expanded={libraryOpen}
-                  title={title}
-                  onClick={() => setLibraryOpen((open) => !open)}
-                >
-                  <span className="list-title-text">{title}</span>
-                  <ChevronDown size={14} />
-                </button>
-              </h1>
-
-              {libraryOpen ? (
-                <Popover
-                  className="library-popover"
-                  label="Library"
-                  triggerRef={libraryTriggerRef}
-                  onClose={() => setLibraryOpen(false)}
-                >
-                  <LibraryPanel variant="popover" onNavigate={() => setLibraryOpen(false)} />
-                </Popover>
-              ) : null}
-            </div>
-          ) : (
-            <h1 className="list-title" title={title}>
-              {title}
+        <div className="list-title-row">
+          <div className="list-title-group menu-anchor">
+            <h1 className="list-title">
+              <button
+                ref={libraryTriggerRef}
+                type="button"
+                className="list-title-trigger"
+                aria-label={`${title} — browse library`}
+                aria-expanded={libraryOpen}
+                title={title}
+                onClick={() => setLibraryOpen((open) => !open)}
+              >
+                <span className="list-title-text">{title}</span>
+                <ChevronDown size={14} />
+              </button>
             </h1>
-          )}
+
+            {libraryOpen ? (
+              <Popover
+                className="library-popover"
+                label="Library"
+                triggerRef={libraryTriggerRef}
+                onClose={() => setLibraryOpen(false)}
+              >
+                <LibraryPanel onNavigate={() => setLibraryOpen(false)} />
+              </Popover>
+            ) : null}
+          </div>
 
           <div className="list-title-actions menu-anchor">
-            {/* Without the sidebar pinned, its footer controls have no home. */}
-            {libraryMenu ? (
-              <>
-                <button
-                  ref={settingsTriggerRef}
-                  type="button"
-                  className="icon-button"
-                  aria-label="Settings"
-                  aria-expanded={settingsOpen}
-                  title="Settings"
-                  onClick={() => {
-                    setMenuOpen(false)
-                    setSettingsOpen((open) => !open)
-                  }}
-                >
-                  <SettingsIcon />
-                </button>
-                {settingsOpen ? (
-                  <SettingsMenu
-                    style={{ top: '2rem' }}
-                    align="right"
-                    triggerRef={settingsTriggerRef}
-                    onClose={() => setSettingsOpen(false)}
-                    onShowShortcuts={onShowShortcuts}
-                  />
-                ) : null}
-              </>
+            <button
+              ref={settingsTriggerRef}
+              type="button"
+              className="icon-button"
+              aria-label="Settings"
+              aria-expanded={settingsOpen}
+              title="Settings"
+              onClick={() => {
+                setMenuOpen(false)
+                setSettingsOpen((open) => !open)
+              }}
+            >
+              <SettingsIcon />
+            </button>
+            {settingsOpen ? (
+              <SettingsMenu
+                style={{ top: '2rem' }}
+                align="right"
+                triggerRef={settingsTriggerRef}
+                onClose={() => setSettingsOpen(false)}
+                onShowShortcuts={onShowShortcuts}
+              />
             ) : null}
             <button
               ref={menuTriggerRef}
@@ -187,15 +180,6 @@ export function NoteList({
               }}
             >
               <MoreIcon />
-            </button>
-            <button
-              type="button"
-              className="icon-button"
-              title={`New note (${mod('N')})`}
-              aria-label="New note"
-              onClick={createNote}
-            >
-              <PlusIcon />
             </button>
 
             {menuOpen ? (
@@ -292,6 +276,12 @@ export function NoteList({
             />
           ))
         )}
+      </div>
+
+      <div className="list-footer">
+        <span className="list-footer-count">
+          {liveCount} note{liveCount === 1 ? '' : 's'}
+        </span>
       </div>
 
       {confirmEmpty ? (
