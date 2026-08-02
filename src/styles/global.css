@@ -1,13 +1,16 @@
 /* ---------------------------------------------------------------- tokens */
 
 :root {
-  --font-ui: 'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui,
+  /* Blueprint stack: DM Sans for UI body, Space Mono for code and mono
+     labels, Anybody for the compact display moments (brand, sheet titles). */
+  --font-ui: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui,
     'Helvetica Neue', sans-serif;
   --font-inter: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
   --font-system: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
     sans-serif;
-  --font-mono: 'Google Sans Code', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas,
-    'Liberation Mono', monospace;
+  --font-mono: 'Space Mono', 'Google Sans Code', ui-monospace, SFMono-Regular, 'SF Mono', Menlo,
+    Consolas, 'Liberation Mono', monospace;
+  --font-brand: 'Anybody', 'DM Sans', -apple-system, system-ui, sans-serif;
 
   --editor-font: var(--font-ui);
   /* Body copy sits at 17px by default. */
@@ -24,38 +27,35 @@
   --editor-measure-scale: 40;
   --editor-measure: calc(var(--editor-measure-scale) * 1em);
 
-  /* Mono carries the "paper & sticker" identity across the chrome — labels,
-     titles, buttons. Note *content* stays on --editor-font. */
+  /* Mono labels carry the schematic identity across the chrome; note
+     *content* stays on --editor-font. */
   --font-display: var(--font-mono);
 
   --sidebar-width: 15rem;
   --list-width: 20rem;
-  --radius: 8px;
+  --radius: 3px;
   --transition: 140ms cubic-bezier(0.32, 0.72, 0, 1);
-  --bounce: 180ms cubic-bezier(0.34, 1.56, 0.64, 1);
 
-  /* Brand constants. These are deliberately theme-independent: dark mode
-     remaps the semantic tokens below, never the palette itself, so a honey
-     sticker stays honey on both papers. */
-  --ink: #171310;
-  --paper: #fdf3e3;
-  --paper-2: #fffaf1;
-  --honey: #ffc233;
+  /* Brand constants, theme-independent: a green chip is green in the dark
+     too. The old candy names stay as slot names. */
+  --ink: #3d3b4f;
+  --paper: #f7f7f7;
+  --paper-2: #ffffff;
+  --honey: #28e99f;
   --berry: #ff6b5b;
-  --mint: #5fdfa6;
-  --sky: #85c7ff;
-  --grape: #c5a8ff;
+  --mint: #c5ffd6;
+  --sky: #e6e6e6;
+  --grape: #ffcffe;
 
-  /* Sticker fills, shared by both themes so the app matches the landing.
-     The library row is a full sticker — you meet it once per navigation. The
-     note list is scanned continuously, so the selected card gets the accent as
-     a bar rather than a fill; see `.note-card[aria-current='true']`. */
-  --row-active-bg: var(--sky);
+  /* Fills shared by both themes. The library row is a full chip — you meet it
+     once per navigation — while the note list is scanned continuously, so the
+     selected card takes the accent as a bar down its edge. */
+  --row-active-bg: var(--mint);
   --card-active-accent: var(--honey);
   --sticker-fg: var(--ink);
 }
 
-/* Warm paper, ink outlines, hard shadows — the "day" sheet. */
+/* Fog paper, slate hairlines, flat surfaces — the daylight schematic. */
 :root,
 [data-theme='light'] {
   color-scheme: light;
@@ -63,94 +63,87 @@
   --edge-color: var(--ink);
   --shadow-ink: var(--ink);
 
-  /* A burnt-caramel accent: dark enough to read as text on paper *and* to
-     carry --text-inverse when it is used as a fill. Honey can do neither. */
-  --accent: #9a5a13;
-  --accent-hover: #7d470c;
-  --list-marker: #9a5a13;
-  --accent-soft: rgba(154, 90, 19, 0.45);
-  --accent-wash: rgba(255, 194, 51, 0.3);
-  --accent-wash-strong: rgba(255, 194, 51, 0.62);
+  /* A deep mint: dark enough to read as text on the papers and to carry
+     --text-inverse as a fill, where the brand green fails both. */
+  --accent: #0d8a58;
+  --accent-hover: #0a7048;
+  --list-marker: #0d8a58;
+  --accent-soft: rgba(13, 138, 88, 0.45);
+  --accent-wash: rgba(40, 233, 159, 0.32);
+  --accent-wash-strong: rgba(40, 233, 159, 0.55);
 
-  --sidebar-bg: #f7edd8;
-  --list-bg: #fdf5e7;
-  --surface: #fffaf1;
-  --surface-raised: #fffdf8;
-  --surface-hover: rgba(23, 19, 16, 0.06);
-  --surface-active: rgba(23, 19, 16, 0.11);
+  --sidebar-bg: #e3e3e3;
+  --list-bg: #ececec;
+  --surface: #f7f7f7;
+  --surface-raised: #ffffff;
+  --surface-hover: rgba(61, 59, 79, 0.06);
+  --surface-active: rgba(61, 59, 79, 0.11);
 
-  --text-primary: #171310;
-  --text-secondary: #574c3f;
-  /* Tertiary carries dates, counts and placeholders at 11–12px, so it has to
-     clear 4.5:1 on the two warmest papers it lands on — 5.09 on --list-bg,
-     4.74 on --sidebar-bg. */
-  --text-tertiary: #736759;
-  --text-inverse: #fffaf1;
+  --text-primary: #3d3b4f;
+  --text-secondary: #524f68;
+  --text-tertiary: #757284;
+  --text-inverse: #eeeeee;
 
-  --rule: rgba(23, 19, 16, 0.14);
-  /* Pane edges used to wear the full ink sticker outline; at app scale a 2px
-     black bar between panes reads loud, so they get their own quieter tint. */
-  --rule-pane: rgba(23, 19, 16, 0.22);
+  --rule: rgba(85, 83, 104, 0.2);
+  /* Pane edges get a slightly stronger hairline than in-pane rules. */
+  --rule-pane: rgba(85, 83, 104, 0.3);
   --rule-strong: var(--edge-color);
-  --selection: rgba(255, 194, 51, 0.5);
+  --selection: rgba(40, 233, 159, 0.45);
   /* Markdown markers recede, but they are editable text and not decoration:
      they have to stay findable, so they hold ~3:1 rather than fading out. */
-  --syntax-mark: #9e8f79;
-  --code-bg: rgba(23, 19, 16, 0.07);
-  --code-text: #9a5a13;
+  --syntax-mark: #9b98a8;
+  --code-bg: rgba(61, 59, 79, 0.06);
+  --code-text: #0d8a58;
   --todo-border: var(--ink);
-  --highlight: #ffe08a;
-  --table-row: rgba(23, 19, 16, 0.045);
-  --danger: #cc3a28;
+  --highlight: rgba(40, 233, 159, 0.42);
+  --table-row: rgba(61, 59, 79, 0.045);
+  --danger: #cf3a28;
 
-  --shadow-pop: 5px 5px 0 var(--shadow-ink);
+  --shadow-pop: 0 18px 34px -24px rgba(61, 59, 79, 0.4);
 }
 
-/* Same paper after dark: warm charcoal, lifted edges, identical stickers. */
+/* Same schematic after dark: deepened slate surfaces, fog ink, hairlines
+   lifted to ~45% so controls still read. The fills themselves don't move. */
 [data-theme='dark'] {
   color-scheme: dark;
 
-  /* Black-on-black reads as nothing, so the outline lifts to a warm mid-tone
-     while the drop shadow goes the other way, to true black. The outline is
-     what identifies a button or a menu here, so it holds ~3:1 against the
-     surfaces it is drawn on. */
-  --edge-color: #7d6e5c;
+  --edge-color: rgba(238, 238, 238, 0.42);
   --shadow-ink: #000000;
 
-  --accent: #ffc233;
-  --accent-hover: #ffd166;
-  --list-marker: #ffc233;
-  --accent-soft: rgba(255, 194, 51, 0.5);
-  --accent-wash: rgba(255, 194, 51, 0.14);
-  --accent-wash-strong: rgba(255, 194, 51, 0.3);
+  --accent: #28e99f;
+  --accent-hover: #4df0b2;
+  --list-marker: #28e99f;
+  --accent-soft: rgba(40, 233, 159, 0.5);
+  --accent-wash: rgba(40, 233, 159, 0.16);
+  --accent-wash-strong: rgba(40, 233, 159, 0.28);
 
-  --sidebar-bg: #191511;
-  --list-bg: #1f1a15;
-  --surface: #251f19;
-  --surface-raised: #2f2820;
-  --surface-hover: rgba(255, 248, 235, 0.07);
-  --surface-active: rgba(255, 248, 235, 0.12);
+  --sidebar-bg: #24232f;
+  --list-bg: #292836;
+  --surface: #2d2c3b;
+  --surface-raised: #353445;
+  --surface-hover: rgba(238, 238, 238, 0.07);
+  --surface-active: rgba(238, 238, 238, 0.12);
 
-  --text-primary: #f4ece0;
-  --text-secondary: #bcae9c;
+  --text-primary: #eeeeee;
+  --text-secondary: #b9b7c8;
   /* As in light: 4.5:1 against every surface it sits on, --surface-raised
      (menus, popovers) included. */
-  --text-tertiary: #9d9182;
-  --text-inverse: #171310;
+  --text-tertiary: #94919f;
+  --text-inverse: #3d3b4f;
 
-  --rule: rgba(255, 248, 235, 0.11);
-  --rule-pane: rgba(255, 248, 235, 0.18);
-  --rule-strong: var(--edge-color);
-  --selection: rgba(255, 194, 51, 0.28);
-  --syntax-mark: #7b7162;
-  --code-bg: rgba(255, 248, 235, 0.08);
-  --code-text: #ffd88a;
-  --todo-border: #7b6f5f;
-  --highlight: rgba(255, 194, 51, 0.32);
-  --table-row: rgba(255, 248, 235, 0.045);
-  --danger: #ff6b5b;
+  --rule: rgba(238, 238, 238, 0.13);
+  --rule-pane: rgba(238, 238, 238, 0.2);
+  --rule-strong: rgba(238, 238, 238, 0.45);
+  --selection: rgba(40, 233, 159, 0.32);
+  --syntax-mark: #6e6b80;
+  --code-bg: rgba(238, 238, 238, 0.08);
+  --code-text: #7ff4c3;
+  --todo-border: rgba(238, 238, 238, 0.55);
+  --highlight: rgba(40, 233, 159, 0.32);
+  --table-row: rgba(238, 238, 238, 0.05);
+  --danger: #ff7666;
 
-  --shadow-pop: 5px 5px 0 var(--shadow-ink);
+  --shadow-pop: 0 18px 34px -18px rgba(0, 0, 0, 0.55);
 }
 
 /* ----------------------------------------------------------------- reset */
@@ -243,27 +236,21 @@ select {
   background: var(--surface);
 }
 
-.pane-divider {
-  width: 2px;
-  flex: 0 0 2px;
-  background: var(--edge-color);
-}
-
 .icon-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 1.85rem;
   height: 1.85rem;
-  border: 2px solid transparent;
-  border-radius: 8px;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
   color: var(--text-secondary);
   transition: background var(--transition), color var(--transition),
     border-color var(--transition);
 }
 
 .icon-button:hover {
-  border-color: var(--edge-color);
+  border-color: var(--rule-strong);
   background: var(--surface-hover);
   color: var(--text-primary);
 }
@@ -281,6 +268,7 @@ select {
 
 .icon-button:disabled:hover {
   background: none;
+  border-color: transparent;
 }
 
 .count-badge {
@@ -304,10 +292,11 @@ select {
 
 .empty-state h2 {
   margin: 0;
-  font-family: var(--font-display);
-  font-size: 1.05rem;
+  font-family: var(--font-brand);
+  font-size: 1.15rem;
   font-weight: 800;
-  letter-spacing: -0.035em;
+  font-stretch: 106%;
+  letter-spacing: -0.02em;
   color: var(--text-secondary);
 }
 
@@ -322,13 +311,14 @@ select {
   font-size: 0.85em;
   font-weight: 600;
   padding: 0.1em 0.4em;
-  border: 2px solid var(--edge-color);
-  border-radius: 6px;
-  box-shadow: 2px 2px 0 var(--shadow-ink);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
+  background: var(--surface-raised);
   color: var(--text-primary);
 }
 
 .boot-screen {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -341,25 +331,44 @@ select {
   color: var(--text-secondary);
 }
 
+/* Dot paper behind the boot card — same schematic as the landing. */
+.boot-screen::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.6;
+  background-image: radial-gradient(circle, rgba(61, 59, 79, 0.14) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+[data-theme='dark'] .boot-screen::before {
+  background-image: radial-gradient(circle, rgba(40, 233, 159, 0.09) 1px, transparent 1px);
+}
+
+.boot-screen > * {
+  position: relative;
+}
+
 .boot-mark {
   display: grid;
   place-items: center;
   width: 3.2rem;
   height: 3.2rem;
   margin-bottom: 0.4rem;
-  border: 3px solid var(--edge-color);
-  border-radius: 14px;
+  border: 1px solid var(--edge-color);
+  border-radius: var(--radius);
   background: var(--honey);
   color: var(--sticker-fg);
-  box-shadow: 4px 4px 0 var(--shadow-ink);
 }
 
 .boot-screen h1 {
   margin: 0;
-  font-family: var(--font-display);
-  font-size: 1.15rem;
+  font-family: var(--font-brand);
+  font-size: 1.25rem;
   font-weight: 800;
-  letter-spacing: -0.035em;
+  font-stretch: 108%;
+  letter-spacing: -0.02em;
   color: var(--text-primary);
 }
 
@@ -394,8 +403,8 @@ select {
   gap: 0.5rem;
   width: 100%;
   padding: 0.34rem 0.5rem;
-  border: 2px solid transparent;
-  border-radius: 8px;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
   text-align: left;
   color: var(--text-primary);
   transition: background var(--transition), border-color var(--transition);
@@ -405,9 +414,9 @@ select {
   background: var(--surface-hover);
 }
 
-/* Selected rows are stickers, not tints — same sky chip as the landing mock. */
+/* Selected rows are seafoam chips with a slate hairline — a marked cell. */
 .sidebar-row[aria-current='true'] {
-  border-color: var(--edge-color);
+  border-color: var(--rule-strong);
   background: var(--row-active-bg);
   color: var(--sticker-fg);
   font-weight: 600;
@@ -525,26 +534,22 @@ button.disclosure:hover {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-family: var(--font-display);
-  font-size: 1rem;
+  font-family: var(--font-brand);
+  font-size: 1.02rem;
   font-weight: 800;
-  letter-spacing: -0.045em;
+  font-stretch: 110%;
+  letter-spacing: 0;
+  text-transform: uppercase;
 }
 
-/* The mark sits in the same honey badge the landing nav uses. */
+/* The mark sits in the same green square the landing nav uses. */
 .list-brand svg {
   box-sizing: content-box;
-  padding: 0.2rem;
-  border: 2px solid var(--edge-color);
-  border-radius: 8px;
+  padding: 0.22rem;
+  border: 1px solid var(--edge-color);
+  border-radius: var(--radius);
   background: var(--honey);
   color: var(--sticker-fg);
-  transform: rotate(-5deg);
-  transition: transform var(--bounce);
-}
-
-.list-brand:hover svg {
-  transform: rotate(6deg);
 }
 
 .list-brand-actions {
@@ -559,7 +564,9 @@ button.disclosure:hover {
   padding: 0.5rem 0.95rem;
   border-top: 1px solid var(--rule);
   color: var(--text-tertiary);
-  font-size: 0.75rem;
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
 }
 
 .list-footer-count {
@@ -578,17 +585,17 @@ button.disclosure:hover {
   margin-left: auto;
 }
 
+/* Schematic data point: a square, not a dot. */
 .sync-dot {
   width: 0.45rem;
   height: 0.45rem;
   flex: 0 0 auto;
   border: 1px solid var(--edge-color);
-  border-radius: 50%;
-  background: var(--mint);
+  background: var(--honey);
 }
 
 .list-footer-sync[data-state='saving'] .sync-dot {
-  background: var(--honey);
+  background: var(--grape);
 }
 
 .list-footer-sync[data-state='error'] .sync-dot {
@@ -615,9 +622,9 @@ button.disclosure:hover {
 
 .list-title {
   font-family: var(--font-display);
-  font-size: 1rem;
-  font-weight: 800;
-  letter-spacing: -0.045em;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -651,8 +658,8 @@ button.disclosure:hover {
   max-width: 100%;
   margin-left: -0.35rem;
   padding: 0.1rem 0.35rem;
-  border: 2px solid transparent;
-  border-radius: 8px;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
   font: inherit;
   letter-spacing: inherit;
   color: inherit;
@@ -664,7 +671,7 @@ button.disclosure:hover {
 }
 
 .list-title-trigger[aria-expanded='true'] {
-  border-color: var(--edge-color);
+  border-color: var(--rule-strong);
   background: var(--row-active-bg);
   color: var(--sticker-fg);
 }
@@ -705,8 +712,8 @@ button.disclosure:hover {
   display: flex;
   flex-direction: column;
   max-height: min(26rem, calc(100vh - 12rem));
-  border: 2px solid var(--edge-color);
-  border-radius: 12px;
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
   background: var(--surface-raised);
   box-shadow: var(--shadow-pop);
   animation: pop var(--transition);
@@ -721,16 +728,15 @@ button.disclosure:hover {
   align-items: center;
   gap: 0.45rem;
   padding: 0.32rem 0.7rem;
-  border: 2px solid var(--edge-color);
-  border-radius: 999px;
+  border: 1px solid var(--rule-pane);
+  border-radius: var(--radius);
   background: var(--surface-raised);
   color: var(--text-tertiary);
-  transition: box-shadow var(--transition), transform var(--transition);
+  transition: border-color var(--transition);
 }
 
 .search-field:focus-within {
-  box-shadow: 3px 3px 0 var(--shadow-ink);
-  transform: translate(-1px, -1px);
+  border-color: var(--accent);
 }
 
 .search-field input {
@@ -757,12 +763,12 @@ button.disclosure:hover {
   display: block;
   width: 100%;
   padding: var(--card-padding, 0.82rem) 0.65rem;
-  border: 2px solid transparent;
-  border-radius: 11px;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
   text-align: left;
   color: inherit;
   transition: background var(--transition), border-color var(--transition),
-    box-shadow var(--transition), transform var(--transition);
+    box-shadow var(--transition);
 }
 
 /* The list is the only navigation this app has, so how many notes fit on a
@@ -778,6 +784,9 @@ button.disclosure:hover {
   margin-top: 0.2rem;
 }
 
+/* Rows are ruled apart with a hairline, like ledger rows in a spec sheet. A
+   shadow, not a border, so a hover or selection can make its neighbours'
+   rules vanish for a clean edge. */
 .note-card + .note-card {
   box-shadow: 0 -1px 0 var(--rule);
 }
@@ -792,16 +801,13 @@ button.disclosure:hover {
   box-shadow: none;
 }
 
-/* The selected note used to be a solid honey sticker. In the list that is the
-   loudest thing on screen for as long as you are reading the note beside it,
-   so the card keeps the outline and the hard shadow — it is still a sticker —
-   but takes the accent as a bar down its edge and leaves the paper, and every
-   colour on top of it, alone. */
+/* The selected card is a marked cell: flat paper, slate hairline, and the
+   accent as a bar down its edge — a fill here would be the loudest thing on
+   screen for as long as you're reading beside it. */
 .note-card[aria-current='true'] {
-  border-color: var(--edge-color);
+  border-color: var(--rule-strong);
   background: var(--surface-raised);
-  box-shadow: inset 5px 0 0 var(--card-active-accent), 3px 3px 0 var(--shadow-ink);
-  transform: translate(-1px, -1px);
+  box-shadow: inset 3px 0 0 var(--card-active-accent);
 }
 
 .note-card-top {
@@ -854,8 +860,8 @@ button.disclosure:hover {
 
 .note-chip {
   padding: 0.05rem 0.4rem;
-  border: 1.5px solid var(--edge-color);
-  border-radius: 999px;
+  border: 1px solid rgba(61, 59, 79, 0.3);
+  border-radius: 2px;
   background: var(--accent-wash);
   color: var(--text-primary);
   font-family: var(--font-display);
@@ -865,6 +871,10 @@ button.disclosure:hover {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+[data-theme='dark'] .note-chip {
+  border-color: rgba(238, 238, 238, 0.3);
 }
 
 .note-card-icon {
@@ -911,7 +921,7 @@ button.disclosure:hover {
 }
 
 .editor-toolbar[data-scrolled='true'] {
-  border-bottom-color: var(--edge-color);
+  border-bottom-color: var(--rule-pane);
 }
 
 .editor-toolbar-inner > .icon-button,
@@ -929,9 +939,9 @@ button.disclosure:hover {
   min-width: 0;
   padding: 0 0.4rem;
   font-family: var(--font-display);
-  font-size: 0.82rem;
-  font-weight: 700;
-  letter-spacing: -0.03em;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0;
   text-align: center;
   color: var(--text-secondary);
   overflow: hidden;
@@ -944,8 +954,8 @@ button.disclosure:hover {
   align-items: center;
   gap: 0.1rem;
   padding: 0.15rem;
-  border: 2px solid var(--rule);
-  border-radius: 11px;
+  border: 1px solid var(--rule-pane);
+  border-radius: var(--radius);
   background: var(--surface-raised);
 }
 
@@ -1003,11 +1013,11 @@ button.disclosure:hover {
   align-items: center;
   gap: 0.6rem;
   padding: 0.55rem 1.1rem;
-  border-bottom: 2px solid var(--edge-color);
-  background: var(--honey);
+  border-bottom: 1px solid var(--edge-color);
+  background: var(--grape);
   color: var(--sticker-fg);
   font-family: var(--font-display);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 600;
 }
 
@@ -1033,8 +1043,8 @@ button.disclosure:hover {
   z-index: 40;
   min-width: 12.5rem;
   padding: 0.3rem;
-  border: 2px solid var(--edge-color);
-  border-radius: 12px;
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
   background: var(--surface-raised);
   box-shadow: var(--shadow-pop);
   animation: pop var(--transition);
@@ -1061,14 +1071,14 @@ button.disclosure:hover {
   gap: 0.6rem;
   width: 100%;
   padding: 0.36rem 0.5rem;
-  border-radius: 6px;
+  border-radius: 2px;
   text-align: left;
   font-size: 0.83rem;
   white-space: nowrap;
 }
 
 .menu-item:hover {
-  background: var(--honey);
+  background: var(--row-active-bg);
   color: var(--sticker-fg);
 }
 
@@ -1140,8 +1150,8 @@ button.disclosure:hover {
 .stepper button {
   width: 1.5rem;
   height: 1.5rem;
-  border: 2px solid var(--edge-color);
-  border-radius: 7px;
+  border: 1px solid var(--rule-strong);
+  border-radius: 2px;
   line-height: 1;
 }
 
@@ -1181,10 +1191,10 @@ button.disclosure:hover {
   max-height: 100%;
   overflow-y: auto;
   padding: 1.4rem 1.5rem 1.6rem;
-  border: 3px solid var(--edge-color);
-  border-radius: 18px;
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
   background: var(--surface-raised);
-  box-shadow: 8px 8px 0 var(--shadow-ink);
+  box-shadow: var(--shadow-pop);
 }
 
 .sheet-header {
@@ -1195,10 +1205,11 @@ button.disclosure:hover {
 
 .sheet-header h2 {
   margin: 0;
-  font-family: var(--font-display);
-  font-size: 1.15rem;
+  font-family: var(--font-brand);
+  font-size: 1.2rem;
   font-weight: 800;
-  letter-spacing: -0.045em;
+  font-stretch: 108%;
+  letter-spacing: -0.02em;
 }
 
 .sheet-header .icon-button {
@@ -1221,141 +1232,254 @@ button.disclosure:hover {
 .dialog-input {
   width: 100%;
   padding: 0.55rem 0.75rem;
-  border: 2px solid var(--edge-color);
-  border-radius: 10px;
+  border: 1px solid var(--rule-pane);
+  border-radius: var(--radius);
   background: var(--surface);
   font-size: 0.9rem;
-  transition: box-shadow var(--transition), transform var(--transition);
+  transition: border-color var(--transition);
 }
 
 .dialog-input:focus {
   outline: none;
-  box-shadow: 3px 3px 0 var(--shadow-ink);
-  transform: translate(-1px, -1px);
+  border-color: var(--accent);
 }
 
 .dialog-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 0.5rem;
+  gap: 0.65rem;
   margin-top: 1.1rem;
 }
 
+/* App buttons share the landing's signature: a clip-path notch, mono-capped
+   label, no radius and no sticker shadow. The outline variant is drawn as two
+   nested clipped layers behind the label, leaving a 1px hairline ring. */
 .button {
-  padding: 0.46rem 1rem;
-  border-radius: 999px;
-  border: 2px solid var(--edge-color);
-  background: var(--surface-raised);
-  box-shadow: 3px 3px 0 var(--shadow-ink);
-  font-family: var(--font-display);
-  font-size: 0.85rem;
+  --hex-arrow: 9px;
+  --hex-py: 0.5rem;
+  --hex-fill: var(--surface-raised);
+  position: relative;
+  z-index: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--hex-py) calc(var(--hex-arrow) + 0.8rem);
+  border: 0;
+  background: transparent;
+  color: var(--text-primary);
+  font-family: var(--font-brand);
+  font-size: 0.72rem;
   font-weight: 700;
-  letter-spacing: -0.02em;
-  transition: background var(--transition), transform var(--transition),
-    box-shadow var(--transition);
+  font-stretch: 112%;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition: --hex-arrow 200ms cubic-bezier(0.32, 0.72, 0, 1), transform 140ms,
+    background-color 140ms, color 140ms;
+}
+
+.button::before,
+.button::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  clip-path: polygon(
+    0 0,
+    calc(100% - var(--hex-arrow)) 0,
+    100% 50%,
+    calc(100% - var(--hex-arrow)) 100%,
+    0 100%
+  );
+  transition: clip-path 200ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.button::before {
+  z-index: -2;
+  background: var(--rule-strong);
+}
+
+.button::after {
+  inset: 1px;
+  z-index: -1;
+  background: var(--hex-fill);
 }
 
 .button:hover {
-  transform: translate(-1px, -1px);
-  box-shadow: 5px 5px 0 var(--shadow-ink);
+  --hex-arrow: 13px;
 }
 
 .button:active {
-  transform: translate(2px, 2px);
-  box-shadow: 1px 1px 0 var(--shadow-ink);
+  transform: translateY(1px);
+}
+
+/* Solid cuts paint their own background, no ring layers. */
+.button-primary,
+.button-danger {
+  color: var(--sticker-fg);
+  clip-path: polygon(
+    0 0,
+    calc(100% - var(--hex-arrow)) 0,
+    100% 50%,
+    calc(100% - var(--hex-arrow)) 100%,
+    0 100%
+  );
+  transition: --hex-arrow 200ms cubic-bezier(0.32, 0.72, 0, 1), clip-path 200ms,
+    transform 140ms, background-color 140ms;
+}
+
+.button-primary::before,
+.button-primary::after,
+.button-danger::before,
+.button-danger::after {
+  content: none;
 }
 
 .button-primary {
   background: var(--honey);
-  color: var(--sticker-fg);
 }
 
 .button-danger {
   background: var(--berry);
-  color: var(--sticker-fg);
 }
 
 .button:disabled {
   opacity: 0.5;
   cursor: default;
   transform: none;
-  box-shadow: 3px 3px 0 var(--shadow-ink);
+  --hex-arrow: 9px;
 }
 
 /* ----------------------------------------------------------------- auth */
 
 /* The sign-in screen is the handshake between the landing page and the app,
-   so it wears the landing's furniture — graph paper, blobs, a tilted card —
-   over the app's own themed tokens. */
+   so it wears the landing's schematic: dot paper, dashed hairlines, crosshair
+   corner marks and a hex-notch submit. It's fixed to the light schematic,
+   whatever the app theme. */
 
 .auth-screen {
+  --surface: #f7f7f7;
+  --surface-raised: #ffffff;
+  --text-primary: #3d3b4f;
+  --text-secondary: #524f68;
+  --text-tertiary: #757284;
+  --rule-pane: rgba(85, 83, 104, 0.3);
+  --rule-strong: rgba(61, 59, 79, 0.55);
+  --accent: #0d8a58;
+  --accent-wash: rgba(40, 233, 159, 0.32);
+  --hex-fill: #ffffff;
+  --danger: #cf3a28;
+
   position: relative;
   display: flex;
-  align-items: center;
-  justify-content: center;
   height: 100%;
-  overflow: hidden;
-  background: var(--sidebar-bg);
+  /* The card is taller than a landscape phone, so the screen scrolls. The top
+     padding also keeps it clear of the Back button pinned over it. */
+  padding: 4.6rem 1.25rem 2.6rem;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background: #e9e9e9;
+  color: var(--text-primary);
+  color-scheme: light;
 }
 
-.auth-paper {
-  position: absolute;
+/* Engineering dot paper, fixed so it stays put while the card scrolls. */
+.auth-screen::before {
+  content: '';
+  position: fixed;
   inset: 0;
-  opacity: 0.5;
   pointer-events: none;
-  background-image:
-    linear-gradient(var(--rule) 1px, transparent 1px),
-    linear-gradient(90deg, var(--rule) 1px, transparent 1px);
-  background-size: 30px 30px;
-}
-
-.auth-blobs {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.auth-blob {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(70px);
-  opacity: 0.42;
-}
-
-.auth-blob-a {
-  top: -10rem;
-  right: -6rem;
-  width: 26rem;
-  height: 26rem;
-  background: var(--honey);
-}
-
-.auth-blob-b {
-  bottom: -9rem;
-  left: -7rem;
-  width: 24rem;
-  height: 24rem;
-  background: var(--sky);
+  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.15) 1px, transparent 1px);
+  background-size: 24px 24px;
 }
 
 .auth-card {
   position: relative;
   display: flex;
   flex-direction: column;
-  width: min(23rem, calc(100% - 2.5rem));
+  /* `margin: auto` rather than `align-items: center`: centring a flex item
+     that outgrows its container puts its top out of the scroller's reach. */
+  margin: auto;
+  width: min(23.5rem, 100%);
   padding: 2rem 1.7rem 1.8rem;
-  border: 3px solid var(--edge-color);
-  border-radius: 22px;
-  background: var(--surface-raised);
-  box-shadow: 10px 10px 0 var(--shadow-ink);
-  transform: rotate(-1.2deg);
-  transition: transform 320ms cubic-bezier(0.32, 0.72, 0, 1);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
+  background: #fff;
+  box-shadow: 0 28px 44px -36px rgba(61, 59, 79, 0.45);
 }
 
-.auth-card:hover,
-.auth-card:focus-within {
-  transform: rotate(0deg);
+/* Crosshair plus-marks centred on the card's four corners. */
+.auth-marks {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.auth-marks i {
+  position: absolute;
+  width: 13px;
+  height: 13px;
+  color: var(--rule-strong);
+}
+
+.auth-marks i::before,
+.auth-marks i::after {
+  content: '';
+  position: absolute;
+  background: currentcolor;
+}
+
+.auth-marks i::before {
+  left: 6px;
+  top: 0;
+  width: 1.5px;
+  height: 13px;
+}
+
+.auth-marks i::after {
+  top: 6px;
+  left: 0;
+  width: 13px;
+  height: 1.5px;
+}
+
+.auth-marks i:nth-child(1) {
+  top: -7px;
+  left: -7px;
+}
+
+.auth-marks i:nth-child(2) {
+  top: -7px;
+  right: -7px;
+}
+
+.auth-marks i:nth-child(3) {
+  bottom: -7px;
+  left: -7px;
+}
+
+.auth-marks i:nth-child(4) {
+  bottom: -7px;
+  right: -7px;
+}
+
+.auth-eyebrow {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-bottom: 1.1rem;
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.auth-eyebrow::before {
+  content: '';
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  background: #0d8a58;
 }
 
 .auth-brand {
@@ -1370,25 +1494,27 @@ button.disclosure:hover {
   place-items: center;
   width: 2.6rem;
   height: 2.6rem;
-  border: 3px solid var(--edge-color);
-  border-radius: 13px;
-  background: var(--honey);
-  color: var(--sticker-fg);
-  box-shadow: 3px 3px 0 var(--shadow-ink);
-  transform: rotate(-6deg);
+  border: 1px solid #3d3b4f;
+  border-radius: var(--radius);
+  background: #28e99f;
+  color: #3d3b4f;
 }
 
 .auth-brand h1 {
   margin: 0;
-  font-family: var(--font-display);
-  font-size: 1.4rem;
+  font-family: var(--font-brand);
+  font-size: 1.45rem;
   font-weight: 800;
-  letter-spacing: -0.05em;
+  font-stretch: 110%;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
 }
 
 .auth-tagline {
   margin: 0.7rem 0 1.4rem;
-  font-size: 0.88rem;
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  line-height: 1.6;
   color: var(--text-secondary);
 }
 
@@ -1396,20 +1522,23 @@ button.disclosure:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.55rem;
+  gap: 0.6rem;
   width: 100%;
+  text-transform: none;
+  letter-spacing: 0.01em;
+  font-size: 0.78rem;
 }
 
 .auth-divider {
   display: flex;
   align-items: center;
   gap: 0.7rem;
-  margin: 1.1rem 0 0.3rem;
+  margin: 1.2rem 0 0.3rem;
   font-family: var(--font-display);
-  font-size: 0.74rem;
+  font-size: 0.72rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.16em;
   color: var(--text-tertiary);
 }
 
@@ -1417,9 +1546,7 @@ button.disclosure:hover {
 .auth-divider::after {
   content: '';
   flex: 1;
-  height: 2px;
-  background: var(--edge-color);
-  opacity: 0.35;
+  border-top: 1px dashed var(--rule-strong);
 }
 
 .auth-label {
@@ -1432,166 +1559,134 @@ button.disclosure:hover {
   color: var(--text-secondary);
 }
 
-/* Errors and notices are stickers too, so they read at a glance. */
+/* Errors and notices are panels of signal colour — square schematic cells. */
 .auth-error,
 .auth-notice {
   margin: 1rem 0 0;
   padding: 0.55rem 0.8rem;
-  border: 2px solid var(--edge-color);
-  border-radius: 12px;
-  box-shadow: 3px 3px 0 var(--shadow-ink);
-  font-size: 0.8rem;
-  line-height: 1.45;
-  color: var(--sticker-fg);
+  border: 1px solid #3d3b4f;
+  border-radius: var(--radius);
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: #3d3b4f;
 }
 
 .auth-error {
-  background: var(--berry);
-  transform: rotate(-0.8deg);
+  background: #ff6b5b;
 }
 
 .auth-notice {
-  background: var(--mint);
-  transform: rotate(0.8deg);
+  background: #c5ffd6;
 }
 
 .auth-submit {
   width: 100%;
   margin-top: 1.4rem;
-  padding-block: 0.62rem;
-  font-size: 0.92rem;
+  --hex-py: 0.68rem;
 }
 
 .auth-toggle {
-  margin-top: 1.1rem;
+  margin: 1.1rem auto 0;
   font-family: var(--font-display);
-  font-size: 0.78rem;
+  font-size: 0.74rem;
   font-weight: 600;
   color: var(--text-secondary);
   text-align: center;
-  text-decoration: underline;
-  text-decoration-thickness: 2px;
-  text-underline-offset: 4px;
-  text-decoration-color: var(--honey);
-  transition: text-decoration-color var(--transition), color var(--transition);
+  border-bottom: 1px dashed var(--text-tertiary);
+  padding-bottom: 2px;
+  transition: color var(--transition), border-color var(--transition);
 }
 
 .auth-toggle:hover {
   color: var(--text-primary);
-  text-decoration-color: var(--edge-color);
+  border-bottom-color: var(--text-primary);
 }
 
+/* Parked in the screen's top padding, above the card rather than over it, and
+   scrolling away with the content on short viewports. */
 .auth-back {
   position: absolute;
+  z-index: 1;
   top: 1.2rem;
   left: 1.3rem;
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
   padding: 0.42rem 0.85rem;
-  border: 2px solid var(--edge-color);
-  border-radius: 999px;
-  background: var(--surface-raised);
-  box-shadow: 3px 3px 0 var(--shadow-ink);
+  border: 1px dashed var(--rule-strong);
+  border-radius: var(--radius);
+  background: #ffffff;
   font-family: var(--font-display);
-  font-size: 0.8rem;
-  font-weight: 700;
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   color: var(--text-primary);
-  transform: rotate(-2deg);
-  transition: transform var(--transition), box-shadow var(--transition);
+  transition: border-color var(--transition), background var(--transition);
 }
 
 .auth-back:hover {
-  transform: rotate(-2deg) translate(-1px, -1px);
-  box-shadow: 5px 5px 0 var(--shadow-ink);
-}
-
-.auth-back:active {
-  transform: rotate(-2deg) translate(2px, 2px);
-  box-shadow: 1px 1px 0 var(--shadow-ink);
+  border-color: #3d3b4f;
+  border-style: solid;
 }
 
 /* -------------------------------------------------------------- landing */
 /* The marketing page deliberately does NOT share the editor's palette: it is
-   warm paper, fat ink outlines, hard offset shadows and a mono display face.
-   Every rule below is scoped to `.lp` so none of it leaks into the app, and
-   the local tokens are fixed (no dark variant) — it's a brand moment. */
+   a blueprint/schematic system — engineering dot grids, dashed hairlines,
+   crosshair corner marks and hex-cut buttons. Every rule below is scoped to
+   `.lp` so none of it leaks into the app, and the local tokens are fixed (no
+   dark variant) — it's a brand moment. */
 
 .lp {
-  /* The palette itself comes from :root — those constants are theme-independent,
-     so the landing keeps its daylight look even when the app is in dark mode.
-     Only the landing's own heavier weights are local. */
-  --ink-70: rgba(23, 19, 16, 0.72);
-  --ink-55: rgba(23, 19, 16, 0.58);
-  --mint-ink: #10704a;
+  --lp-slate: #3d3b4f;
+  --lp-bg: #e9e9e9;
+  --lp-fog: #eeeeee;
+  --lp-silver: #d6d6d6;
+  --lp-green: #28e99f;
+  --lp-seafoam: #c5ffd6;
+  --lp-lavender: #ffcffe;
+  --lp-line: rgba(85, 83, 104, 0.3);
+  --lp-line-strong: rgba(61, 59, 79, 0.55);
+  --lp-line-dark: rgba(238, 238, 238, 0.18);
+  --lp-ink-70: rgba(61, 59, 79, 0.75);
+  --lp-ink-55: rgba(61, 59, 79, 0.55);
+  /* Text-safe green: the brand green is too light to read on --lp-bg. */
+  --lp-green-ink: color-mix(in srgb, #0d9f63 70%, var(--lp-slate));
+  /* Crosshair corner marks recolor on dark sections. */
+  --lp-cross: var(--lp-slate);
 
-  --edge: 3px;
-  --sh-sm: 4px 4px 0 var(--ink);
-  --sh: 6px 6px 0 var(--ink);
-  --sh-lg: 12px 12px 0 var(--ink);
-  --display: var(--font-mono);
+  --f-disp: 'Anybody', var(--font-ui);
+  --f-ui: 'DM Sans', var(--font-ui);
+  --f-mono: 'Space Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  --f-hand: 'Nanum Pen Script', cursive;
 
   position: relative;
   height: 100%;
   overflow-x: hidden;
   overflow-y: auto;
-  background: var(--paper);
-  color: var(--ink);
+  background: var(--lp-bg);
+  color: var(--lp-slate);
   color-scheme: light;
-  font-family: var(--font-ui);
+  font-family: var(--f-ui);
   font-size: 16px;
   line-height: 1.55;
 }
 
-/* Graph paper, fixed so the page slides over it. */
-.lp-paper {
+/* Engineering dot paper, fixed so the page slides over it. */
+.lp::before {
+  content: '';
   position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  background-image:
-    linear-gradient(rgba(23, 19, 16, 0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(23, 19, 16, 0.06) 1px, transparent 1px);
-  background-size: 30px 30px;
+  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.15) 1px, transparent 1px);
+  background-size: 24px 24px;
 }
 
-.lp-blobs {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.lp-blob {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(70px);
-  opacity: 0.55;
-}
-
-.lp-blob-a {
-  top: -12rem;
-  right: -7rem;
-  width: 32rem;
-  height: 32rem;
-  background: var(--honey);
-}
-
-.lp-blob-b {
-  top: 42%;
-  left: -12rem;
-  width: 28rem;
-  height: 28rem;
-  background: var(--sky);
-}
-
-.lp-blob-c {
-  bottom: 6rem;
-  right: -8rem;
-  width: 24rem;
-  height: 24rem;
-  background: var(--grape);
+.lp ::selection {
+  background: rgba(40, 233, 159, 0.5);
+  color: var(--lp-slate);
 }
 
 /* ------------------------------------------------------------------- nav */
@@ -1605,7 +1700,7 @@ button.disclosure:hover {
   gap: 1rem;
   max-width: 76rem;
   margin: 0 auto;
-  padding: 1.35rem 1.6rem;
+  padding: 1.4rem 1.6rem;
 }
 
 .lp-logo {
@@ -1619,295 +1714,506 @@ button.disclosure:hover {
 .lp-logo-mark {
   display: grid;
   place-items: center;
-  width: 2.4rem;
-  height: 2.4rem;
-  border: var(--edge) solid var(--ink);
-  border-radius: 12px;
-  background: var(--honey);
-  box-shadow: var(--sh-sm);
-  transform: rotate(-5deg);
-  transition: transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  width: 2.3rem;
+  height: 2.3rem;
+  border: 1px solid var(--lp-slate);
+  background: var(--lp-green);
+  color: var(--lp-slate);
+  transition: background-color 160ms, color 160ms;
 }
 
 .lp-logo:hover .lp-logo-mark {
-  transform: rotate(7deg) scale(1.07);
+  background: var(--lp-slate);
+  color: var(--lp-green);
 }
 
 .lp-logo-word {
-  font-family: var(--display);
-  font-size: 1.35rem;
+  font-family: var(--f-disp);
+  font-size: 1.3rem;
   font-weight: 800;
-  letter-spacing: -0.045em;
+  font-stretch: 110%;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+
+.lp-nav-links {
+  display: flex;
+  gap: 1.7rem;
+  margin-inline: auto;
+}
+
+.lp-nav-links a {
+  color: var(--lp-ink-70);
+  font-family: var(--f-ui);
+  font-size: 0.88rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  transition: color 140ms;
+}
+
+/* Brackets draw in around the hovered link — a selected spec row. */
+.lp-nav-links a::before,
+.lp-nav-links a::after {
+  display: inline-block;
+  opacity: 0;
+  transition: opacity 160ms, transform 160ms;
+}
+
+.lp-nav-links a::before {
+  content: '[';
+  transform: translateX(4px);
+}
+
+.lp-nav-links a::after {
+  content: ']';
+  transform: translateX(-4px);
+}
+
+.lp-nav-links a:hover {
+  color: var(--lp-slate);
+}
+
+.lp-nav-links a:hover::before,
+.lp-nav-links a:hover::after {
+  opacity: 1;
+  transform: translateX(0);
 }
 
 .lp-nav-actions {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 1.1rem;
 }
 
 .lp-link {
-  font-family: var(--display);
-  font-size: 0.9rem;
-  font-weight: 700;
-  text-decoration: underline;
-  text-decoration-thickness: 2px;
-  text-underline-offset: 4px;
-  text-decoration-color: var(--honey);
-  transition: text-decoration-color 140ms;
+  font-family: var(--f-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--lp-ink-70);
+  text-decoration: none;
+  white-space: nowrap;
+  border-bottom: 1px dashed var(--lp-ink-55);
+  padding-bottom: 1px;
+  transition: color 140ms, border-color 140ms;
 }
 
 .lp-link:hover {
-  text-decoration-color: var(--ink);
+  color: var(--lp-slate);
+  border-bottom-color: var(--lp-slate);
+  border-bottom-style: solid;
 }
 
 /* --------------------------------------------------------------- buttons */
+/* Signature hex/notch shapes: clip-path instead of border-radius, so CTAs
+   get arrow-cut edges. --hex-arrow is a registered property so hover can
+   stretch the arrowhead smoothly. */
+
+@property --hex-arrow {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 11px;
+}
 
 .lp-btn {
+  --hex-arrow: 11px;
+  --hex-py: 0.8rem;
+  --hex-bg: var(--lp-green);
+  --hex-fg: var(--lp-slate);
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  padding: 0.78rem 1.35rem;
-  border: var(--edge) solid var(--ink);
-  border-radius: 999px;
-  background: var(--paper-2);
-  box-shadow: var(--sh);
-  font-family: var(--display);
-  font-size: 0.95rem;
+  padding: var(--hex-py) calc(var(--hex-arrow) + 0.9rem);
+  border: 0;
+  background: var(--hex-bg);
+  color: var(--hex-fg);
+  font-family: var(--f-disp);
+  font-size: 0.75rem;
   font-weight: 700;
-  letter-spacing: -0.02em;
-  transition: transform 130ms cubic-bezier(0.32, 0.72, 0, 1),
-    box-shadow 130ms cubic-bezier(0.32, 0.72, 0, 1);
+  font-stretch: 118%;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  clip-path: polygon(
+    var(--hex-arrow) 0,
+    calc(100% - var(--hex-arrow)) 0,
+    100% 50%,
+    calc(100% - var(--hex-arrow)) 100%,
+    var(--hex-arrow) 100%,
+    0 50%
+  );
+  transition: --hex-arrow 240ms cubic-bezier(0.32, 0.72, 0, 1), transform 160ms,
+    background-color 140ms, color 140ms;
+}
+
+/* Arrow shape: flat left edge, point on the right — the CTA cut every button
+   on the page wears, so the nav CTA reads as the same control as the hero's. */
+.lp-btn-notch,
+.lp-btn-slate,
+.lp-btn-solid {
+  clip-path: polygon(
+    0 0,
+    calc(100% - var(--hex-arrow)) 0,
+    100% 50%,
+    calc(100% - var(--hex-arrow)) 100%,
+    0 100%
+  );
+}
+
+.lp-btn-slate {
+  --hex-bg: var(--lp-slate);
+  --hex-fg: var(--lp-fog);
 }
 
 .lp-btn:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 9px 9px 0 var(--ink);
+  --hex-arrow: 17px;
 }
 
 .lp-btn:active {
-  transform: translate(3px, 3px);
-  box-shadow: 2px 2px 0 var(--ink);
+  transform: translateY(1px) scale(0.99);
 }
 
 .lp-btn:focus-visible {
-  outline: 3px solid var(--ink);
+  outline: 2px solid var(--lp-slate);
   outline-offset: 3px;
 }
 
-.lp-btn-primary,
-.lp-btn-honey {
-  background: var(--honey);
+/* Outline variant: two nested clip-path layers leave a 1px hairline ring. The
+   inner layer has to repaint whatever it sits on, and the only panel that
+   carries an outline CTA is the fog-filled closer card. */
+.lp-btn-outline {
+  --hex-fill: var(--lp-fog);
+  background: transparent;
+  clip-path: none;
+  color: var(--lp-slate);
 }
 
-.lp-btn-ghost {
-  background: #fff;
+.lp-btn-outline::before,
+.lp-btn-outline::after {
+  content: '';
+  position: absolute;
+  clip-path: polygon(
+    0 0,
+    calc(100% - var(--hex-arrow)) 0,
+    100% 50%,
+    calc(100% - var(--hex-arrow)) 100%,
+    0 100%
+  );
+  transition: clip-path 240ms cubic-bezier(0.32, 0.72, 0, 1);
 }
 
+.lp-btn-outline::before {
+  inset: 0;
+  background: var(--lp-slate);
+}
+
+.lp-btn-outline::after {
+  inset: 1px;
+  background: var(--hex-fill);
+}
+
+.lp-btn-outline > span {
+  position: relative;
+  z-index: 1;
+}
+
+/* The nav pair sits on one line at every width: these labels are short, and a
+   small button that wraps turns into a two-line lozenge. The full-width CTAs
+   below are free to wrap — pinning them would push the hero grid wider than
+   the viewport. */
 .lp-btn-sm {
-  padding: 0.5rem 1.05rem;
-  font-size: 0.86rem;
-  box-shadow: var(--sh-sm);
+  --hex-arrow: 8px;
+  --hex-py: 0.58rem;
+  font-size: 0.7rem;
+  white-space: nowrap;
 }
 
 .lp-btn-sm:hover {
-  box-shadow: 6px 6px 0 var(--ink);
+  --hex-arrow: 12px;
 }
 
 .lp-btn-lg {
-  padding: 1rem 1.7rem;
-  font-size: 1.05rem;
+  --hex-arrow: 14px;
+  --hex-py: 1rem;
+  font-size: 0.8rem;
+}
+
+.lp-btn-lg:hover {
+  --hex-arrow: 21px;
+}
+
+/* Grouped CTAs overlap into a strip and slide 4px apart on hover. */
+.lp-cta-group {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 2.1rem;
+}
+
+.lp-cta-group .lp-btn {
+  transition: --hex-arrow 240ms cubic-bezier(0.32, 0.72, 0, 1),
+    transform 200ms cubic-bezier(0.32, 0.72, 0, 1), background-color 140ms,
+    color 140ms;
+}
+
+.lp-cta-group .lp-btn + .lp-btn {
+  margin-left: -0.6rem;
+}
+
+.lp-cta-group:hover .lp-btn:first-child {
+  transform: translateX(-4px);
+}
+
+.lp-cta-group:hover .lp-btn:last-child {
+  transform: translateX(4px);
+}
+
+.lp-cta-center {
+  justify-content: center;
 }
 
 /* ------------------------------------------------------------------ hero */
 
 .lp-main {
   position: relative;
-  z-index: 2;
+  z-index: 1;
 }
 
+/* One centred column: the pitch stacks down the middle and the product shot
+   runs full width beneath it, where it can be read at something near its real
+   size instead of competing with the copy for half the fold. */
 .lp-hero {
-  display: grid;
-  grid-template-columns: minmax(0, 1.02fr) minmax(0, 1fr);
-  align-items: center;
-  gap: 3.5rem;
   max-width: 76rem;
   margin: 0 auto;
-  padding: 2rem 1.6rem 4.5rem;
+  padding: 4rem 1.6rem 5rem;
+  text-align: center;
 }
 
-.lp-badge {
+/* Spacing is grouped rather than even: the eyebrow rides tight under the
+   title, the ticks tight under the buttons, and the only wide break is the
+   one before the shot. */
+.lp-hero-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 56rem;
+  margin: 0 auto;
+}
+
+/* Bracketed mono tag with a data-point square — the section eyebrow. */
+.lp-eyebrow {
+  --lp-mark: var(--lp-green-ink);
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
-  padding: 0.4rem 0.9rem 0.4rem 0.7rem;
-  border: var(--edge) solid var(--ink);
-  border-radius: 999px;
-  background: #fff;
-  box-shadow: var(--sh-sm);
-  font-family: var(--display);
+  gap: 0.6rem;
+  font-family: var(--f-mono);
   font-size: 0.78rem;
-  font-weight: 700;
-  transform: rotate(-1.6deg);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--lp-slate);
 }
 
-.lp-badge-star {
-  width: 14px;
-  height: 14px;
-  color: var(--berry);
+.lp-eyebrow::before {
+  content: '';
+  flex-shrink: 0;
+  width: 9px;
+  height: 9px;
+  background: var(--lp-mark);
+}
+
+.lp-eyebrow-sea {
+  --lp-mark: var(--lp-seafoam);
+  color: var(--lp-seafoam);
 }
 
 .lp-title {
-  margin: 1.3rem 0 0;
-  font-family: var(--display);
-  font-size: clamp(2.7rem, 6vw, 4.4rem);
+  margin: 1.1rem 0 0;
+  font-family: var(--f-disp);
+  font-size: clamp(2.6rem, 5.6vw, 5rem);
   font-weight: 800;
-  line-height: 0.95;
-  letter-spacing: -0.055em;
+  font-stretch: 96%;
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+  text-transform: uppercase;
 }
 
 .lp-title-line {
   display: block;
 }
 
-.lp-title-line-2 {
-  padding-left: 0.1em;
-}
-
+/* The rotating word rides in a green hex chip — the page's loudest unit. It
+   sits on its own centred line: inline after "for your" the locked width left
+   the shorter words swimming in a gap mid-sentence. */
 .lp-rotor {
-  display: inline-block;
-  margin-top: 0.3em;
-  padding: 0.1em 0.34em 0.16em;
-  border: var(--edge) solid var(--ink);
-  border-radius: 16px;
-  background: var(--honey);
-  box-shadow: var(--sh);
-  font-size: clamp(1.5rem, 3.2vw, 2.4rem);
-  letter-spacing: -0.045em;
-  transform: rotate(-1.8deg);
+  display: inline-grid;
+  place-items: center;
+  margin-top: 0.26em;
+  padding: 0.14em 0.85em 0.18em;
+  background: var(--lp-green);
+  color: var(--lp-slate);
+  clip-path: polygon(0.45em 0, calc(100% - 0.45em) 0, 100% 50%, calc(100% - 0.45em) 100%, 0.45em 100%, 0 50%);
+  font-size: 0.58em;
+  vertical-align: 0.04em;
 }
 
+/* All six words share one grid cell, so the chip is as wide as the longest of
+   them and stays put — sizing it to the live word swung the centred line by
+   ~100px every couple of seconds. */
 .lp-rotor-word {
-  display: inline-block;
-  animation: lp-word 440ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  grid-area: 1 / 1;
+  visibility: hidden;
+}
+
+.lp-rotor-word[data-active='true'] {
+  visibility: visible;
+  animation: lp-word 380ms cubic-bezier(0.32, 0.72, 0, 1) both;
 }
 
 @keyframes lp-word {
   from {
     opacity: 0;
-    transform: translateY(0.35em) rotate(-5deg);
+    transform: translateY(0.45em);
   }
 }
 
 .lp-lede {
-  max-width: 33rem;
-  margin: 1.7rem 0 0;
-  font-size: 1.06rem;
-  line-height: 1.62;
-  color: var(--ink-70);
+  max-width: 36rem;
+  margin: 1.7rem auto 0;
+  font-family: var(--f-mono);
+  font-size: 0.92rem;
+  line-height: 1.75;
+  letter-spacing: 0.35px;
+  color: var(--lp-ink-70);
 }
 
-.lp-cta-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.9rem;
-  margin-top: 1.9rem;
+.lp-hero-copy .lp-cta-group {
+  margin-top: 2.2rem;
 }
 
 .lp-ticks {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.45rem 1.1rem;
-  margin: 1.7rem 0 0;
+  justify-content: center;
+  gap: 0.45rem 1.3rem;
+  margin: 1.2rem 0 0;
   padding: 0;
   list-style: none;
-  font-family: var(--display);
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: var(--ink-70);
+  font-family: var(--f-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--lp-ink-55);
 }
 
 .lp-ticks li {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
 }
 
-.lp-ticks svg {
-  color: var(--mint-ink);
+.lp-ticks li::before {
+  content: '+';
+  margin-right: 0.45rem;
+  font-weight: 700;
+  color: var(--lp-green-ink);
 }
 
 /* ---------------------------------------------------------- app mock-up */
+/* The product shot is a flat white card with real browser chrome, pinned
+   into the grid like a figure on a schematic: caption above, dashed leaders
+   and annotation pins around it. */
+
+.lp-hero-shot {
+  margin-top: 4.5rem;
+}
 
 .lp-stage {
   position: relative;
-  padding: 1.6rem 1.1rem 2.6rem;
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 3.4rem 1.6rem 3.2rem;
+  /* The hero centres its copy; the window inside is a UI, not a caption. */
+  text-align: left;
+}
+
+/* Indented clear of the orbit sphere, which hangs off the stage's top-left
+   corner and would otherwise draw straight through the caption. */
+.lp-fig {
+  position: absolute;
+  top: 1.2rem;
+  left: 6rem;
+  font-family: var(--f-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--lp-ink-55);
 }
 
 .lp .mock-window {
+  position: relative;
   overflow: hidden;
-  border: var(--edge) solid var(--ink);
-  border-radius: 20px;
+  border: 1px solid var(--lp-line-strong);
+  border-radius: 3px;
   background: #fff;
-  box-shadow: var(--sh-lg);
-  transform: rotate(-1.6deg);
-  transition: transform 320ms cubic-bezier(0.32, 0.72, 0, 1);
-}
-
-.lp-stage:hover .mock-window {
-  transform: rotate(0deg);
+  box-shadow: 0 28px 44px -36px rgba(61, 59, 79, 0.45);
 }
 
 .lp .mock-titlebar {
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  padding: 0.6rem 0.85rem;
-  border-bottom: var(--edge) solid var(--ink);
-  background: var(--honey);
+  padding: 0.55rem 0.85rem;
+  border-bottom: 1px solid var(--lp-line);
+  background: var(--lp-fog);
 }
 
 .lp .mock-dot {
-  width: 11px;
-  height: 11px;
-  border: 2px solid var(--ink);
-  border-radius: 50%;
+  width: 8px;
+  height: 8px;
+  border: 1px solid rgba(61, 59, 79, 0.4);
+  border-radius: 1px;
 }
 
-.lp .mock-dot[data-tone='red'] {
-  background: var(--berry);
+.lp .mock-dot[data-tone='one'] {
+  background: var(--lp-silver);
 }
 
-.lp .mock-dot[data-tone='yellow'] {
-  background: #fff;
+.lp .mock-dot[data-tone='two'] {
+  background: var(--lp-lavender);
 }
 
-.lp .mock-dot[data-tone='green'] {
-  background: var(--mint);
+.lp .mock-dot[data-tone='three'] {
+  background: var(--lp-green);
 }
 
+/* The SYNC pin is parked on the titlebar's right end, so the path truncates
+   rather than running underneath it. */
 .lp .mock-titlebar-title {
+  min-width: 0;
   margin-left: 0.55rem;
-  font-family: var(--display);
-  font-size: 0.74rem;
-  font-weight: 700;
+  overflow: hidden;
+  font-family: var(--f-mono);
+  font-size: 0.7rem;
+  color: var(--lp-ink-55);
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
+/* Type scales with the window: at full width the old 11px chrome read as a
+   thumbnail someone had zoomed rather than the app at actual size. */
 .lp .mock-body {
   display: grid;
-  grid-template-columns: 7.6rem minmax(0, 1fr);
-  min-height: 19rem;
-  font-size: 11px;
+  grid-template-columns: 12.5rem minmax(0, 1fr);
+  min-height: 21rem;
+  font-size: 12px;
 }
 
 .lp .mock-list {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
-  padding: 0.6rem 0.45rem;
-  border-right: 2px solid var(--ink);
-  background: var(--paper-2);
+  gap: 0.45rem;
+  padding: 0.8rem 0.7rem;
+  border-right: 1px solid var(--lp-line);
+  background: var(--lp-fog);
 }
 
 .lp .mock-list-brand {
@@ -1915,84 +2221,91 @@ button.disclosure:hover {
   align-items: center;
   gap: 0.3rem;
   margin-bottom: 0.2rem;
-  font-family: var(--display);
+  font-family: var(--f-disp);
   font-weight: 800;
-  letter-spacing: -0.03em;
+  font-stretch: 112%;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
 }
 
 .lp .mock-search {
-  height: 1.2rem;
-  border: 2px solid var(--ink);
-  border-radius: 999px;
+  height: 1.5rem;
+  border: 1px solid var(--lp-line);
+  border-radius: 2px;
   background: #fff;
 }
 
 .lp .mock-note {
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
-  padding: 0.4rem 0.45rem;
-  border: 2px solid transparent;
-  border-radius: 9px;
+  gap: 0.22rem;
+  padding: 0.5rem 0.6rem;
+  border: 1px solid transparent;
+  border-bottom: 1px dashed var(--lp-line);
+  border-radius: 2px;
 }
 
 .lp .mock-note[data-active='true'] {
-  border-color: var(--ink);
-  background: var(--honey);
-  box-shadow: 3px 3px 0 var(--ink);
+  border-color: var(--lp-line-strong);
+  border-left: 2px solid var(--lp-green-ink);
+  background: #fff;
 }
 
 .lp .mock-note-title {
-  font-size: 10px;
+  font-family: var(--f-mono);
+  font-size: 11.5px;
   font-weight: 700;
 }
 
 .lp .mock-note-line {
-  height: 4px;
-  border-radius: 2px;
-  background: rgba(23, 19, 16, 0.18);
+  height: 3px;
+  background: rgba(61, 59, 79, 0.14);
 }
 
 .lp .mock-note-meta {
-  font-size: 8.5px;
-  color: var(--ink-55);
+  font-family: var(--f-mono);
+  font-size: 10px;
+  color: var(--lp-ink-55);
 }
 
 .lp .mock-editor {
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
-  padding: 1rem 1.1rem;
+  gap: 0.4rem;
+  padding: 1.4rem 1.6rem;
   background: #fff;
-  font-size: 12px;
-  line-height: 1.5;
+  font-family: var(--f-mono);
+  font-size: 13px;
+  line-height: 1.65;
 }
 
 .lp .mock-h1 {
-  font-family: var(--display);
-  font-size: 17px;
+  font-family: var(--f-disp);
+  font-size: 19px;
   font-weight: 800;
-  letter-spacing: -0.04em;
+  font-stretch: 104%;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
 }
 
 .lp .mock-line {
   min-height: 1.05em;
-  color: var(--ink-70);
+  color: var(--lp-ink-70);
 }
 
 .lp .mock-line strong {
-  font-weight: 800;
-  color: var(--ink);
+  font-weight: 700;
+  color: var(--lp-slate);
 }
 
 .lp .mock-tag {
   display: inline-block;
-  padding: 0 0.4em;
-  border: 1.5px solid var(--ink);
-  border-radius: 999px;
-  background: var(--sky);
-  color: var(--ink);
-  font-weight: 700;
+  padding: 0 0.35em;
+  border: 1px solid rgba(61, 59, 79, 0.25);
+  border-radius: 2px;
+  background: var(--lp-seafoam);
+  color: var(--lp-slate);
+  font-size: 0.96em;
 }
 
 .lp .mock-todo {
@@ -2007,24 +2320,24 @@ button.disclosure:hover {
   flex-shrink: 0;
   width: 14px;
   height: 14px;
-  margin-top: 1px;
-  border: 2px solid var(--ink);
-  border-radius: 5px;
-  font-size: 9px;
-  font-weight: 800;
+  margin-top: 3px;
+  border: 1.4px solid var(--lp-slate);
+  border-radius: 0;
+  font-size: 10px;
+  font-weight: 700;
 }
 
 .lp .mock-box[data-checked='true'] {
-  background: var(--mint);
+  background: var(--lp-green);
 }
 
 .lp .mock-caret {
   display: inline-block;
-  width: 2px;
+  width: 1.5px;
   height: 1em;
   margin-left: 1px;
   vertical-align: -0.15em;
-  background: var(--ink);
+  background: var(--lp-slate);
   animation: lp-blink 1s steps(1) infinite;
 }
 
@@ -2034,70 +2347,117 @@ button.disclosure:hover {
   }
 }
 
-/* -------------------------------------------------------------- stickers */
+/* ------------------------------------------------------- blueprint pins */
+/* Dashed-bordered annotation labels, leader lines, data-point squares and
+   one handwritten note — the schematic's marginalia. */
 
-.lp-sticker {
+.lp-pin {
   position: absolute;
+  z-index: 2;
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
-  padding: 0.45rem 0.75rem;
-  border: var(--edge) solid var(--ink);
-  border-radius: 12px;
-  background: #fff;
-  box-shadow: var(--sh-sm);
-  font-family: var(--display);
-  font-size: 0.75rem;
-  font-weight: 700;
+  gap: 0.4rem;
+  padding: 0.38rem 0.62rem;
+  border: 1px dashed var(--lp-line-strong);
+  background: var(--lp-fog);
+  font-family: var(--f-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   white-space: nowrap;
 }
 
-.lp-sticker-sync {
-  top: 0.2rem;
-  right: -0.3rem;
-  background: var(--mint);
-  transform: rotate(4deg);
-  animation: lp-bob 6s ease-in-out infinite;
+.lp-pin-sync {
+  top: 1.9rem;
+  right: -0.4rem;
 }
 
-.lp-sticker-tag {
-  bottom: 3.6rem;
-  left: -1rem;
-  background: var(--sky);
-  transform: rotate(-5deg);
-  animation: lp-bob 7.5s ease-in-out infinite reverse;
+.lp-pin-dot {
+  width: 7px;
+  height: 7px;
+  background: var(--lp-green-ink);
+  animation: lp-blink 1.6s steps(1) infinite;
 }
 
-.lp-sticker-zero {
-  display: block;
-  bottom: 0.1rem;
-  right: 2.2rem;
-  padding: 0.5rem 0.8rem;
-  border-radius: 14px;
-  background: var(--berry);
-  font-size: 0.92rem;
-  line-height: 1.1;
-  text-align: center;
-  transform: rotate(-8deg);
+/* Below the window rather than on it: at full width the window's bottom-left
+   corner is the note list, and the pin sat on top of the last row. */
+.lp-pin-tag {
+  bottom: 0.5rem;
+  left: 2.4rem;
 }
 
-.lp-sticker-zero small {
-  font-size: 0.62rem;
-  font-weight: 600;
-  opacity: 0.75;
+.lp-leader {
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+  border: 0 dashed var(--lp-line-strong);
 }
 
-@keyframes lp-bob {
-  0%,
-  100% {
-    translate: 0 0;
-  }
-  50% {
-    translate: 0 -7px;
-  }
+.lp-leader-sync {
+  top: 2.6rem;
+  right: 6.2rem;
+  width: 3.4rem;
+  border-top-width: 1px;
+}
+
+/* Vertical stub joining the tag pin up to the window's bottom edge. */
+.lp-leader-tag {
+  bottom: 2.5rem;
+  left: 5.6rem;
+  height: 0.7rem;
+  border-left-width: 1px;
+}
+
+.lp-note-hand {
+  position: absolute;
+  bottom: 0.2rem;
+  right: 2.4rem;
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 0.4rem;
+  font-family: var(--f-hand);
+  font-size: 1.35rem;
+  color: var(--lp-slate);
+  transform: rotate(-4deg);
+}
+
+.lp-note-hand svg {
+  width: 34px;
+  height: 24px;
+  color: var(--lp-green-ink);
+}
+
+.lp-pixel {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+}
+
+.lp-pixel-a {
+  top: 26%;
+  left: -0.55rem;
+  background: var(--lp-lavender);
+}
+
+.lp-pixel-b {
+  right: 1.4rem;
+  bottom: 34%;
+  background: var(--lp-green);
+}
+
+/* Sits in the margin above the window's top-left corner, clear of both the
+   caption to its right and the window below it. */
+.lp-orbit {
+  position: absolute;
+  top: -2.4rem;
+  left: -0.8rem;
+  width: 84px;
+  height: 84px;
+  color: rgba(61, 59, 79, 0.5);
 }
 
 /* --------------------------------------------------------------- marquee */
+/* The one solid brand banner: green ribbon, mono claims, plus separators. */
 
 .lp-marquee {
   position: relative;
@@ -2105,10 +2465,9 @@ button.disclosure:hover {
   margin: 0 0 5rem;
   padding: 0.85rem 0;
   overflow: hidden;
-  border-block: var(--edge) solid var(--ink);
-  background: var(--ink);
-  color: var(--paper);
-  transform: rotate(-1.2deg) scale(1.04);
+  border-block: 1px solid var(--lp-slate);
+  background: var(--lp-green);
+  color: var(--lp-slate);
 }
 
 .lp-marquee-track {
@@ -2124,21 +2483,19 @@ button.disclosure:hover {
 .lp-marquee-item {
   display: inline-flex;
   align-items: center;
-  gap: 1.6rem;
-  padding-right: 1.6rem;
-  font-family: var(--display);
-  font-size: 1rem;
+  gap: 2.2rem;
+  padding-right: 2.2rem;
+  font-family: var(--f-mono);
+  font-size: 0.85rem;
   font-weight: 700;
-  letter-spacing: -0.01em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   white-space: nowrap;
 }
 
-.lp-marquee-star {
-  flex-shrink: 0;
-  width: 14px;
-  height: 14px;
-  color: var(--honey);
+.lp-marquee-item i {
+  font-style: normal;
+  font-size: 1.05rem;
 }
 
 @keyframes lp-scroll {
@@ -2153,83 +2510,158 @@ button.disclosure:hover {
   position: relative;
   max-width: 76rem;
   margin: 0 auto;
-  padding: 0 1.6rem 5.5rem;
+  padding: 0 1.6rem 6rem;
+  scroll-margin-top: 1rem;
 }
 
 .lp-section-head {
-  max-width: 42rem;
+  max-width: 44rem;
   margin-bottom: 2.4rem;
 }
 
 .lp-h2 {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.6rem;
-  margin: 0;
-  font-family: var(--display);
-  font-size: clamp(1.9rem, 3.6vw, 2.8rem);
-  font-weight: 800;
-  line-height: 1.05;
-  letter-spacing: -0.05em;
-}
-
-.lp-squiggle {
-  width: 4.6rem;
-  height: 1.1rem;
-  color: var(--berry);
+  margin: 0.9rem 0 0;
+  font-family: var(--f-disp);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 600;
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
 }
 
 .lp-section-sub {
   margin: 0.9rem 0 0;
-  font-size: 1.02rem;
-  color: var(--ink-70);
+  font-family: var(--f-mono);
+  font-size: 0.88rem;
+  line-height: 1.7;
+  letter-spacing: 0.35px;
+  color: var(--lp-ink-70);
+}
+
+/* A bordered block carrying crosshair corner marks. */
+.lp-grid-frame {
+  position: relative;
+  border: 1px solid var(--lp-line);
+  background: var(--lp-fog);
+}
+
+/* ------------------------------------------------------------ corner marks */
+/* Four crosshair plus-marks centered exactly on the frame's corners. */
+
+.lp-marks {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  display: none;
+}
+
+.lp-grid-frame > .lp-marks,
+.lp-frame-corners > .lp-marks {
+  display: block;
+}
+
+.lp-marks i {
+  position: absolute;
+  width: 13px;
+  height: 13px;
+  color: var(--lp-cross);
+}
+
+.lp-marks i::before,
+.lp-marks i::after {
+  content: '';
+  position: absolute;
+  background: currentcolor;
+}
+
+.lp-marks i::before {
+  left: 6px;
+  top: 0;
+  width: 1.5px;
+  height: 13px;
+}
+
+.lp-marks i::after {
+  top: 6px;
+  left: 0;
+  width: 13px;
+  height: 1.5px;
+}
+
+.lp-marks i:nth-child(1) {
+  top: -7px;
+  left: -7px;
+}
+
+.lp-marks i:nth-child(2) {
+  top: -7px;
+  right: -7px;
+}
+
+.lp-marks i:nth-child(3) {
+  bottom: -7px;
+  left: -7px;
+}
+
+.lp-marks i:nth-child(4) {
+  bottom: -7px;
+  right: -7px;
 }
 
 /* ------------------------------------------------------------ cheatsheet */
 
 .lp-cheat-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(15.5rem, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .lp-cheat {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 0.7rem;
-  padding: 1rem 1.1rem;
-  border: var(--edge) solid var(--ink);
-  border-radius: 16px;
-  background: var(--paper-2);
-  box-shadow: var(--sh-sm);
-  transition: transform 180ms cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 180ms;
-}
-
-.lp-cheat:nth-child(odd) {
-  transform: rotate(-0.9deg);
-}
-
-.lp-cheat:nth-child(even) {
-  transform: rotate(0.9deg);
+  column-gap: 0.8rem;
+  row-gap: 0.65rem;
+  padding: 1.25rem 1.4rem;
+  transition: background-color 140ms;
 }
 
 .lp-cheat:hover {
-  transform: rotate(0deg) translate(-2px, -2px);
-  box-shadow: var(--sh);
+  background: #fff;
+}
+
+/* `<CornerMarks />` is the frame's first DOM child, so the cells are counted
+   by type — the marks are a <span>, the cells are <div>s. With :nth-child the
+   marks shift the count by one and the rules land on the wrong cells. */
+.lp-cheat:nth-of-type(odd) {
+  border-right: 1px dashed var(--lp-line);
+}
+
+.lp-cheat:nth-of-type(-n + 2) {
+  border-bottom: 1px dashed var(--lp-line);
+}
+
+.lp-cell-index {
+  flex-basis: 100%;
+  font-family: var(--f-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--lp-ink-55);
 }
 
 .lp-cheat-raw {
-  font-family: var(--display);
+  padding: 0.12rem 0.4rem;
+  background: rgba(61, 59, 79, 0.06);
+  font-family: var(--f-mono);
   font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--ink-55);
+  color: var(--lp-ink-55);
   white-space: nowrap;
 }
 
 .lp-cheat-arrow {
-  font-weight: 800;
-  color: var(--ink-55);
+  font-family: var(--f-mono);
+  color: var(--lp-ink-55);
 }
 
 .lp-cheat-out {
@@ -2242,196 +2674,213 @@ button.disclosure:hover {
 }
 
 .lp-cheat-h1 {
-  font-family: var(--display);
+  font-family: var(--f-disp);
   font-size: 1.15rem;
   font-weight: 800;
-  letter-spacing: -0.04em;
+  font-stretch: 104%;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
 }
 
 .lp-cheat-todo {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
+  font-family: var(--f-mono);
 }
 
 .lp-cheat-box {
   flex-shrink: 0;
-  width: 15px;
-  height: 15px;
-  border: 2.5px solid var(--ink);
-  border-radius: 5px;
+  width: 13px;
+  height: 13px;
+  border: 1.5px solid var(--lp-slate);
 }
 
 .lp-cheat-pill {
-  padding: 0.08rem 0.55rem;
-  border: 2px solid var(--ink);
-  border-radius: 999px;
-  background: var(--sky);
-  font-weight: 700;
+  padding: 0.06rem 0.55rem;
+  border: 1px solid rgba(61, 59, 79, 0.25);
+  border-radius: 2px;
+  background: var(--lp-seafoam);
+  font-family: var(--f-mono);
   font-size: 0.85rem;
 }
 
-/* ----------------------------------------------------------------- cards */
+/* ------------------------------------------------------------------ dark */
+/* The spec sheet: slate slab with an emerald-tinted dot grid, lavender
+   headings, seafoam accents and a dashed two-by-two grid of features. */
 
-.lp-cards {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1.2rem;
+.lp-dark {
+  position: relative;
+  overflow: hidden;
+  background: var(--lp-slate);
+  color: var(--lp-fog);
+  padding: 6rem 1.6rem 7.5rem;
+  scroll-margin-top: 0;
 }
 
-.lp-card {
-  display: flex;
-  flex-direction: column;
-  padding: 1.6rem 1.6rem 1.8rem;
-  border: var(--edge) solid var(--ink);
-  border-radius: 22px;
-  box-shadow: var(--sh);
-  transition: transform 180ms cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 180ms;
+.lp-dark::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(circle, rgba(16, 185, 129, 0.09) 1px, transparent 1px);
+  background-size: 24px 24px;
 }
 
-.lp-card:hover {
-  transform: translate(-3px, -3px);
-  box-shadow: 11px 11px 0 var(--ink);
+.lp-dark-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 76rem;
+  margin: 0 auto;
 }
 
-.lp-card[data-wide='true'] {
-  grid-column: span 2;
+.lp-h2-dark {
+  color: var(--lp-lavender);
 }
 
-.lp-card[data-tone='honey'] {
-  background: var(--honey);
+.lp-sub-dark {
+  color: var(--lp-silver);
 }
 
-.lp-card[data-tone='sky'] {
-  background: var(--sky);
-}
-
-.lp-card[data-tone='mint'] {
-  background: var(--mint);
-}
-
-.lp-card[data-tone='grape'] {
-  background: var(--grape);
-}
-
-.lp-card-icon {
-  display: grid;
-  place-items: center;
-  width: 2.7rem;
-  height: 2.7rem;
-  margin-bottom: 1.1rem;
-  border: var(--edge) solid var(--ink);
-  border-radius: 13px;
-  background: var(--paper-2);
-  box-shadow: var(--sh-sm);
-  transform: rotate(-4deg);
-  transition: transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.lp-card:hover .lp-card-icon {
-  transform: rotate(6deg);
-}
-
-.lp-card-kicker {
-  font-family: var(--display);
-  font-size: 0.7rem;
+/* CTA pill parked on the corner of the dark block, lavender with slate ink. */
+.lp-pill {
+  position: absolute;
+  z-index: 2;
+  top: 1.3rem;
+  right: 1.6rem;
+  padding: 0.48rem 1.15rem;
+  border-radius: 999px;
+  background: var(--lp-lavender);
+  color: var(--lp-slate);
+  font-family: var(--f-mono);
+  font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--ink-55);
 }
 
-.lp-card-title {
-  margin: 0.35rem 0 0.55rem;
-  font-family: var(--display);
-  font-size: 1.35rem;
-  font-weight: 800;
-  line-height: 1.12;
+.lp-dark .lp-grid-frame {
+  --lp-cross: rgba(238, 238, 238, 0.6);
+  border-color: var(--lp-line-dark);
+  background: transparent;
+}
+
+.lp-feat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.lp-feature {
+  padding: 1.9rem 1.9rem 2.1rem;
+}
+
+/* Counted by type for the same reason as `.lp-cheat` above. */
+.lp-feature:nth-of-type(odd) {
+  border-right: 1px dashed var(--lp-line-dark);
+}
+
+.lp-feature:nth-of-type(-n + 2) {
+  border-bottom: 1px dashed var(--lp-line-dark);
+}
+
+.lp-feat-index {
+  font-family: var(--f-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.35em;
+  color: var(--lp-seafoam);
+}
+
+.lp-h3 {
+  margin: 0.8rem 0 0.7rem;
+  font-family: var(--f-disp);
+  font-size: clamp(1.4rem, 2.4vw, 2.25rem);
+  font-weight: 600;
+  line-height: 1.1;
   letter-spacing: -0.04em;
+  text-transform: uppercase;
+  color: var(--lp-fog);
 }
 
-.lp-card-body {
+.lp-feature-body {
   margin: 0;
-  max-width: 34rem;
-  font-size: 0.96rem;
-  line-height: 1.55;
-  color: var(--ink-70);
+  max-width: 30rem;
+  font-family: var(--f-mono);
+  font-size: 0.85rem;
+  line-height: 1.75;
+  letter-spacing: 0.35px;
+  color: var(--lp-silver);
+}
+
+.lp-pixel-c {
+  top: 4.5rem;
+  left: 5%;
+  background: var(--lp-green);
+}
+
+.lp-pixel-d {
+  right: 6%;
+  bottom: 6rem;
+  background: var(--lp-lavender);
+}
+
+.lp-orbit-dark {
+  position: absolute;
+  top: 3.2rem;
+  right: 3%;
+  width: 150px;
+  height: 150px;
+  color: rgba(238, 238, 238, 0.22);
+  pointer-events: none;
+}
+
+/* Jagged torn edge: light teeth bite back up into the slate. */
+.lp-tear {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 14px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='14' viewBox='0 0 36 14'%3E%3Cpath d='M0 14 9 3l4 5 5-6 5 7 4-4 5 4 4-5V14z' fill='%23e9e9e9'/%3E%3C/svg%3E");
+  background-repeat: repeat-x;
+  background-size: 36px 14px;
 }
 
 /* ---------------------------------------------------------------- closer */
 
 .lp-closer {
   position: relative;
-  padding: 0 1.6rem 5rem;
+  padding: 6rem 1.6rem 6.5rem;
+  text-align: center;
 }
 
 .lp-closer-inner {
   position: relative;
-  overflow: hidden;
-  max-width: 52rem;
+  max-width: 44rem;
   margin: 0 auto;
-  padding: 3.4rem 2rem 3.8rem;
-  border: var(--edge) solid var(--ink);
-  border-radius: 28px;
-  background: var(--ink);
-  color: var(--paper);
-  box-shadow: var(--sh-lg);
-  text-align: center;
-}
-
-.lp-closer-inner::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background-image: radial-gradient(rgba(253, 243, 227, 0.18) 1.5px, transparent 1.5px);
-  background-size: 18px 18px;
-}
-
-.lp-closer-mark {
-  position: relative;
-  display: grid;
-  place-items: center;
-  width: 4.6rem;
-  height: 4.6rem;
-  margin: 0 auto 1.3rem;
-  border: var(--edge) solid var(--paper);
-  border-radius: 20px;
-  background: var(--honey);
-  color: var(--ink);
-  transform: rotate(-5deg);
-  animation: lp-bob 5s ease-in-out infinite;
+  padding: 4rem 2rem 4.3rem;
+  border: 1px dashed var(--lp-line-strong);
+  background: var(--lp-fog);
 }
 
 .lp-closer-title {
   position: relative;
-  margin: 0;
-  font-family: var(--display);
-  font-size: clamp(2rem, 4.4vw, 2.9rem);
-  font-weight: 800;
-  line-height: 1.05;
-  letter-spacing: -0.055em;
+  margin: 1.1rem 0 0;
+  font-family: var(--f-disp);
+  font-size: clamp(2rem, 4.4vw, 3rem);
+  font-weight: 600;
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
 }
 
 .lp-closer-sub {
-  position: relative;
   max-width: 32rem;
-  margin: 1rem auto 2rem;
-  font-size: 1.04rem;
-  color: rgba(253, 243, 227, 0.76);
-}
-
-.lp-closer .lp-btn {
-  position: relative;
-  box-shadow: 6px 6px 0 var(--berry);
-}
-
-.lp-closer .lp-btn:hover {
-  box-shadow: 9px 9px 0 var(--berry);
-}
-
-.lp-closer .lp-btn:active {
-  box-shadow: 2px 2px 0 var(--berry);
+  margin: 1.1rem auto 0;
+  font-family: var(--f-mono);
+  font-size: 0.88rem;
+  line-height: 1.7;
+  letter-spacing: 0.35px;
+  color: var(--lp-ink-70);
 }
 
 /* ---------------------------------------------------------------- footer */
@@ -2439,27 +2888,62 @@ button.disclosure:hover {
 .lp-foot {
   position: relative;
   z-index: 2;
+  overflow: hidden;
+  border-top: 1px solid var(--lp-line);
+  padding: 2rem 1.6rem 0;
+  font-family: var(--f-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--lp-ink-55);
+}
+
+/* Repeating diagonal watermark of the mark, tiled under the footer. */
+.lp-foot::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='84' height='84' viewBox='0 0 84 84'%3E%3Cg transform='rotate(-18 42 42)' fill='none' stroke='%233d3b4f' stroke-opacity='0.06' stroke-width='2'%3E%3Crect x='21' y='21' width='42' height='42' rx='9'/%3E%3Cpath d='M31 52 36.5 35'/%3E%3Cpath d='M40.5 52 46 35'/%3E%3Cpath d='M50 52 52.5 44'/%3E%3C/g%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 84px 84px;
+}
+
+.lp-foot-row {
+  position: relative;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 0.6rem;
+  gap: 0.8rem 1.6rem;
   max-width: 76rem;
   margin: 0 auto;
-  padding: 1.4rem 1.6rem 2.4rem;
-  border-top: var(--edge) solid var(--ink);
-  font-family: var(--display);
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--ink-70);
 }
 
 .lp-foot-brand {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
-  font-weight: 800;
-  color: var(--ink);
+  gap: 0.45rem;
+  font-weight: 700;
+  color: var(--lp-slate);
+}
+
+/* The big outlined lockup, cropped by the bottom of the page. */
+.lp-foot-giant {
+  position: relative;
+  display: block;
+  margin: 1.6rem auto -0.16em;
+  font-family: var(--f-disp);
+  font-size: clamp(5.5rem, 21vw, 17rem);
+  font-weight: 900;
+  font-stretch: 116%;
+  line-height: 0.82;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  text-align: center;
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(61, 59, 79, 0.3);
+  user-select: none;
 }
 
 /* ------------------------------------------------------------- entrances */
@@ -2479,37 +2963,58 @@ button.disclosure:hover {
 
 @media (max-width: 1000px) {
   .lp-hero {
-    grid-template-columns: 1fr;
-    gap: 2.5rem;
-    padding-bottom: 3.5rem;
+    padding-bottom: 4rem;
   }
 
-  .lp-stage {
-    max-width: 36rem;
-    margin: 0 auto;
+  .lp-hero-shot {
+    margin-top: 3.6rem;
   }
 
-  .lp-cards {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .lp-orbit {
+    width: 68px;
+    height: 68px;
+    top: -1.9rem;
+    left: -0.3rem;
   }
 
-  /* Once the hero stacks, the three blobs overlap into one muddy wash. */
-  .lp-blob {
-    opacity: 0.4;
+  .lp-fig {
+    left: 5rem;
+  }
+
+  .lp-orbit-dark {
+    width: 110px;
+    height: 110px;
+    opacity: 0.7;
+  }
+
+  .lp-pin-sync {
+    right: 0.2rem;
   }
 }
 
 @media (max-width: 680px) {
-  .lp-cards {
+  .lp-cheat-grid,
+  .lp-feat-grid {
     grid-template-columns: 1fr;
   }
 
-  .lp-card[data-wide='true'] {
-    grid-column: span 1;
+  .lp-cheat:nth-of-type(odd),
+  .lp-feature:nth-of-type(odd) {
+    border-right: 0;
   }
 
-  .lp-cheat-grid {
-    grid-template-columns: 1fr;
+  .lp-cheat:nth-of-type(-n + 2),
+  .lp-feature:nth-of-type(-n + 2) {
+    border-bottom: 0;
+  }
+
+  .lp-cheat:not(:last-child),
+  .lp-feature:not(:last-child) {
+    border-bottom: 1px dashed var(--lp-line);
+  }
+
+  .lp-feature:not(:last-child) {
+    border-bottom-color: var(--lp-line-dark);
   }
 }
 
@@ -2522,41 +3027,102 @@ button.disclosure:hover {
     padding-inline: 1.1rem;
   }
 
+  .lp-nav-links {
+    display: none;
+  }
+
+  /* Both nav controls stay on one line here, so they shed a little width
+     rather than the labels wrapping inside their cut shapes. */
+  .lp-nav {
+    gap: 0.6rem;
+  }
+
+  .lp-nav-actions {
+    gap: 0.7rem;
+  }
+
+  .lp-logo-word {
+    font-size: 1.1rem;
+  }
+
+  .lp-link {
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+  }
+
+  .lp-btn-sm {
+    --hex-arrow: 7px;
+    font-size: 0.64rem;
+  }
+
+  .lp-dark {
+    padding-inline: 1.1rem;
+  }
+
+  /* Stacked, the overlap that makes the CTAs read as one strip only offsets
+     the second button's left edge, so it goes when the row does. */
+  .lp-cta-group {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .lp-cta-group .lp-btn + .lp-btn {
+    margin-left: 0;
+  }
+
+  .lp-cta-group:hover .lp-btn:first-child,
+  .lp-cta-group:hover .lp-btn:last-child {
+    transform: none;
+  }
+
+  /* Without the note list beside it the editor is the whole window, so it
+     stops reserving room for a sidebar that isn't there. */
   .lp .mock-body {
     grid-template-columns: 1fr;
+    min-height: 16rem;
   }
 
   .lp .mock-list {
     display: none;
   }
 
-  /* The blobs are sized for a wide hero; at phone width one of them would
-     otherwise wash the whole first screen yellow. */
-  .lp-blob {
-    opacity: 0.34;
+  .lp .mock-titlebar {
+    padding-right: 7.5rem;
   }
 
-  .lp-blob-a {
-    top: -9rem;
-    width: 22rem;
-    height: 22rem;
-  }
-
-  .lp-sticker-tag {
-    bottom: 2.6rem;
-    left: -0.4rem;
-  }
-
-  .lp-sticker-sync {
-    right: -0.1rem;
-  }
-
-  .lp-sticker-zero {
+  .lp-leader,
+  .lp-note-hand,
+  .lp-pixel-a,
+  .lp-pixel-b,
+  .lp-orbit,
+  .lp-orbit-dark {
     display: none;
   }
 
-  .lp-cta-row .lp-btn {
-    flex: 1 1 100%;
+  /* Narrow enough that the caption and the SYNC pin would share a line, so
+     the stage opens up and stacks them instead. */
+  .lp-stage {
+    padding-top: 4.2rem;
+    padding-inline: 0.1rem;
+  }
+
+  .lp-fig {
+    top: 0.2rem;
+    left: 0.1rem;
+  }
+
+  .lp-pin-tag {
+    left: 0.2rem;
+  }
+
+  .lp-pin-sync {
+    top: 2.6rem;
+    right: 0.2rem;
+  }
+
+  .lp-pill {
+    top: 1rem;
+    right: 1.1rem;
   }
 }
 
@@ -2605,9 +3171,8 @@ button.disclosure:hover {
   font-weight: 600;
   color: var(--text-primary);
   background: var(--surface);
-  border: 2px solid var(--edge-color);
-  border-radius: 7px;
-  box-shadow: 2px 2px 0 var(--shadow-ink);
+  border: 1px solid var(--rule-strong);
+  border-radius: 2px;
   padding: 0.1rem 0.45rem;
   white-space: nowrap;
 }
@@ -2623,9 +3188,9 @@ button.disclosure:hover {
   align-items: center;
   gap: 0.6rem;
   padding: 0.6rem 0.95rem;
-  border-radius: 12px;
+  border-radius: var(--radius);
   background: var(--surface-raised);
-  border: 2px solid var(--edge-color);
+  border: 1px solid var(--rule-strong);
   box-shadow: var(--shadow-pop);
   font-family: var(--font-display);
   font-size: 0.82rem;
