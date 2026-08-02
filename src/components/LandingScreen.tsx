@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react'
-import { SlateMark, CheckIcon, ChevronRight, CodeIcon, SyncIcon, TagIcon } from './Icons'
+import { SlateMark } from './Icons'
 import type { AuthMode } from './AuthScreen'
 
 const prefersReducedMotion = () =>
@@ -148,7 +148,34 @@ const LIST_NOTES = [
   { title: 'Sourdough, take four', meta: 'Just now', width: '82%', active: true },
   { title: 'Reading list', meta: 'Tuesday', width: '64%', active: false },
   { title: 'Weekly review', meta: 'Sunday', width: '74%', active: false },
+  { title: 'Trip packing', meta: 'Mar 14', width: '58%', active: false },
+  { title: 'Book notes — Piranesi', meta: 'Mar 9', width: '71%', active: false },
 ]
+
+/** Crosshair plus-marks pinned to the four corners of a blueprint frame. */
+function CornerMarks() {
+  return (
+    <span className="lp-marks" aria-hidden="true">
+      <i /> <i /> <i /> <i />
+    </span>
+  )
+}
+
+/** Thin wireframe orbit sphere — the "everything is connected" illustration. */
+function OrbitSphere({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 120 120" fill="none" aria-hidden="true">
+      <circle cx="60" cy="60" r="42" stroke="currentColor" strokeWidth="1.4" />
+      <ellipse cx="60" cy="60" rx="56" ry="18" stroke="currentColor" strokeWidth="1" strokeDasharray="4 4" />
+      <ellipse cx="60" cy="60" rx="18" ry="56" stroke="currentColor" strokeWidth="1" strokeDasharray="4 4" />
+      <circle cx="60" cy="18" r="3" fill="currentColor" />
+      <circle cx="104" cy="72" r="3" fill="currentColor" />
+      <circle cx="22" cy="86" r="3" fill="currentColor" />
+      <line x1="60" y1="18" x2="104" y2="72" stroke="currentColor" strokeWidth="0.8" strokeDasharray="2 3" />
+      <line x1="60" y1="18" x2="22" y2="86" stroke="currentColor" strokeWidth="0.8" strokeDasharray="2 3" />
+    </svg>
+  )
+}
 
 /** A miniature of the real two-pane app, typing a note to itself. */
 function MockWindow() {
@@ -156,12 +183,13 @@ function MockWindow() {
 
   return (
     <div className="lp-stage" aria-hidden="true">
+      <span className="lp-fig">FIG.01 — the whole app, actual size</span>
       <div className="mock-window">
         <div className="mock-titlebar">
-          <span className="mock-dot" data-tone="red" />
-          <span className="mock-dot" data-tone="yellow" />
-          <span className="mock-dot" data-tone="green" />
-          <span className="mock-titlebar-title">sourdough-take-four.md</span>
+          <span className="mock-dot" data-tone="one" />
+          <span className="mock-dot" data-tone="two" />
+          <span className="mock-dot" data-tone="three" />
+          <span className="mock-titlebar-title">~/notes/sourdough-take-four.md</span>
         </div>
         <div className="mock-body">
           <div className="mock-list">
@@ -185,19 +213,29 @@ function MockWindow() {
         </div>
       </div>
 
-      <span className="lp-sticker lp-sticker-sync">
-        <CheckIcon size={13} />
-        synced, obviously
+      <span className="lp-pin lp-pin-sync">
+        <span className="lp-pin-dot" />
+        SYNC://OK
       </span>
-      <span className="lp-sticker lp-sticker-tag">
-        <TagIcon size={13} />
-        #recipes · 6 notes
+      <span className="lp-leader lp-leader-sync" />
+      <span className="lp-pin lp-pin-tag">#recipes · 6 notes</span>
+      <span className="lp-leader lp-leader-tag" />
+      <span className="lp-note-hand">
+        0 folders required
+        <svg viewBox="0 0 40 28" fill="none" aria-hidden="true">
+          <path
+            d="M36 4C26 2 12 4 6 20m0 0 6-4m-6 4-4-5"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
       </span>
-      <span className="lp-sticker lp-sticker-zero">
-        0 folders
-        <br />
-        <small>required</small>
-      </span>
+
+      <span className="lp-pixel lp-pixel-a" />
+      <span className="lp-pixel lp-pixel-b" />
+      <OrbitSphere className="lp-orbit" />
     </div>
   )
 }
@@ -226,77 +264,34 @@ const CHEATS: { raw: string; render: ReactNode }[] = [
   { raw: '#recipes', render: <span className="lp-cheat-pill">#recipes</span> },
 ]
 
-const CARDS = [
+const FEATURES = [
   {
-    tone: 'honey',
-    icon: CodeIcon,
-    kicker: 'the writing bit',
+    index: '01',
     title: 'Markdown that shows its work',
     body: 'Headings swell, todos sprout checkboxes, tables snap into a grid — all while the file underneath stays boring, portable text.',
-    wide: true,
   },
   {
-    tone: 'sky',
-    icon: TagIcon,
-    kicker: 'the filing bit',
+    index: '02',
     title: 'Tags, not folders',
-    body: 'Drop a #tag mid-sentence. Nest them like folders if you must. One note can live in six places at once.',
-    wide: false,
+    body: 'Drop a #tag mid-sentence. Nest them like folders if you must — one note can live in six places at once.',
   },
   {
-    tone: 'mint',
-    icon: SyncIcon,
-    kicker: 'the everywhere bit',
+    index: '03',
     title: 'Follows you around',
     body: 'Sign in once and every note turns up on the next device, mid-sentence.',
-    wide: false,
   },
   {
-    tone: 'grape',
-    icon: SlateMark,
-    kicker: 'the trust bit',
+    index: '04',
     title: 'Yours to walk away with',
-    body: 'Every note exports as a plain .md file. No hostage situation, no export fee, no hard feelings — just a folder of text you can read in thirty years.',
-    wide: true,
+    body: 'Every note exports as a plain .md file. No hostage situation, no export fee — just a folder of text you can read in thirty years.',
   },
 ] as const
-
-function Squiggle({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 120 24" fill="none" aria-hidden="true">
-      <path
-        d="M2 14c8-14 16 10 24-2s16 12 24 0 16 10 24-2 16 8 22 2"
-        stroke="currentColor"
-        strokeWidth="4"
-        strokeLinecap="round"
-      />
-    </svg>
-  )
-}
-
-function Star({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path
-        d="M12 1.5c.6 6 3.9 9.3 9.9 9.9v1.2c-6 .6-9.3 3.9-9.9 9.9h-1.2C10.2 16.5 6.9 13.2.9 12.6v-1.2c6-.6 9.3-3.9 9.9-9.9h1.2Z"
-        fill="currentColor"
-      />
-    </svg>
-  )
-}
 
 export function LandingScreen({ onLaunch }: { onLaunch: (mode: AuthMode) => void }) {
   const wordIndex = useRotatingWord(SLATE_WORDS)
 
   return (
     <div className="lp">
-      <div className="lp-paper" aria-hidden="true" />
-      <div className="lp-blobs" aria-hidden="true">
-        <span className="lp-blob lp-blob-a" />
-        <span className="lp-blob lp-blob-b" />
-        <span className="lp-blob lp-blob-c" />
-      </div>
-
       <header className="lp-nav">
         <a className="lp-logo" href="#top">
           <span className="lp-logo-mark">
@@ -304,35 +299,46 @@ export function LandingScreen({ onLaunch }: { onLaunch: (mode: AuthMode) => void
           </span>
           <span className="lp-logo-word">Slate</span>
         </a>
-        <nav className="lp-nav-actions">
+        <nav className="lp-nav-links" aria-label="Sections">
+          <a href="#syntax">Syntax</a>
+          <a href="#features">Features</a>
+        </nav>
+        <div className="lp-nav-actions">
           <button type="button" className="lp-link" onClick={() => onLaunch('signIn')}>
             Sign in
           </button>
           <button
             type="button"
-            className="lp-btn lp-btn-primary lp-btn-sm"
+            className="lp-btn lp-btn-solid lp-btn-sm"
             onClick={() => onLaunch('signUp')}
           >
-            Get started
+            <span>Get started</span>
           </button>
-        </nav>
+        </div>
       </header>
 
       <main className="lp-main" id="top">
         <section className="lp-hero">
           <div className="lp-hero-copy">
-            <span className="lp-badge lp-pop" style={{ animationDelay: '40ms' }}>
-              <Star className="lp-badge-star" />
-              markdown notes with a pulse
+            <span className="lp-eyebrow lp-pop" style={{ animationDelay: '40ms' }}>
+              [ markdown notes with a pulse ]
             </span>
 
             <h1 className="lp-title lp-pop" style={{ animationDelay: '110ms' }}>
-              <span className="lp-title-line">A clean slate</span>
-              <span className="lp-title-line lp-title-line-2">for your</span>
+              <span className="lp-title-line">A clean slate for your</span>
+              {/* Every word is rendered into the same grid cell, so the chip is
+                  sized by the longest of them and holds still as they swap. */}
               <span className="lp-rotor">
-                <span key={wordIndex} className="lp-rotor-word">
-                  {SLATE_WORDS[wordIndex]}
-                </span>
+                {SLATE_WORDS.map((word, index) => (
+                  <span
+                    className="lp-rotor-word"
+                    data-active={index === wordIndex}
+                    aria-hidden={index === wordIndex ? undefined : true}
+                    key={word}
+                  >
+                    {word}
+                  </span>
+                ))}
               </span>
             </h1>
 
@@ -341,38 +347,31 @@ export function LandingScreen({ onLaunch }: { onLaunch: (mode: AuthMode) => void
               words behind a database. Type. Tag. Close the laptop. It'll all still be there.
             </p>
 
-            <div className="lp-cta-row lp-pop" style={{ animationDelay: '260ms' }}>
+            <div className="lp-cta-group lp-pop" style={{ animationDelay: '260ms' }}>
               <button
                 type="button"
-                className="lp-btn lp-btn-primary lp-btn-lg"
+                className="lp-btn lp-btn-notch lp-btn-lg"
                 onClick={() => onLaunch('signUp')}
               >
-                Start writing — free
-                <ChevronRight size={17} />
+                <span>Start writing — free&nbsp;→</span>
               </button>
               <button
                 type="button"
-                className="lp-btn lp-btn-ghost lp-btn-lg"
+                className="lp-btn lp-btn-slate lp-btn-lg"
                 onClick={() => onLaunch('signIn')}
               >
-                I've been here before
+                <span>I've been here before</span>
               </button>
             </div>
 
             <ul className="lp-ticks lp-pop" style={{ animationDelay: '330ms' }}>
-              <li>
-                <CheckIcon size={14} /> no credit card
-              </li>
-              <li>
-                <CheckIcon size={14} /> no onboarding tour
-              </li>
-              <li>
-                <CheckIcon size={14} /> no folders, ever
-              </li>
+              <li>no credit card</li>
+              <li>no onboarding tour</li>
+              <li>no folders, ever</li>
             </ul>
           </div>
 
-          <div className="lp-pop lp-pop-art" style={{ animationDelay: '220ms' }}>
+          <div className="lp-hero-shot lp-pop" style={{ animationDelay: '400ms' }}>
             <MockWindow />
           </div>
         </section>
@@ -384,7 +383,7 @@ export function LandingScreen({ onLaunch }: { onLaunch: (mode: AuthMode) => void
                 {MARQUEE.map((item) => (
                   <span className="lp-marquee-item" key={item}>
                     {item}
-                    <Star className="lp-marquee-star" />
+                    <i>+</i>
                   </span>
                 ))}
               </div>
@@ -392,25 +391,24 @@ export function LandingScreen({ onLaunch }: { onLaunch: (mode: AuthMode) => void
           </div>
         </div>
 
-        <section className="lp-section lp-cheatsheet">
+        <section className="lp-section" id="syntax">
           <div className="lp-section-head">
-            <h2 className="lp-h2">
-              Type this
-              <Squiggle className="lp-squiggle" />
-              get that
-            </h2>
+            <span className="lp-eyebrow">[ syntax → render ]</span>
+            <h2 className="lp-h2">Type this, get that</h2>
             <p className="lp-section-sub">
-              Type the markdown you already half-remember — headings, todos, and tags light up as you
-              go.
+              Type the markdown you already half-remember — headings, todos, and tags light up as
+              you go.
             </p>
           </div>
 
-          <div className="lp-cheat-grid">
-            {CHEATS.map((cheat) => (
+          <div className="lp-grid-frame lp-cheat-grid">
+            <CornerMarks />
+            {CHEATS.map((cheat, index) => (
               <div className="lp-cheat" key={cheat.raw}>
+                <span className="lp-cell-index">ex.{String(index + 1).padStart(2, '0')}</span>
                 <code className="lp-cheat-raw">{cheat.raw}</code>
                 <span className="lp-cheat-arrow" aria-hidden="true">
-                  →
+                  -&gt;
                 </span>
                 <span className="lp-cheat-out">{cheat.render}</span>
               </div>
@@ -418,55 +416,77 @@ export function LandingScreen({ onLaunch }: { onLaunch: (mode: AuthMode) => void
           </div>
         </section>
 
-        <section className="lp-section">
-          <div className="lp-section-head">
-            <h2 className="lp-h2">Four things, done properly</h2>
-            <p className="lp-section-sub">
-              Instead of forty things done in a settings panel nobody opens.
-            </p>
+        <section className="lp-dark" id="features">
+          <span className="lp-pill">Learn more</span>
+          <div className="lp-dark-inner">
+            <div className="lp-section-head">
+              <span className="lp-eyebrow lp-eyebrow-sea">[ the spec sheet ]</span>
+              <h2 className="lp-h2 lp-h2-dark">Four things, done properly</h2>
+              <p className="lp-section-sub lp-sub-dark">
+                Instead of forty things done in a settings panel nobody opens.
+              </p>
+            </div>
+
+            <div className="lp-grid-frame lp-feat-grid">
+              <CornerMarks />
+              {FEATURES.map((feature) => (
+                <article className="lp-feature" key={feature.index}>
+                  <span className="lp-feat-index">{feature.index}</span>
+                  <h3 className="lp-h3">{feature.title}</h3>
+                  <p className="lp-feature-body">{feature.body}</p>
+                </article>
+              ))}
+            </div>
           </div>
 
-          <div className="lp-cards">
-            {CARDS.map((card) => (
-              <article className="lp-card" data-tone={card.tone} data-wide={card.wide} key={card.title}>
-                <span className="lp-card-icon">
-                  <card.icon size={20} />
-                </span>
-                <span className="lp-card-kicker">{card.kicker}</span>
-                <h3 className="lp-card-title">{card.title}</h3>
-                <p className="lp-card-body">{card.body}</p>
-              </article>
-            ))}
-          </div>
+          <span className="lp-pixel lp-pixel-c" />
+          <span className="lp-pixel lp-pixel-d" />
+          <OrbitSphere className="lp-orbit-dark" />
+          <div className="lp-tear" aria-hidden="true" />
         </section>
 
         <section className="lp-closer">
-          <div className="lp-closer-inner">
-            <span className="lp-closer-mark">
-              <SlateMark size={44} />
-            </span>
+          <div className="lp-closer-inner lp-frame-corners">
+            <CornerMarks />
+            <span className="lp-eyebrow">[ step 01 — open a note ]</span>
             <h2 className="lp-closer-title">Go on, write something down.</h2>
             <p className="lp-closer-sub">
               It takes about nine seconds to make an account, and roughly zero to start typing.
             </p>
-            <button
-              type="button"
-              className="lp-btn lp-btn-honey lp-btn-lg"
-              onClick={() => onLaunch('signUp')}
-            >
-              Open a blank note
-              <ChevronRight size={17} />
-            </button>
+            <div className="lp-cta-group lp-cta-center">
+              <button
+                type="button"
+                className="lp-btn lp-btn-notch lp-btn-lg"
+                onClick={() => onLaunch('signUp')}
+              >
+                <span>Open a blank note&nbsp;→</span>
+              </button>
+              <button
+                type="button"
+                className="lp-btn lp-btn-outline lp-btn-lg"
+                onClick={() => onLaunch('signIn')}
+              >
+                <span>Sign in</span>
+              </button>
+            </div>
           </div>
         </section>
       </main>
 
       <footer className="lp-foot">
-        <span className="lp-foot-brand">
-          <SlateMark size={15} />
+        <div className="lp-foot-row">
+          <span className="lp-foot-brand">
+            <SlateMark size={16} />
+            Slate — v0.1.0
+          </span>
+          <span>Built for people who think in plain text.</span>
+          <button type="button" className="lp-link" onClick={() => onLaunch('signUp')}>
+            Get started →
+          </button>
+        </div>
+        <span className="lp-foot-giant" aria-hidden="true">
           Slate
         </span>
-        <span>Built for people who think in plain text.</span>
       </footer>
     </div>
   )

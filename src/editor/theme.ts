@@ -97,16 +97,16 @@ export const slateEditorTheme = EditorView.theme({
   '.cm-list-line .cm-bullet, .cm-list-line .cm-list-marker': {
     textIndent: '0',
   },
-  // A 6px dot against 17px copy, resting 2.5px above the baseline. Drawn
+  // A 6px mark against 17px copy, resting 2.5px above the baseline. Drawn
   // rather than typed — a `•` is a different size in each of the three editor
-  // fonts, and lands differently against the baseline too.
+  // fonts, and lands differently against the baseline too. Square, like every
+  // other data point on the schematic.
   '.cm-bullet-dot': {
     display: 'inline-block',
     width: '0.35em',
     height: '0.35em',
     marginLeft: '0.53em',
     verticalAlign: '0.15em',
-    borderRadius: '50%',
     backgroundColor: 'var(--list-marker)',
   },
   // A ListMark is `processingInstruction` to Lezer, so the highlight style
@@ -137,7 +137,7 @@ export const slateEditorTheme = EditorView.theme({
   '.cm-line.cm-heading-1:first-child, .cm-line.cm-heading-2:first-child': { paddingTop: '0' },
 
   '.cm-quote-line': {
-    borderLeft: '3px solid var(--rule)',
+    borderLeft: '2px solid var(--rule-strong)',
     paddingLeft: '0.85em',
     marginLeft: '-1px',
   },
@@ -151,15 +151,15 @@ export const slateEditorTheme = EditorView.theme({
   '.cm-code-start': {
     marginTop: '0.8em',
     paddingTop: '0.5em',
-    borderRadius: '8px 8px 0 0',
+    borderRadius: '2px 2px 0 0',
   },
   '.cm-code-end': {
     marginBottom: '0.9em',
     paddingBottom: '0.5em',
-    borderRadius: '0 0 8px 8px',
+    borderRadius: '0 0 2px 2px',
   },
   '.cm-code-start.cm-code-end': {
-    borderRadius: '8px',
+    borderRadius: '2px',
   },
 
   // A table is drawn from its source: `tables.ts` hides the pipes and the
@@ -181,16 +181,16 @@ export const slateEditorTheme = EditorView.theme({
   '.cm-line.cm-table-head': {
     marginTop: '0.55em',
     borderTop: '1px solid var(--rule-strong)',
-    borderTopLeftRadius: '8px',
-    borderTopRightRadius: '8px',
+    borderTopLeftRadius: '2px',
+    borderTopRightRadius: '2px',
     backgroundColor: 'var(--table-row)',
   },
   '.cm-line.cm-table-alt': { backgroundColor: 'var(--table-row)' },
   '.cm-line.cm-table-last': {
     marginBottom: '0.6em',
     borderBottom: '1px solid var(--rule-strong)',
-    borderBottomLeftRadius: '8px',
-    borderBottomRightRadius: '8px',
+    borderBottomLeftRadius: '2px',
+    borderBottomRightRadius: '2px',
   },
   // The last cell drops its rule so the rounded edge on the line is the only
   // thing drawn there — `cm-table-cell-end` rather than `:last-child`, which
@@ -224,7 +224,7 @@ export const slateEditorTheme = EditorView.theme({
     height: '1.1rem',
     margin: '0.15rem',
     padding: '0',
-    borderRadius: '5px',
+    borderRadius: '2px',
     color: 'var(--text-tertiary)',
     backgroundColor: 'var(--surface-raised)',
     boxShadow: '0 0 0 1px var(--rule-strong)',
@@ -240,8 +240,8 @@ export const slateEditorTheme = EditorView.theme({
   '.cm-hashtag': {
     color: 'var(--text-primary)',
     backgroundColor: 'var(--accent-wash)',
-    border: '1.5px solid var(--edge-color)',
-    borderRadius: '999px',
+    border: '1px solid var(--accent-soft)',
+    borderRadius: '2px',
     padding: '0.05em 0.4em',
     margin: '0 -0.05em',
     cursor: 'pointer',
@@ -265,8 +265,8 @@ export const slateEditorTheme = EditorView.theme({
     marginLeft: '0.53em',
     marginRight: '0.45em',
     verticalAlign: '-0.16em',
-    border: '2px solid var(--todo-border)',
-    borderRadius: '5px',
+    border: '1.5px solid var(--todo-border)',
+    borderRadius: '1px',
     cursor: 'pointer',
     position: 'relative',
     transition: 'background-color 120ms ease, border-color 120ms ease',
@@ -288,8 +288,8 @@ export const slateEditorTheme = EditorView.theme({
   '.cm-todo-done': { color: 'var(--text-tertiary)', textDecoration: 'line-through' },
 
   '.cm-tooltip': {
-    border: '2px solid var(--edge-color)',
-    borderRadius: '12px',
+    border: '1px solid var(--rule-strong)',
+    borderRadius: '3px',
     backgroundColor: 'var(--surface-raised)',
     boxShadow: 'var(--shadow-pop)',
     overflow: 'hidden',
