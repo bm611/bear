@@ -10,3 +10,8 @@ coverage
 
 # Local Netlify folder
 .netlify
+
+# Playwright MCP artifacts
+.playwright-mcp/
+lp-full-top.png
+lp-top.png
