@@ -266,9 +266,12 @@ export function EditorPane({ note, viewRef, onBack, onTagNavigate }: EditorPaneP
             </button>
           ) : null}
 
-          <h1 className="editor-title" title={title}>
-            {title}
-          </h1>
+          <div className="editor-title-group">
+            <span className="editor-eyebrow">Markdown note</span>
+            <h1 className="editor-title" title={title}>
+              {title}
+            </h1>
+          </div>
 
           <div className="editor-header-actions">
             <button

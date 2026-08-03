@@ -1,7 +1,7 @@
 /* ---------------------------------------------------------------- tokens */
-/* Playful Pop: warm surfaces, soft gradients, rounded shapes, and a
-   coral-to-violet accent. Feels like a friendly notebook app — colourful
-   without being loud, with state carried by tint, glow, and bounce. */
+/* Calm studio: warm paper, ink-toned chrome, and a single muted teal accent.
+   The editor stays deliberately quiet so the note, not its interface, carries
+   the visual weight. */
 
 :root {
   --font-ui: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui,
@@ -30,122 +30,122 @@
   --list-width: 21rem;
   --radius: 10px;
   --radius-sm: 8px;
-  --radius-lg: 16px;
-  --radius-xl: 22px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
   --radius-pill: 999px;
-  --transition: 180ms cubic-bezier(0.34, 1.4, 0.64, 1);
-  --transition-spring: 320ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  --transition: 180ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-spring: 260ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 :root,
 [data-theme='light'] {
   color-scheme: light;
 
-  --edge-color: #2d1b4e;
-  --shadow-ink: #6b4c9a;
+  --edge-color: #1f3d3b;
+  --shadow-ink: #1f4f4b;
 
-  --accent: #7c3aed;
-  --accent-hover: #6d28d9;
-  --accent-secondary: #f97316;
-  --list-marker: var(--accent-secondary);
-  --accent-soft: rgba(124, 58, 237, 0.45);
-  --accent-wash: rgba(124, 58, 237, 0.1);
-  --accent-wash-strong: rgba(124, 58, 237, 0.18);
+  --accent: #0f766e;
+  --accent-hover: #115e59;
+  --accent-secondary: var(--accent);
+  --list-marker: var(--accent);
+  --accent-soft: rgba(15, 118, 110, 0.34);
+  --accent-wash: rgba(15, 118, 110, 0.09);
+  --accent-wash-strong: rgba(15, 118, 110, 0.16);
 
-  --mint: #6ee7b7;
+  --mint: #5eead4;
   --honey: #fde68a;
-  --ink: #1e1b4b;
-  --sticker-fg: #1e1b4b;
+  --ink: #18312f;
+  --sticker-fg: #18312f;
 
-  --invert-bg: #7c3aed;
+  --invert-bg: #0f766e;
   --invert-fg: #ffffff;
 
-  --app-bg: linear-gradient(145deg, #faf5ff 0%, #fff7ed 45%, #fef3c7 100%);
-  --sidebar-bg: rgba(255, 255, 255, 0.72);
-  --list-bg: rgba(255, 255, 255, 0.55);
-  --surface: #ffffff;
+  --app-bg: #e9e8e1;
+  --sidebar-bg: rgba(250, 250, 247, 0.78);
+  --list-bg: rgba(250, 250, 247, 0.7);
+  --surface: #fbfbf8;
   --surface-raised: #ffffff;
-  --surface-hover: rgba(124, 58, 237, 0.06);
-  --surface-active: rgba(124, 58, 237, 0.1);
-  --canvas-bg: #ffffff;
+  --surface-hover: rgba(15, 118, 110, 0.055);
+  --surface-active: rgba(15, 118, 110, 0.1);
+  --canvas-bg: #fffefa;
 
-  --text-primary: #1e1b4b;
-  --text-secondary: #5b5675;
-  --text-tertiary: #9490a8;
+  --text-primary: #1f2928;
+  --text-secondary: #5d6967;
+  --text-tertiary: #89918e;
   --text-inverse: #ffffff;
 
-  --rule: rgba(124, 58, 237, 0.1);
-  --rule-pane: rgba(124, 58, 237, 0.14);
-  --rule-strong: rgba(124, 58, 237, 0.22);
-  --selection: rgba(124, 58, 237, 0.2);
-  --syntax-mark: #b4afc4;
-  --code-bg: #f5f3ff;
-  --code-text: #c026d3;
-  --todo-border: #c4b5fd;
-  --highlight: rgba(249, 115, 22, 0.18);
-  --table-row: rgba(124, 58, 237, 0.04);
+  --rule: rgba(31, 41, 40, 0.1);
+  --rule-pane: rgba(31, 41, 40, 0.14);
+  --rule-strong: rgba(31, 41, 40, 0.22);
+  --selection: rgba(15, 118, 110, 0.18);
+  --syntax-mark: #9ca4a1;
+  --code-bg: #f1f4f1;
+  --code-text: #0f766e;
+  --todo-border: #91aaa6;
+  --highlight: rgba(245, 158, 11, 0.19);
+  --table-row: rgba(31, 41, 40, 0.035);
   --danger: #ef4444;
   --danger-wash: rgba(239, 68, 68, 0.1);
   --success: #10b981;
 
-  --shadow-soft: 0 2px 12px -2px rgba(124, 58, 237, 0.1);
-  --shadow-card: 0 4px 24px -4px rgba(124, 58, 237, 0.14), 0 1px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-pop: 0 16px 40px -12px rgba(124, 58, 237, 0.22), 0 4px 12px -4px rgba(0, 0, 0, 0.08);
-  --shadow-toolbar: 0 2px 16px -4px rgba(124, 58, 237, 0.18);
+  --shadow-soft: 0 8px 24px -20px rgba(27, 62, 58, 0.28);
+  --shadow-card: 0 20px 50px -42px rgba(27, 62, 58, 0.45);
+  --shadow-pop: 0 20px 44px -24px rgba(27, 62, 58, 0.28);
+  --shadow-toolbar: 0 8px 20px -18px rgba(27, 62, 58, 0.35);
 }
 
 [data-theme='dark'] {
   color-scheme: dark;
 
-  --edge-color: rgba(196, 181, 253, 0.5);
-  --shadow-ink: #1a0f2e;
+  --edge-color: rgba(153, 209, 201, 0.5);
+  --shadow-ink: #081c1a;
 
-  --accent: #a78bfa;
-  --accent-hover: #c4b5fd;
-  --accent-secondary: #fb923c;
-  --list-marker: var(--accent-secondary);
-  --accent-soft: rgba(167, 139, 250, 0.55);
-  --accent-wash: rgba(167, 139, 250, 0.14);
-  --accent-wash-strong: rgba(167, 139, 250, 0.24);
+  --accent: #5bc0b4;
+  --accent-hover: #86d7cc;
+  --accent-secondary: var(--accent);
+  --list-marker: var(--accent);
+  --accent-soft: rgba(91, 192, 180, 0.5);
+  --accent-wash: rgba(91, 192, 180, 0.13);
+  --accent-wash-strong: rgba(91, 192, 180, 0.22);
 
-  --mint: #34d399;
+  --mint: #5eead4;
   --honey: #fcd34d;
-  --ink: #1e1b4b;
-  --sticker-fg: #1e1b4b;
+  --ink: #143330;
+  --sticker-fg: #143330;
 
-  --invert-bg: #a78bfa;
-  --invert-fg: #1e1b4b;
+  --invert-bg: #5bc0b4;
+  --invert-fg: #102523;
 
-  --app-bg: linear-gradient(160deg, #0f0a1a 0%, #1a1033 40%, #1c1425 100%);
-  --sidebar-bg: rgba(26, 16, 51, 0.75);
-  --list-bg: rgba(20, 12, 40, 0.65);
-  --surface: #120a22;
-  --surface-raised: #1c1230;
-  --surface-hover: rgba(167, 139, 250, 0.1);
-  --surface-active: rgba(167, 139, 250, 0.16);
-  --canvas-bg: #1a1030;
+  --app-bg: #101715;
+  --sidebar-bg: rgba(20, 29, 27, 0.82);
+  --list-bg: rgba(17, 25, 23, 0.76);
+  --surface: #151e1c;
+  --surface-raised: #1a2523;
+  --surface-hover: rgba(91, 192, 180, 0.09);
+  --surface-active: rgba(91, 192, 180, 0.14);
+  --canvas-bg: #18211f;
 
-  --text-primary: #f0ebff;
-  --text-secondary: #b8aed4;
-  --text-tertiary: #7c7494;
-  --text-inverse: #1e1b4b;
+  --text-primary: #edf2ed;
+  --text-secondary: #b7c2bd;
+  --text-tertiary: #77857f;
+  --text-inverse: #102523;
 
-  --rule: rgba(167, 139, 250, 0.12);
-  --rule-pane: rgba(167, 139, 250, 0.16);
-  --rule-strong: rgba(167, 139, 250, 0.28);
-  --selection: rgba(167, 139, 250, 0.32);
-  --syntax-mark: #6b6280;
-  --code-bg: #221840;
-  --code-text: #f0abfc;
-  --todo-border: #6d5a9e;
-  --highlight: rgba(251, 146, 60, 0.24);
-  --table-row: rgba(167, 139, 250, 0.06);
+  --rule: rgba(237, 242, 237, 0.1);
+  --rule-pane: rgba(237, 242, 237, 0.14);
+  --rule-strong: rgba(237, 242, 237, 0.22);
+  --selection: rgba(91, 192, 180, 0.28);
+  --syntax-mark: #77857f;
+  --code-bg: #202c29;
+  --code-text: #86d7cc;
+  --todo-border: #4a746d;
+  --highlight: rgba(251, 191, 36, 0.2);
+  --table-row: rgba(237, 242, 237, 0.045);
   --danger: #f87171;
   --danger-wash: rgba(248, 113, 113, 0.14);
   --success: #34d399;
 
   --shadow-soft: 0 2px 12px -2px rgba(0, 0, 0, 0.4);
-  --shadow-card: 0 4px 28px -4px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(167, 139, 250, 0.08);
+  --shadow-card: 0 20px 50px -36px rgba(0, 0, 0, 0.7);
   --shadow-pop: 0 20px 48px -14px rgba(0, 0, 0, 0.65), 0 4px 12px -4px rgba(0, 0, 0, 0.4);
   --shadow-toolbar: 0 4px 20px -4px rgba(0, 0, 0, 0.5);
 }
@@ -238,8 +238,8 @@ select {
   height: 100%;
   overflow: hidden;
   background: var(--app-bg);
-  gap: 0.5rem;
-  padding: 0.5rem;
+  gap: 0.65rem;
+  padding: 0.65rem;
 }
 
 .icon-button {
@@ -259,7 +259,11 @@ select {
   border-color: var(--rule-strong);
   background: var(--surface-hover);
   color: var(--accent);
-  transform: scale(1.06);
+  transform: translateY(-1px);
+}
+
+.icon-button:active {
+  transform: translateY(0) scale(0.97);
 }
 
 .icon-button[aria-pressed='true'] {
@@ -872,35 +876,52 @@ button.disclosure:hover {
   flex: 1;
   min-width: 0;
   background: transparent;
-  gap: 0.5rem;
+  gap: 0;
 }
 
-/* Top row: back, title, note actions — separate from formatting. */
+/* The title is a calm document identity bar rather than a second toolbar. */
 .editor-header {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.4rem 1rem 0;
+  padding: 0.55rem 1.25rem 0.7rem;
   flex-shrink: 0;
 }
 
 .editor-header-inner {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  max-width: calc(var(--editor-measure-scale) * var(--editor-font-size) + 3.2rem);
+  gap: 0.65rem;
+  max-width: calc(var(--editor-measure-scale) * var(--editor-font-size) + 4rem);
   width: 100%;
   margin: 0 auto;
 }
 
-.editor-title {
+.editor-title-group {
+  display: grid;
   flex: 1;
+  min-width: 0;
+  gap: 0.08rem;
+}
+
+.editor-eyebrow {
+  color: var(--text-tertiary);
+  font-family: var(--font-display);
+  font-size: 0.64rem;
+  font-weight: 650;
+  letter-spacing: 0.1em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.editor-title {
   min-width: 0;
   margin: 0;
   font-family: var(--font-display);
-  font-size: 1.15rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  font-size: 1.22rem;
+  font-weight: 650;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
   color: var(--text-primary);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -910,32 +931,29 @@ button.disclosure:hover {
 .editor-header-actions {
   display: flex;
   align-items: center;
-  gap: 0.15rem;
+  gap: 0.2rem;
   flex-shrink: 0;
 }
 
-/* Floating pill toolbar for formatting controls. */
+/* The formatting row is deliberately quiet and follows the text measure. */
 .editor-toolbar {
-  padding: 0 1rem;
+  padding: 0 1.25rem;
   flex-shrink: 0;
 }
 
 .editor-toolbar-inner {
   display: flex;
   align-items: center;
-  gap: 0.35rem;
-  max-width: calc(var(--editor-measure-scale) * var(--editor-font-size) + 3.2rem);
+  gap: 0.45rem;
+  max-width: calc(var(--editor-measure-scale) * var(--editor-font-size) + 4rem);
   margin: 0 auto;
-  padding: 0.3rem 0.5rem;
-  border: 1px solid var(--rule-pane);
-  border-radius: var(--radius-pill);
-  background: var(--surface);
-  box-shadow: var(--shadow-toolbar);
-  backdrop-filter: blur(8px);
+  padding: 0.55rem 0;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
 }
 
 .editor-toolbar[data-scrolled='true'] .editor-toolbar-inner {
-  box-shadow: var(--shadow-card);
+  border-bottom-color: var(--rule-strong);
 }
 
 /* ---------------------------------------------------------------- library */
@@ -963,11 +981,11 @@ button.disclosure:hover {
 .toolbar-group {
   display: flex;
   align-items: center;
-  gap: 0.05rem;
-  padding: 0.1rem;
-  border: none;
-  border-radius: var(--radius-pill);
-  background: var(--accent-wash);
+  gap: 0.1rem;
+  padding: 0.12rem;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm);
+  background: var(--surface-raised);
 }
 
 .toolbar-group > .icon-button,
@@ -1001,21 +1019,22 @@ button.disclosure:hover {
 }
 
 .toolbar-heading[data-active='true'] {
-  border-color: transparent;
+  border-color: var(--accent-soft);
   background: var(--accent-wash-strong);
   color: var(--accent);
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-sm);
 }
 
-/* Writing canvas — a floating card that holds the editor. */
+/* The writing surface is restrained: a paper edge, generous inner margin,
+   and no competing floating-card treatment. */
 .editor-canvas {
   flex: 1;
   min-height: 0;
   display: flex;
   flex-direction: column;
-  margin: 0 0.5rem 0.5rem;
+  margin: 0 0.65rem 0.65rem;
   border: 1px solid var(--rule-pane);
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-lg);
   background: var(--canvas-bg);
   box-shadow: var(--shadow-card);
   overflow: hidden;
@@ -1024,7 +1043,7 @@ button.disclosure:hover {
 .editor-host {
   flex: 1;
   min-height: 0;
-  padding: 0 1.6rem;
+  padding: 0 clamp(1.25rem, 3vw, 2.75rem);
   overflow: hidden;
 }
 
@@ -1036,7 +1055,7 @@ button.disclosure:hover {
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  padding: 0.55rem 1.1rem;
+  padding: 0.62rem clamp(1.25rem, 3vw, 2.75rem);
   border-bottom: 1px solid var(--rule-pane);
   background: var(--honey);
   color: var(--ink);
