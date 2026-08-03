@@ -1,8 +1,7 @@
 /* ---------------------------------------------------------------- tokens */
-/* Vercel/Geist-style system: near-monochrome surfaces, hairline borders,
-   one blue accent, small consistent radii. No decorative shapes, no
-   per-state candy colors — state is carried by weight, a hairline, or the
-   single accent, the way vercel.com does it. */
+/* Playful Pop: warm surfaces, soft gradients, rounded shapes, and a
+   coral-to-violet accent. Feels like a friendly notebook app — colourful
+   without being loud, with state carried by tint, glow, and bounce. */
 
 :root {
   --font-ui: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui,
@@ -13,26 +12,14 @@
   --font-mono: 'Space Mono', 'Google Sans Code', ui-monospace, SFMono-Regular, 'SF Mono', Menlo,
     Consolas, 'Liberation Mono', monospace;
 
-  /* Chrome type — nav, buttons, menus, headings, landing, auth. Kept apart
-     from --font-ui/--editor-font so the app's look can change without
-     touching the note body font a user picked in Settings. */
-  --font-chrome: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui,
+  /* Chrome type — Google Sans for a rounder, friendlier shell. */
+  --font-chrome: 'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui,
     'Helvetica Neue', sans-serif;
   --font-chrome-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas,
     'Liberation Mono', monospace;
 
   --editor-font: var(--font-ui);
-  /* Body copy sits at 17px by default. */
   --editor-font-size: 17px;
-  /* The readable column is deliberately compact: it keeps prose from
-     spreading too wide and holds the wrap points steady. It lands at ~680px
-     against 17px copy — around 70 characters, inside the 66–75 that reads
-     most easily — and staying proportional to the body size keeps that when
-     the reader steps the size.
-     The scale is kept separately because `em` resolves against whichever
-     element reads it: inside the editor that is the 17px body, but the toolbar
-     lining up with the column runs on 14px UI type, so it has to multiply by
-     --editor-font-size itself rather than borrow the `em`. */
   --editor-measure-scale: 40;
   --editor-measure: calc(var(--editor-measure-scale) * 1em);
 
@@ -40,108 +27,127 @@
   --font-brand: var(--font-chrome);
 
   --sidebar-width: 15rem;
-  --list-width: 20rem;
-  --radius: 6px;
-  --radius-sm: 5px;
-  --radius-lg: 12px;
-  --transition: 140ms cubic-bezier(0.32, 0.72, 0, 1);
+  --list-width: 21rem;
+  --radius: 10px;
+  --radius-sm: 8px;
+  --radius-lg: 16px;
+  --radius-xl: 22px;
+  --radius-pill: 999px;
+  --transition: 180ms cubic-bezier(0.34, 1.4, 0.64, 1);
+  --transition-spring: 320ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 :root,
 [data-theme='light'] {
   color-scheme: light;
 
-  --edge-color: #000000;
-  --shadow-ink: #000000;
+  --edge-color: #2d1b4e;
+  --shadow-ink: #6b4c9a;
 
-  --accent: #0070f3;
-  --accent-hover: #0761d1;
-  --list-marker: var(--accent);
-  --accent-soft: rgba(0, 112, 243, 0.5);
-  --accent-wash: rgba(0, 112, 243, 0.08);
-  --accent-wash-strong: rgba(0, 112, 243, 0.14);
+  --accent: #7c3aed;
+  --accent-hover: #6d28d9;
+  --accent-secondary: #f97316;
+  --list-marker: var(--accent-secondary);
+  --accent-soft: rgba(124, 58, 237, 0.45);
+  --accent-wash: rgba(124, 58, 237, 0.1);
+  --accent-wash-strong: rgba(124, 58, 237, 0.18);
 
-  /* Solid, monochrome CTA fill — black in light mode, inverted in dark. */
-  --invert-bg: #000000;
+  --mint: #6ee7b7;
+  --honey: #fde68a;
+  --ink: #1e1b4b;
+  --sticker-fg: #1e1b4b;
+
+  --invert-bg: #7c3aed;
   --invert-fg: #ffffff;
 
-  --sidebar-bg: #fafafa;
-  --list-bg: #fafafa;
+  --app-bg: linear-gradient(145deg, #faf5ff 0%, #fff7ed 45%, #fef3c7 100%);
+  --sidebar-bg: rgba(255, 255, 255, 0.72);
+  --list-bg: rgba(255, 255, 255, 0.55);
   --surface: #ffffff;
   --surface-raised: #ffffff;
-  --surface-hover: rgba(0, 0, 0, 0.045);
-  --surface-active: rgba(0, 0, 0, 0.07);
+  --surface-hover: rgba(124, 58, 237, 0.06);
+  --surface-active: rgba(124, 58, 237, 0.1);
+  --canvas-bg: #ffffff;
 
-  --text-primary: #171717;
-  --text-secondary: #525252;
-  --text-tertiary: #8f8f8f;
+  --text-primary: #1e1b4b;
+  --text-secondary: #5b5675;
+  --text-tertiary: #9490a8;
   --text-inverse: #ffffff;
 
-  --rule: #eaeaea;
-  /* Pane edges get a slightly stronger hairline than in-pane rules. */
-  --rule-pane: #e6e6e6;
-  --rule-strong: #dcdcdc;
-  --selection: rgba(0, 112, 243, 0.18);
-  /* Markdown markers recede, but they are editable text and not decoration:
-     they have to stay findable, so they hold ~3:1 rather than fading out. */
-  --syntax-mark: #a3a3a3;
-  --code-bg: #f2f2f2;
-  --code-text: #d4004c;
-  --todo-border: #a3a3a3;
-  --highlight: rgba(0, 112, 243, 0.14);
-  --table-row: rgba(0, 0, 0, 0.02);
-  --danger: #e5484d;
-  --danger-wash: rgba(229, 72, 77, 0.08);
-  --success: #2a9d5c;
+  --rule: rgba(124, 58, 237, 0.1);
+  --rule-pane: rgba(124, 58, 237, 0.14);
+  --rule-strong: rgba(124, 58, 237, 0.22);
+  --selection: rgba(124, 58, 237, 0.2);
+  --syntax-mark: #b4afc4;
+  --code-bg: #f5f3ff;
+  --code-text: #c026d3;
+  --todo-border: #c4b5fd;
+  --highlight: rgba(249, 115, 22, 0.18);
+  --table-row: rgba(124, 58, 237, 0.04);
+  --danger: #ef4444;
+  --danger-wash: rgba(239, 68, 68, 0.1);
+  --success: #10b981;
 
-  --shadow-pop: 0 12px 28px -12px rgba(0, 0, 0, 0.16), 0 2px 8px -2px rgba(0, 0, 0, 0.08);
+  --shadow-soft: 0 2px 12px -2px rgba(124, 58, 237, 0.1);
+  --shadow-card: 0 4px 24px -4px rgba(124, 58, 237, 0.14), 0 1px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-pop: 0 16px 40px -12px rgba(124, 58, 237, 0.22), 0 4px 12px -4px rgba(0, 0, 0, 0.08);
+  --shadow-toolbar: 0 2px 16px -4px rgba(124, 58, 237, 0.18);
 }
 
 [data-theme='dark'] {
   color-scheme: dark;
 
-  --edge-color: rgba(255, 255, 255, 0.4);
-  --shadow-ink: #000000;
+  --edge-color: rgba(196, 181, 253, 0.5);
+  --shadow-ink: #1a0f2e;
 
-  --accent: #3291ff;
-  --accent-hover: #52a9ff;
-  --list-marker: var(--accent);
-  --accent-soft: rgba(50, 145, 255, 0.55);
-  --accent-wash: rgba(50, 145, 255, 0.12);
-  --accent-wash-strong: rgba(50, 145, 255, 0.2);
+  --accent: #a78bfa;
+  --accent-hover: #c4b5fd;
+  --accent-secondary: #fb923c;
+  --list-marker: var(--accent-secondary);
+  --accent-soft: rgba(167, 139, 250, 0.55);
+  --accent-wash: rgba(167, 139, 250, 0.14);
+  --accent-wash-strong: rgba(167, 139, 250, 0.24);
 
-  --invert-bg: #ffffff;
-  --invert-fg: #000000;
+  --mint: #34d399;
+  --honey: #fcd34d;
+  --ink: #1e1b4b;
+  --sticker-fg: #1e1b4b;
 
-  --sidebar-bg: #0a0a0a;
-  --list-bg: #0a0a0a;
-  --surface: #000000;
-  --surface-raised: #111111;
-  --surface-hover: rgba(255, 255, 255, 0.06);
-  --surface-active: rgba(255, 255, 255, 0.1);
+  --invert-bg: #a78bfa;
+  --invert-fg: #1e1b4b;
 
-  --text-primary: #ededed;
-  --text-secondary: #a1a1a1;
-  /* As in light: 4.5:1 against every surface it sits on, --surface-raised
-     (menus, popovers) included. */
-  --text-tertiary: #8a8a8a;
-  --text-inverse: #0a0a0a;
+  --app-bg: linear-gradient(160deg, #0f0a1a 0%, #1a1033 40%, #1c1425 100%);
+  --sidebar-bg: rgba(26, 16, 51, 0.75);
+  --list-bg: rgba(20, 12, 40, 0.65);
+  --surface: #120a22;
+  --surface-raised: #1c1230;
+  --surface-hover: rgba(167, 139, 250, 0.1);
+  --surface-active: rgba(167, 139, 250, 0.16);
+  --canvas-bg: #1a1030;
 
-  --rule: #262626;
-  --rule-pane: #292929;
-  --rule-strong: #3a3a3a;
-  --selection: rgba(50, 145, 255, 0.28);
-  --syntax-mark: #6e6e6e;
-  --code-bg: #1a1a1a;
-  --code-text: #ff6b98;
-  --todo-border: #565656;
-  --highlight: rgba(50, 145, 255, 0.22);
-  --table-row: rgba(255, 255, 255, 0.03);
-  --danger: #ff6166;
-  --danger-wash: rgba(255, 97, 102, 0.12);
-  --success: #3dd873;
+  --text-primary: #f0ebff;
+  --text-secondary: #b8aed4;
+  --text-tertiary: #7c7494;
+  --text-inverse: #1e1b4b;
 
-  --shadow-pop: 0 16px 32px -14px rgba(0, 0, 0, 0.6), 0 4px 12px -4px rgba(0, 0, 0, 0.4);
+  --rule: rgba(167, 139, 250, 0.12);
+  --rule-pane: rgba(167, 139, 250, 0.16);
+  --rule-strong: rgba(167, 139, 250, 0.28);
+  --selection: rgba(167, 139, 250, 0.32);
+  --syntax-mark: #6b6280;
+  --code-bg: #221840;
+  --code-text: #f0abfc;
+  --todo-border: #6d5a9e;
+  --highlight: rgba(251, 146, 60, 0.24);
+  --table-row: rgba(167, 139, 250, 0.06);
+  --danger: #f87171;
+  --danger-wash: rgba(248, 113, 113, 0.14);
+  --success: #34d399;
+
+  --shadow-soft: 0 2px 12px -2px rgba(0, 0, 0, 0.4);
+  --shadow-card: 0 4px 28px -4px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(167, 139, 250, 0.08);
+  --shadow-pop: 0 20px 48px -14px rgba(0, 0, 0, 0.65), 0 4px 12px -4px rgba(0, 0, 0, 0.4);
+  --shadow-toolbar: 0 4px 20px -4px rgba(0, 0, 0, 0.5);
 }
 
 /* ----------------------------------------------------------------- reset */
@@ -231,32 +237,36 @@ select {
   display: flex;
   height: 100%;
   overflow: hidden;
-  background: var(--surface);
+  background: var(--app-bg);
+  gap: 0.5rem;
+  padding: 0.5rem;
 }
 
 .icon-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 1.85rem;
-  height: 1.85rem;
+  width: 2rem;
+  height: 2rem;
   border: 1px solid transparent;
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   color: var(--text-secondary);
   transition: background var(--transition), color var(--transition),
-    border-color var(--transition);
+    border-color var(--transition), transform var(--transition-spring);
 }
 
 .icon-button:hover {
   border-color: var(--rule-strong);
   background: var(--surface-hover);
-  color: var(--text-primary);
+  color: var(--accent);
+  transform: scale(1.06);
 }
 
 .icon-button[aria-pressed='true'] {
   border-color: transparent;
   background: var(--accent-wash);
   color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent-soft);
 }
 
 .icon-button:disabled {
@@ -324,7 +334,7 @@ select {
   height: 100%;
   padding: 2rem;
   text-align: center;
-  background: var(--sidebar-bg);
+  background: var(--app-bg);
   color: var(--text-secondary);
 }
 
@@ -335,13 +345,14 @@ select {
 .boot-mark {
   display: grid;
   place-items: center;
-  width: 2.75rem;
-  height: 2.75rem;
+  width: 3rem;
+  height: 3rem;
   margin-bottom: 0.4rem;
-  border: 1px solid var(--rule-strong);
+  border: none;
   border-radius: var(--radius-lg);
-  background: var(--surface-raised);
-  color: var(--text-primary);
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-secondary) 100%);
+  color: var(--text-inverse);
+  box-shadow: 0 4px 16px -4px var(--accent-soft);
 }
 
 .boot-screen h1 {
@@ -492,7 +503,10 @@ button.disclosure:hover {
   flex: 0 0 var(--list-width);
   width: var(--list-width);
   background: var(--list-bg);
-  border-right: 1px solid var(--rule-pane);
+  border: 1px solid var(--rule-pane);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(12px);
+  box-shadow: var(--shadow-soft);
   overflow: hidden;
 }
 
@@ -523,10 +537,11 @@ button.disclosure:hover {
 .list-brand svg {
   box-sizing: content-box;
   padding: 0.22rem;
-  border: 1px solid var(--rule-strong);
+  border: none;
   border-radius: var(--radius-sm);
-  background: var(--surface-raised);
-  color: var(--text-primary);
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-secondary) 100%);
+  color: var(--text-inverse);
+  box-shadow: 0 2px 8px -2px var(--accent-soft);
 }
 
 .list-brand-actions {
@@ -703,16 +718,18 @@ button.disclosure:hover {
   display: flex;
   align-items: center;
   gap: 0.45rem;
-  padding: 0.32rem 0.7rem;
+  padding: 0.38rem 0.75rem;
   border: 1px solid var(--rule-pane);
-  border-radius: var(--radius);
-  background: var(--surface-raised);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
   color: var(--text-tertiary);
-  transition: border-color var(--transition);
+  box-shadow: var(--shadow-soft);
+  transition: border-color var(--transition), box-shadow var(--transition);
 }
 
 .search-field:focus-within {
   border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-wash);
 }
 
 .search-field input {
@@ -738,37 +755,24 @@ button.disclosure:hover {
 .note-card {
   display: block;
   width: 100%;
-  padding: var(--card-padding, 0.82rem) 0.65rem;
+  padding: var(--card-padding, 0.82rem) 0.75rem;
   border: 1px solid transparent;
   border-radius: var(--radius);
   text-align: left;
   color: inherit;
   transition: background var(--transition), border-color var(--transition),
-    box-shadow var(--transition);
+    box-shadow var(--transition), transform var(--transition-spring);
 }
 
-/* The list is the only navigation this app has, so how many notes fit on a
-   screen is a real preference rather than a detail. Compact drops the card to
-   roughly two thirds the height; the preview line count is chosen separately
-   because the two answer different questions — how much fits, and how much of
-   each note you want to read before opening it. */
-.note-list[data-density='compact'] {
-  --card-padding: 0.5rem;
-}
-
-.note-list[data-density='compact'] .note-card-meta {
-  margin-top: 0.2rem;
-}
-
-/* Rows are ruled apart with a hairline, like ledger rows in a spec sheet. A
-   shadow, not a border, so a hover or selection can make its neighbours'
-   rules vanish for a clean edge. */
+/* Rows are separated by soft gaps instead of hairlines. */
 .note-card + .note-card {
-  box-shadow: 0 -1px 0 var(--rule);
+  box-shadow: none;
+  margin-top: 0.2rem;
 }
 
 .note-card:hover {
   background: var(--surface-hover);
+  transform: translateX(2px);
 }
 
 .note-card:hover + .note-card,
@@ -777,13 +781,19 @@ button.disclosure:hover {
   box-shadow: none;
 }
 
-/* The selected card stays flat paper with a hairline — the accent shows up
-   only as a thin bar down its edge, so it never competes with the text
-   while you're reading beside it. */
 .note-card[aria-current='true'] {
-  border-color: var(--rule-strong);
-  background: var(--surface-raised);
-  box-shadow: inset 2px 0 0 var(--accent);
+  border-color: var(--accent-soft);
+  background: var(--accent-wash);
+  box-shadow: var(--shadow-soft), inset 3px 0 0 var(--accent);
+  transform: none;
+}
+
+.note-list[data-density='compact'] {
+  --card-padding: 0.5rem;
+}
+
+.note-list[data-density='compact'] .note-card-meta {
+  margin-top: 0.2rem;
 }
 
 .note-card-top {
@@ -861,51 +871,80 @@ button.disclosure:hover {
   flex-direction: column;
   flex: 1;
   min-width: 0;
-  background: var(--surface);
+  background: transparent;
+  gap: 0.5rem;
 }
 
-/* The controls sit in outlined clusters — panes, formatting, this note — so
-   the row reads as three tools instead of a dozen loose buttons. Nothing
-   scrolls sideways: the formatting cluster sheds its rarer buttons into an
-   overflow menu as the pane narrows (see FORMAT_ACTIONS' tiers). */
-.editor-toolbar {
-  /* The rule spans the pane, so the bar keeps the full width and hands the
-     gutter to the row inside it. */
-  padding: 0.55rem 1.6rem;
-  min-height: 3rem;
-  border-bottom: 1px solid transparent;
-  transition: border-color var(--transition);
-}
-
-/*
- * The controls sit over the writing column rather than out at the pane edges:
- * same measure, same centring and the same 1.6rem gutter as `.editor-host`, so
- * the toolbar and the text under it read as one object. Left to the pane the
- * clusters drift ~150px clear of the column on a wide screen, and further
- * every time the note list is hidden.
- */
-.editor-toolbar-inner {
+/* Top row: back, title, note actions — separate from formatting. */
+.editor-header {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
-  max-width: calc(var(--editor-measure-scale) * var(--editor-font-size));
+  gap: 0.5rem;
+  padding: 0.4rem 1rem 0;
+  flex-shrink: 0;
+}
+
+.editor-header-inner {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  max-width: calc(var(--editor-measure-scale) * var(--editor-font-size) + 3.2rem);
+  width: 100%;
   margin: 0 auto;
 }
 
-.editor-toolbar[data-scrolled='true'] {
-  border-bottom-color: var(--rule-pane);
+.editor-title {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
+
+.editor-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+  flex-shrink: 0;
+}
+
+/* Floating pill toolbar for formatting controls. */
+.editor-toolbar {
+  padding: 0 1rem;
+  flex-shrink: 0;
+}
+
+.editor-toolbar-inner {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  max-width: calc(var(--editor-measure-scale) * var(--editor-font-size) + 3.2rem);
+  margin: 0 auto;
+  padding: 0.3rem 0.5rem;
+  border: 1px solid var(--rule-pane);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  box-shadow: var(--shadow-toolbar);
+  backdrop-filter: blur(8px);
+}
+
+.editor-toolbar[data-scrolled='true'] .editor-toolbar-inner {
+  box-shadow: var(--shadow-card);
+}
+
+/* ---------------------------------------------------------------- library */
 
 .editor-toolbar-inner > .icon-button,
 .editor-toolbar-inner > .toolbar-group {
   flex-shrink: 0;
 }
 
-/*
- * Which note you are in, for the layouts where the list is not on screen to
- * say so — the stacked phone layout, and the desktop one with the list hidden.
- * It takes the spacer's place rather than adding a row.
- */
 .toolbar-title {
   flex: 1 1 auto;
   min-width: 0;
@@ -924,11 +963,11 @@ button.disclosure:hover {
 .toolbar-group {
   display: flex;
   align-items: center;
-  gap: 0.1rem;
-  padding: 0.15rem;
-  border: 1px solid var(--rule-pane);
-  border-radius: var(--radius);
-  background: var(--surface-raised);
+  gap: 0.05rem;
+  padding: 0.1rem;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: var(--accent-wash);
 }
 
 .toolbar-group > .icon-button,
@@ -941,8 +980,6 @@ button.disclosure:hover {
   min-width: 0.5rem;
 }
 
-/* Heading is the one control carrying a value rather than a state, so it says
-   which level the caret is on instead of leaving it to be guessed. */
 .toolbar-heading {
   width: auto;
   gap: 0.05rem;
@@ -965,8 +1002,23 @@ button.disclosure:hover {
 
 .toolbar-heading[data-active='true'] {
   border-color: transparent;
-  background: var(--accent-wash);
+  background: var(--accent-wash-strong);
   color: var(--accent);
+  border-radius: var(--radius-pill);
+}
+
+/* Writing canvas — a floating card that holds the editor. */
+.editor-canvas {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  margin: 0 0.5rem 0.5rem;
+  border: 1px solid var(--rule-pane);
+  border-radius: var(--radius-xl);
+  background: var(--canvas-bg);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
 }
 
 .editor-host {
@@ -986,8 +1038,8 @@ button.disclosure:hover {
   gap: 0.6rem;
   padding: 0.55rem 1.1rem;
   border-bottom: 1px solid var(--rule-pane);
-  background: var(--surface-raised);
-  color: var(--text-secondary);
+  background: var(--honey);
+  color: var(--ink);
   font-family: var(--font-display);
   font-size: 0.78rem;
   font-weight: 500;
@@ -1014,12 +1066,13 @@ button.disclosure:hover {
   position: absolute;
   z-index: 40;
   min-width: 12.5rem;
-  padding: 0.3rem;
-  border: 1px solid var(--rule-strong);
-  border-radius: var(--radius);
+  padding: 0.35rem;
+  border: 1px solid var(--rule-pane);
+  border-radius: var(--radius-lg);
   background: var(--surface-raised);
   box-shadow: var(--shadow-pop);
-  animation: pop var(--transition);
+  animation: pop var(--transition-spring);
+  backdrop-filter: blur(12px);
 }
 
 .menu[data-align='right'] {
@@ -1256,13 +1309,16 @@ button.disclosure:hover {
 }
 
 .button-primary {
-  background: var(--invert-bg);
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-secondary) 100%);
+  border-radius: var(--radius-pill);
+  box-shadow: 0 2px 12px -2px var(--accent-soft);
 }
 
 .button-primary:hover {
-  background: var(--invert-bg);
+  background: linear-gradient(135deg, var(--accent-hover) 0%, var(--accent-secondary) 100%);
   border-color: transparent;
-  opacity: 0.88;
+  opacity: 1;
+  transform: scale(1.02);
 }
 
 .button-danger {
@@ -2346,12 +2402,36 @@ button.disclosure:hover {
 
   .app {
     position: relative;
+    padding: 0;
+    gap: 0;
+  }
+
+  .note-list {
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+    backdrop-filter: none;
   }
 
   .note-list,
   .editor-pane {
     flex: 1 1 auto;
     width: auto;
+  }
+
+  .editor-canvas {
+    margin: 0;
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+  }
+
+  .editor-header {
+    padding: 0.5rem 0.75rem 0;
+  }
+
+  .editor-title {
+    font-size: 1.05rem;
   }
 
   /* The list is the whole viewport on a phone, where the desktop's compact
@@ -2403,6 +2483,10 @@ button.disclosure:hover {
 
   .editor-toolbar {
     padding-inline: 0.5rem;
+  }
+
+  .editor-toolbar-inner {
+    border-radius: var(--radius-lg);
   }
 
   /*
