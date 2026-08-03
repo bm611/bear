@@ -27,7 +27,9 @@ import {
   RefreshIcon,
   Search01Icon,
   Settings01Icon,
+  SidebarLeft01Icon,
   SidebarRight01Icon,
+  Sorting05Icon,
   SourceCodeIcon,
   Sun03Icon,
   LayoutTable01Icon,
@@ -92,6 +94,8 @@ export const RestoreIcon = glyph(DeletePutBackIcon, 'RestoreIcon')
 export const SearchIcon = glyph(Search01Icon, 'SearchIcon')
 export const PlusIcon = glyph(PlusSignIcon, 'PlusIcon')
 export const ListIcon = glyph(SidebarRight01Icon, 'ListIcon')
+export const SidebarIcon = glyph(SidebarLeft01Icon, 'SidebarIcon')
+export const SortIcon = glyph(Sorting05Icon, 'SortIcon')
 export const MoreIcon = glyph(MoreHorizontalIcon, 'MoreIcon')
 export const ChevronRight = glyph(ArrowRight01Icon, 'ChevronRight')
 export const ChevronDown = glyph(ArrowDown01Icon, 'ChevronDown')

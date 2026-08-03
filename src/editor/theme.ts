@@ -271,7 +271,7 @@ export const slateEditorTheme = EditorView.theme({
     transition: 'background-color 120ms ease, border-color 120ms ease',
   },
   '.cm-todo:hover': { borderColor: 'var(--accent)' },
-  '.cm-todo-checked': { backgroundColor: 'var(--mint)', borderColor: 'var(--todo-border)' },
+  '.cm-todo-checked': { backgroundColor: 'var(--accent)', borderColor: 'var(--accent)' },
   '.cm-todo-checked::after': {
     content: '""',
     position: 'absolute',
@@ -279,7 +279,7 @@ export const slateEditorTheme = EditorView.theme({
     top: '0.1em',
     width: '0.26em',
     height: '0.52em',
-    border: '2px solid var(--ink)',
+    border: '2px solid var(--text-inverse)',
     borderTop: '0',
     borderLeft: '0',
     transform: 'rotate(40deg)',
@@ -301,8 +301,8 @@ export const slateEditorTheme = EditorView.theme({
   },
   '.cm-tooltip.cm-tooltip-autocomplete > ul > li': { padding: '0.32rem 0.7rem' },
   '.cm-tooltip-autocomplete ul li[aria-selected]': {
-    backgroundColor: 'var(--honey)',
-    color: 'var(--sticker-fg)',
+    backgroundColor: 'var(--accent)',
+    color: 'var(--text-inverse)',
   },
   '.cm-completionLabel': { fontFamily: 'var(--font-ui)' },
   '.cm-completionDetail': { color: 'var(--text-tertiary)', fontStyle: 'normal', marginLeft: '0.6em' },

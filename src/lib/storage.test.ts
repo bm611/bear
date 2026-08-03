@@ -60,22 +60,23 @@ describe('loadLibrary', () => {
     expect(localStorage.getItem(LEGACY_KEY)).toBeNull()
   })
 
-  it('ignores a stale sidebar flag when upgrading from the first schema', () => {
-    // v1 stored a pinned-sidebar flag that no longer exists in the type; the
-    // load must skip it without disturbing anything else.
+  it('carries a v1 sidebar flag through to the reinstated preference', () => {
+    // v1 stored a pinned-sidebar flag, v2 retired it, v3 brought it back. A
+    // v1 payload's explicit choice survives; the rest coerces as before.
     localStorage.setItem(
       KEY,
-      JSON.stringify({ version: 1, preferences: { ...defaultPreferences, sidebarVisible: true, font: 'serif' } }),
+      JSON.stringify({ version: 1, preferences: { ...defaultPreferences, sidebarVisible: false, font: 'serif' } }),
     )
 
     const loaded = loadLibrary()
-    expect(loaded?.preferences).not.toHaveProperty('sidebarVisible')
+    expect(loaded?.preferences.sidebarVisible).toBe(false)
     expect(loaded?.preferences.font).toBe('sans')
   })
 
-  it('shows the note list when its preference was never stored', () => {
+  it('shows the sidebar and note list when their preferences were never stored', () => {
     localStorage.setItem(KEY, JSON.stringify({ version: 2, preferences: { theme: 'dark' } }))
     expect(loadLibrary()?.preferences.listVisible).toBe(true)
+    expect(loadLibrary()?.preferences.sidebarVisible).toBe(true)
   })
 
   it('prefers the current key when both are present', () => {

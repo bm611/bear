@@ -28,6 +28,7 @@ const PREVIEWS: Array<{ value: PreviewLines; label: string }> = [
 interface SettingsMenuProps {
   onClose: () => void
   align?: 'left' | 'right'
+  direction?: 'down' | 'up'
   style?: React.CSSProperties
   /** Adds a shortcuts entry, for the surfaces that have no room for its own button. */
   onShowShortcuts?: () => void
@@ -42,6 +43,7 @@ interface SettingsMenuProps {
 export function SettingsMenu({
   onClose,
   align = 'left',
+  direction,
   style,
   onShowShortcuts,
   triggerRef,
@@ -64,7 +66,14 @@ export function SettingsMenu({
   }
 
   return (
-    <Menu align={align} label="Settings" onClose={onClose} style={style} triggerRef={triggerRef}>
+    <Menu
+      align={align}
+      direction={direction}
+      label="Settings"
+      onClose={onClose}
+      style={style}
+      triggerRef={triggerRef}
+    >
       <MenuLabel>Theme</MenuLabel>
       {THEMES.map(({ value, label }) => (
         <MenuItem

@@ -5,16 +5,17 @@ const STORAGE_KEY = 'slate.library.v1'
 const LEGACY_STORAGE_KEY = 'bear.library.v1'
 /**
  * 2 moved the library out of the pinned sidebar and into the note list title.
- * The `sidebarVisible` flag that tracked it is retired — payloads that still
- * carry one simply have it ignored.
+ * 3 brings the pinned sidebar back: `sidebarVisible` returns, defaulting on.
+ * Old payloads without the flag (or with a stale one) coerce cleanly.
  */
-const SCHEMA_VERSION = 2
+const SCHEMA_VERSION = 3
 
 export const defaultPreferences: Preferences = {
   theme: 'system',
   font: 'sans',
   fontSize: 17,
   sort: 'modified',
+  sidebarVisible: true,
   listVisible: true,
   density: 'comfortable',
   previewLines: 2,
@@ -73,6 +74,7 @@ function coercePreferences(value: unknown): Preferences {
     font,
     fontSize: Math.min(24, Math.max(13, Math.round(size))),
     sort: sorts.find((s) => s === value.sort) ?? defaultPreferences.sort,
+    sidebarVisible: value.sidebarVisible !== false,
     listVisible: value.listVisible !== false,
     density: densities.find((d) => d === value.density) ?? defaultPreferences.density,
     previewLines:

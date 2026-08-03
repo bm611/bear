@@ -2,53 +2,33 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { useStore } from '../store/useStore'
 import { useVisibleNotes } from '../hooks/useVisibleNotes'
 import { noteTitle, notePreview, todoStats, UNTITLED } from '../lib/notes'
+import { filterTitle } from '../lib/filters'
 import { listDate } from '../lib/date'
 import { mod } from '../lib/platform'
-import type { Filter, Note, SortMode, SyncStatus } from '../lib/types'
+import type { Note, SortMode } from '../lib/types'
 import { ConfirmDialog } from './Dialog'
-import { LibraryPanel } from './LibraryPanel'
 import { Menu, MenuItem, MenuLabel, MenuSeparator } from './Menu'
-import { Popover } from './Popover'
-import { SettingsMenu } from './SettingsMenu'
+import { SyncIndicator } from './SyncIndicator'
 import {
-  ChevronDown,
   CloseIcon,
-  MoreIcon,
   PinIcon,
   PlusIcon,
   SearchIcon,
-  SettingsIcon,
-  SlateMark,
+  SidebarIcon,
+  SortIcon,
   TodoIcon,
   TrashIcon,
 } from './Icons'
 
-function filterTitle(filter: Filter): string {
-  switch (filter.kind) {
-    case 'all':
-      return 'Notes'
-    case 'untagged':
-      return 'Untagged'
-    case 'todo':
-      return 'Todo'
-    case 'today':
-      return 'Today'
-    case 'archive':
-      return 'Archive'
-    case 'trash':
-      return 'Trash'
-    case 'tag':
-      return `#${filter.tag}`
-  }
-}
-
 interface NoteListProps {
   searchRef: React.RefObject<HTMLInputElement | null>
   onOpenNote?: () => void
-  onShowShortcuts?: () => void
+  /** Reopens the library — the drawer on narrow layouts, the pane on desktop.
+      Present only while the sidebar is off screen. */
+  onOpenLibrary?: () => void
 }
 
-export function NoteList({ searchRef, onOpenNote, onShowShortcuts }: NoteListProps) {
+export function NoteList({ searchRef, onOpenNote, onOpenLibrary }: NoteListProps) {
   const filter = useStore((state) => state.filter)
   const notes = useStore((state) => state.notes)
   const query = useStore((state) => state.query)
@@ -63,12 +43,8 @@ export function NoteList({ searchRef, onOpenNote, onShowShortcuts }: NoteListPro
   const emptyTrash = useStore((state) => state.emptyTrash)
 
   const [menuOpen, setMenuOpen] = useState(false)
-  const [settingsOpen, setSettingsOpen] = useState(false)
-  const [libraryOpen, setLibraryOpen] = useState(false)
   const [confirmEmpty, setConfirmEmpty] = useState(false)
   const listRef = useRef<HTMLDivElement>(null)
-  const libraryTriggerRef = useRef<HTMLButtonElement>(null)
-  const settingsTriggerRef = useRef<HTMLButtonElement>(null)
   const menuTriggerRef = useRef<HTMLButtonElement>(null)
 
   const visible = useVisibleNotes()
@@ -104,12 +80,25 @@ export function NoteList({ searchRef, onOpenNote, onShowShortcuts }: NoteListPro
       style={{ '--preview-lines': previewLines } as React.CSSProperties}
     >
       <div className="list-header">
-        <div className="list-brand-row">
-          <span className="list-brand">
-            <SlateMark size={20} />
-            Slate
-          </span>
-          <div className="list-brand-actions">
+        <div className="list-bar">
+          {onOpenLibrary ? (
+            <button
+              type="button"
+              className="icon-button"
+              aria-label="Open library"
+              title={`Open library (${mod('1')})`}
+              onClick={onOpenLibrary}
+            >
+              <SidebarIcon />
+            </button>
+          ) : null}
+
+          <h1 className="list-title">
+            <span className="list-title-text">{title}</span>
+            <span className="count-badge">{visible.length}</span>
+          </h1>
+
+          <div className="list-bar-actions menu-anchor">
             <button
               type="button"
               className="icon-button"
@@ -119,72 +108,20 @@ export function NoteList({ searchRef, onOpenNote, onShowShortcuts }: NoteListPro
             >
               <PlusIcon />
             </button>
-          </div>
-        </div>
-
-        <div className="list-title-row">
-          <div className="list-title-group">
-            <h1 className="list-title">
-              <button
-                ref={libraryTriggerRef}
-                type="button"
-                className="list-title-trigger"
-                aria-label={`${title} — browse library`}
-                aria-expanded={libraryOpen}
-                title={title}
-                onClick={() => setLibraryOpen((open) => !open)}
-              >
-                <span className="list-title-text">{title}</span>
-                <ChevronDown size={14} />
-              </button>
-            </h1>
-          </div>
-
-          <div className="list-title-actions menu-anchor">
-            <button
-              ref={settingsTriggerRef}
-              type="button"
-              className="icon-button"
-              aria-label="Settings"
-              aria-expanded={settingsOpen}
-              title="Settings"
-              onClick={() => {
-                setMenuOpen(false)
-                setSettingsOpen((open) => !open)
-              }}
-            >
-              <SettingsIcon />
-            </button>
-            {settingsOpen ? (
-              <SettingsMenu
-                style={{ top: '2rem' }}
-                align="right"
-                triggerRef={settingsTriggerRef}
-                onClose={() => setSettingsOpen(false)}
-                onShowShortcuts={onShowShortcuts}
-              />
-            ) : null}
             <button
               ref={menuTriggerRef}
               type="button"
               className="icon-button"
-              aria-label="List options"
+              aria-label="Sort and list options"
               aria-expanded={menuOpen}
-              onClick={() => {
-                setSettingsOpen(false)
-                setMenuOpen((open) => !open)
-              }}
+              title="Sort and list options"
+              onClick={() => setMenuOpen((open) => !open)}
             >
-              <MoreIcon />
+              <SortIcon />
             </button>
 
             {menuOpen ? (
-              <Menu
-                label="List options"
-                triggerRef={menuTriggerRef}
-                onClose={() => setMenuOpen(false)}
-                style={{ top: '2rem' }}
-              >
+              <Menu label="List options" triggerRef={menuTriggerRef} onClose={() => setMenuOpen(false)}>
                 <MenuLabel>Sort by</MenuLabel>
                 {sortOptions.map(({ value, label }) => (
                   <MenuItem
@@ -222,7 +159,7 @@ export function NoteList({ searchRef, onOpenNote, onShowShortcuts }: NoteListPro
             ref={searchRef}
             type="search"
             value={query}
-            placeholder="Search"
+            placeholder="Search notes"
             aria-label="Search notes"
             spellCheck={false}
             onChange={(event) => setQuery(event.target.value)}
@@ -245,19 +182,6 @@ export function NoteList({ searchRef, onOpenNote, onShowShortcuts }: NoteListPro
             </button>
           ) : null}
         </div>
-
-        {/* Anchored to the header rather than to the title that opens it, so it
-            drops clear of the search field instead of over it. */}
-        {libraryOpen ? (
-          <Popover
-            className="library-popover"
-            label="Library"
-            triggerRef={libraryTriggerRef}
-            onClose={() => setLibraryOpen(false)}
-          >
-            <LibraryPanel onNavigate={() => setLibraryOpen(false)} />
-          </Popover>
-        ) : null}
       </div>
 
       <div className="list-scroll scroll-host" ref={listRef}>
@@ -308,34 +232,6 @@ export function NoteList({ searchRef, onOpenNote, onShowShortcuts }: NoteListPro
         />
       ) : null}
     </section>
-  )
-}
-
-const SYNC_LABEL: Record<SyncStatus, string> = {
-  saved: 'Saved',
-  saving: 'Saving…',
-  error: 'Not saved',
-}
-
-/**
- * Whether your writing has reached the server. A failed push used to announce
- * itself only through a toast that cleared after 2.6 seconds, which meant the
- * one piece of state you cannot afford to miss was also the easiest to miss.
- */
-function SyncIndicator() {
-  const status = useStore((state) => state.syncStatus)
-  const syncNow = useStore((state) => state.syncNow)
-
-  return (
-    <span className="list-footer-sync" data-state={status} aria-live="polite">
-      <span className="sync-dot" aria-hidden="true" />
-      {SYNC_LABEL[status]}
-      {status === 'error' ? (
-        <button type="button" className="sync-retry" onClick={syncNow}>
-          Retry
-        </button>
-      ) : null}
-    </span>
   )
 }
 

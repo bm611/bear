@@ -3,6 +3,8 @@ import { useEffect, useRef, type ReactNode } from 'react'
 interface MenuProps {
   onClose: () => void
   align?: 'left' | 'right'
+  /** Which way the menu unfolds from its anchor. Defaults to down. */
+  direction?: 'down' | 'up'
   style?: React.CSSProperties
   label: string
   /**
@@ -28,6 +30,7 @@ function menuItems(root: HTMLElement | null): HTMLButtonElement[] {
 export function Menu({
   onClose,
   align = 'right',
+  direction = 'down',
   style,
   label,
   restoreFocus = true,
@@ -95,7 +98,15 @@ export function Menu({
   }, [])
 
   return (
-    <div className="menu" data-align={align} style={style} role="menu" aria-label={label} ref={ref}>
+    <div
+      className="menu"
+      data-align={align}
+      data-direction={direction}
+      style={style}
+      role="menu"
+      aria-label={label}
+      ref={ref}
+    >
       {children}
     </div>
   )

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import type { EditorView } from '@codemirror/view'
 import { NoteList } from './components/NoteList'
 import { EditorPane } from './components/EditorPane'
+import { Sidebar } from './components/Sidebar'
 import { ShortcutsSheet } from './components/ShortcutsSheet'
 import { TagDialogs } from './components/TagDialogs'
 import { Toast } from './components/Toast'
@@ -11,7 +12,7 @@ import { SlateMark } from './components/Icons'
 import { useStore } from './store/useStore'
 import { useAuthStore } from './store/useAuthStore'
 import { useVisibleNotes } from './hooks/useVisibleNotes'
-import { NARROW_QUERY, useMediaQuery } from './hooks/useMediaQuery'
+import { COMPACT_QUERY, NARROW_QUERY, useMediaQuery } from './hooks/useMediaQuery'
 import { hasMod } from './lib/platform'
 
 const FONT_STACKS = {
@@ -32,7 +33,7 @@ function useTheme() {
       document.documentElement.dataset.theme = resolved
       document
         .querySelector('meta[name="theme-color"]')
-        ?.setAttribute('content', resolved === 'dark' ? '#0f0a1a' : '#faf5ff')
+        ?.setAttribute('content', resolved === 'dark' ? '#0e1514' : '#efeee7')
     }
     apply()
     if (theme !== 'system') return
@@ -149,7 +150,7 @@ export function App() {
   return <AppShell />
 }
 
-function AppShell() {
+export function AppShell() {
   const notes = useStore((state) => state.notes)
   const selectedId = useStore((state) => state.selectedId)
   const preferences = useStore((state) => state.preferences)
@@ -167,11 +168,17 @@ function AppShell() {
   const searchRef = useRef<HTMLInputElement>(null)
   const [shortcutsOpen, setShortcutsOpen] = useState(false)
   const [mobilePane, setMobilePane] = useState<'list' | 'editor'>('list')
+  /** Transient by design: the drawer never survives a navigation or a resize up. */
+  const [drawerOpen, setDrawerOpen] = useState(false)
 
   // Below the breakpoint the two panes stack: one at a time.
   const narrow = useMediaQuery(NARROW_QUERY)
+  // Between the breakpoints the sidebar overlays the list instead of sitting
+  // beside it, so a mid-sized window still gets a full-width list and editor.
+  const compact = useMediaQuery(COMPACT_QUERY)
   const listOpen = narrow ? mobilePane === 'list' : preferences.listVisible
   const editorOpen = narrow ? mobilePane === 'editor' : true
+  const sidebarOpen = compact ? drawerOpen : preferences.sidebarVisible
 
   const openNote = useCallback(() => {
     setMobilePane('editor')
@@ -180,6 +187,11 @@ function AppShell() {
   const showList = useCallback(() => {
     setMobilePane('list')
   }, [])
+
+  const toggleSidebar = useCallback(() => {
+    if (compact) setDrawerOpen((open) => !open)
+    else setPreferences({ sidebarVisible: !preferences.sidebarVisible })
+  }, [compact, preferences.sidebarVisible, setPreferences])
 
   const focusEditor = useCallback(() => {
     // Wait for the pane to mount the new document before taking focus.
@@ -213,6 +225,11 @@ function AppShell() {
           if (event.shiftKey) return
           event.preventDefault()
           createNote()
+          return
+        case '1':
+          if (event.altKey) return
+          event.preventDefault()
+          toggleSidebar()
           return
         case 'f':
           event.preventDefault()
@@ -265,12 +282,33 @@ function AppShell() {
     setPreferences,
     showToast,
     step,
+    toggleSidebar,
     togglePin,
     trashNote,
   ])
 
   return (
     <div className="app">
+      {compact && drawerOpen ? (
+        <div className="drawer-scrim" aria-hidden="true" onClick={() => setDrawerOpen(false)} />
+      ) : null}
+
+      {sidebarOpen ? (
+        <Sidebar
+          drawer={compact}
+          onHide={toggleSidebar}
+          onNavigate={compact ? () => setDrawerOpen(false) : undefined}
+          onNewNote={() => {
+            if (compact) setDrawerOpen(false)
+            createNote()
+          }}
+          onShowShortcuts={() => {
+            if (compact) setDrawerOpen(false)
+            setShortcutsOpen(true)
+          }}
+        />
+      ) : null}
+
       {listOpen ? (
         <NoteList
           searchRef={searchRef}
@@ -278,7 +316,7 @@ function AppShell() {
             openNote()
             focusEditor()
           }}
-          onShowShortcuts={() => setShortcutsOpen(true)}
+          onOpenLibrary={sidebarOpen && !compact ? undefined : toggleSidebar}
         />
       ) : null}
 

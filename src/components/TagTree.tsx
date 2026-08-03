@@ -49,8 +49,10 @@ function TagRow({ node, filter, onSelect, onRename, onDelete, depth = 0 }: TagRo
   }, [containsSelection])
 
   return (
-    <div className="menu-anchor">
-      <div className="tag-row-wrapper">
+    <div>
+      {/* The anchor stops at the row so the menu drops from the row itself,
+          not from the foot of a subtree of children. */}
+      <div className="tag-row-wrapper menu-anchor">
         {hasChildren ? (
           <button
             type="button"
@@ -94,38 +96,37 @@ function TagRow({ node, filter, onSelect, onRename, onDelete, depth = 0 }: TagRo
         >
           <MoreIcon size={14} />
         </button>
-      </div>
 
-      {menuOpen ? (
-        <Menu
-          align="right"
-          label={`Actions for #${node.path}`}
-          triggerRef={menuTriggerRef}
-          onClose={() => setMenuOpen(false)}
-          style={{ top: '1.9rem' }}
-        >
-          <MenuItem
-            icon={<PencilIcon size={15} />}
-            onSelect={() => {
-              setMenuOpen(false)
-              onRename(node.path)
-            }}
+        {menuOpen ? (
+          <Menu
+            align="right"
+            label={`Actions for #${node.path}`}
+            triggerRef={menuTriggerRef}
+            onClose={() => setMenuOpen(false)}
           >
-            Rename tag…
-          </MenuItem>
-          <MenuSeparator />
-          <MenuItem
-            icon={<TrashIcon size={15} />}
-            danger
-            onSelect={() => {
-              setMenuOpen(false)
-              onDelete(node.path)
-            }}
-          >
-            Remove from notes…
-          </MenuItem>
-        </Menu>
-      ) : null}
+            <MenuItem
+              icon={<PencilIcon size={15} />}
+              onSelect={() => {
+                setMenuOpen(false)
+                onRename(node.path)
+              }}
+            >
+              Rename tag…
+            </MenuItem>
+            <MenuSeparator />
+            <MenuItem
+              icon={<TrashIcon size={15} />}
+              danger
+              onSelect={() => {
+                setMenuOpen(false)
+                onDelete(node.path)
+              }}
+            >
+              Remove from notes…
+            </MenuItem>
+          </Menu>
+        ) : null}
+      </div>
 
       {hasChildren && open ? (
         <TagTree

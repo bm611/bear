@@ -26,8 +26,8 @@
   --font-display: var(--font-chrome);
   --font-brand: var(--font-chrome);
 
-  --sidebar-width: 15rem;
-  --list-width: 21rem;
+  --sidebar-width: 16rem;
+  --list-width: 20.5rem;
   --radius: 10px;
   --radius-sm: 8px;
   --radius-lg: 14px;
@@ -52,22 +52,19 @@
   --accent-wash: rgba(15, 118, 110, 0.09);
   --accent-wash-strong: rgba(15, 118, 110, 0.16);
 
-  --mint: #5eead4;
-  --honey: #fde68a;
-  --ink: #18312f;
-  --sticker-fg: #18312f;
-
   --invert-bg: #0f766e;
   --invert-fg: #ffffff;
 
-  --app-bg: #e9e8e1;
-  --sidebar-bg: rgba(250, 250, 247, 0.78);
-  --list-bg: rgba(250, 250, 247, 0.7);
+  /* Three flat surface steps, lightening toward the writing surface:
+     sidebar (app-bg) → note list → canvas. Hairlines separate them. */
+  --app-bg: #efeee7;
+  --sidebar-bg: var(--app-bg);
+  --list-bg: #f6f5f0;
   --surface: #fbfbf8;
   --surface-raised: #ffffff;
   --surface-hover: rgba(15, 118, 110, 0.055);
   --surface-active: rgba(15, 118, 110, 0.1);
-  --canvas-bg: #fffefa;
+  --canvas-bg: #fdfdf8;
 
   --text-primary: #1f2928;
   --text-secondary: #5d6967;
@@ -108,17 +105,12 @@
   --accent-wash: rgba(91, 192, 180, 0.13);
   --accent-wash-strong: rgba(91, 192, 180, 0.22);
 
-  --mint: #5eead4;
-  --honey: #fcd34d;
-  --ink: #143330;
-  --sticker-fg: #143330;
-
   --invert-bg: #5bc0b4;
   --invert-fg: #102523;
 
-  --app-bg: #101715;
-  --sidebar-bg: rgba(20, 29, 27, 0.82);
-  --list-bg: rgba(17, 25, 23, 0.76);
+  --app-bg: #0e1514;
+  --sidebar-bg: var(--app-bg);
+  --list-bg: #131c1a;
   --surface: #151e1c;
   --surface-raised: #1a2523;
   --surface-hover: rgba(91, 192, 180, 0.09);
@@ -213,12 +205,13 @@ select {
   background-clip: content-box;
 }
 
-/* --rule-strong is full ink now; a solid black bar down the editor is far
-   too loud for a scrollbar, so this one keeps its own muted tone. */
-*:hover > ::-webkit-scrollbar-thumb,
-*:focus-within > ::-webkit-scrollbar-thumb,
-.scroll-host:hover::-webkit-scrollbar-thumb {
-  background: var(--text-tertiary);
+/* The thumb shows only while the pointer is over the scroller itself — the old
+   `*:hover >` form lit up every scrollbar on the page from anywhere near it,
+   and painted a full-height ink bar down the editor's edge. */
+.scroll-host:hover::-webkit-scrollbar-thumb,
+.scroll-host:focus-within::-webkit-scrollbar-thumb,
+.editor-host .cm-scroller:hover::-webkit-scrollbar-thumb {
+  background-color: color-mix(in srgb, var(--text-tertiary) 55%, transparent);
   background-clip: content-box;
 }
 
@@ -238,8 +231,6 @@ select {
   height: 100%;
   overflow: hidden;
   background: var(--app-bg);
-  gap: 0.65rem;
-  padding: 0.65rem;
 }
 
 .icon-button {
@@ -252,25 +243,21 @@ select {
   border-radius: var(--radius-sm);
   color: var(--text-secondary);
   transition: background var(--transition), color var(--transition),
-    border-color var(--transition), transform var(--transition-spring);
+    transform var(--transition-spring);
 }
 
 .icon-button:hover {
-  border-color: var(--rule-strong);
-  background: var(--surface-hover);
-  color: var(--accent);
-  transform: translateY(-1px);
+  background: var(--surface-active);
+  color: var(--text-primary);
 }
 
 .icon-button:active {
-  transform: translateY(0) scale(0.97);
+  transform: scale(0.96);
 }
 
 .icon-button[aria-pressed='true'] {
-  border-color: transparent;
   background: var(--accent-wash);
   color: var(--accent);
-  box-shadow: inset 0 0 0 1px var(--accent-soft);
 }
 
 .icon-button:disabled {
@@ -280,7 +267,6 @@ select {
 
 .icon-button:disabled:hover {
   background: none;
-  border-color: transparent;
 }
 
 .count-badge {
@@ -354,7 +340,7 @@ select {
   margin-bottom: 0.4rem;
   border: none;
   border-radius: var(--radius-lg);
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-secondary) 100%);
+  background: var(--accent);
   color: var(--text-inverse);
   box-shadow: 0 4px 16px -4px var(--accent-soft);
 }
@@ -375,12 +361,122 @@ select {
   font-size: 0.9rem;
 }
 
-/* ---------------------------------------------------------------- library */
+/* ---------------------------------------------------------------- sidebar */
+/* The library, pinned: a fixed pane on desktop, an overlay drawer below the
+   compact breakpoint. */
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 var(--sidebar-width);
+  width: var(--sidebar-width);
+  min-height: 0;
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--rule-pane);
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.7rem 0.7rem 0.3rem 0.95rem;
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-brand);
+  font-size: 0.92rem;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.sidebar-brand svg {
+  box-sizing: content-box;
+  padding: 0.24rem;
+  border-radius: var(--radius-sm);
+  background: var(--accent);
+  color: var(--text-inverse);
+}
+
+.sidebar-new {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.5rem 0.75rem 0.35rem;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
+  background: var(--surface-raised);
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 600;
+  transition: background var(--transition), border-color var(--transition),
+    transform var(--transition-spring);
+}
+
+.sidebar-new svg {
+  color: var(--accent);
+}
+
+.sidebar-new kbd {
+  margin-left: auto;
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--text-tertiary);
+}
+
+.sidebar-new:hover {
+  border-color: var(--accent-soft);
+  background: var(--accent-wash);
+}
+
+.sidebar-new:active {
+  transform: scale(0.99);
+}
+
+.sidebar-footer {
+  display: flex;
+  align-items: center;
+  gap: 0.1rem;
+  padding: 0.45rem 0.6rem;
+  border-top: 1px solid var(--rule);
+}
+
+/* Drawer mode: the same pane, floated over the list on narrow layouts. */
+.drawer-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: rgba(8, 12, 11, 0.4);
+  animation: fade var(--transition);
+}
+
+.sidebar[data-drawer='true'] {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 51;
+  width: min(19rem, 86vw);
+  box-shadow: var(--shadow-pop);
+  animation: drawer-in 260ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+@keyframes drawer-in {
+  from {
+    transform: translateX(-100%);
+  }
+}
 
 .sidebar-scroll {
   flex: 1;
   overflow-y: auto;
-  padding: 0.15rem 0.5rem 1rem;
+  padding: 0.15rem 0.55rem 1rem;
 }
 
 .sidebar-section-label {
@@ -506,52 +602,53 @@ button.disclosure:hover {
   flex-direction: column;
   flex: 0 0 var(--list-width);
   width: var(--list-width);
+  min-height: 0;
   background: var(--list-bg);
-  border: 1px solid var(--rule-pane);
-  border-radius: var(--radius-lg);
-  backdrop-filter: blur(12px);
-  box-shadow: var(--shadow-soft);
-  overflow: hidden;
+  border-right: 1px solid var(--rule-pane);
 }
 
 .list-header {
-  position: relative;
   display: flex;
   flex-direction: column;
   gap: 0.55rem;
-  padding: 0.8rem 0.85rem 0.6rem;
+  padding: 0.7rem 0.75rem 0.6rem;
 }
 
-.list-brand-row {
+.list-bar {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.3rem;
+  min-height: 2rem;
 }
 
-.list-brand {
+.list-title {
+  flex: 1;
+  min-width: 0;
   display: flex;
-  align-items: center;
+  align-items: baseline;
   gap: 0.45rem;
-  font-family: var(--font-brand);
-  font-size: 0.95rem;
-  font-weight: 600;
+  margin: 0;
+  padding-left: 0.2rem;
+  font-family: var(--font-display);
+  font-size: 0.98rem;
+  font-weight: 700;
   letter-spacing: -0.01em;
 }
 
-.list-brand svg {
-  box-sizing: content-box;
-  padding: 0.22rem;
-  border: none;
-  border-radius: var(--radius-sm);
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-secondary) 100%);
-  color: var(--text-inverse);
-  box-shadow: 0 2px 8px -2px var(--accent-soft);
+.list-title-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.list-brand-actions {
+.list-title .count-badge {
+  padding-left: 0;
+}
+
+.list-bar-actions {
   display: flex;
+  align-items: center;
   gap: 0.1rem;
-  margin-left: auto;
 }
 
 .list-footer {
@@ -574,10 +671,13 @@ button.disclosure:hover {
  * 2.6-second toast and nothing else, which is the one piece of state in the app
  * you cannot afford to miss, so it lives here permanently instead.
  */
-.list-footer-sync {
+.sync-indicator {
   display: flex;
   align-items: center;
   gap: 0.35rem;
+}
+
+.list-footer .sync-indicator {
   margin-left: auto;
 }
 
@@ -589,15 +689,15 @@ button.disclosure:hover {
   background: var(--success);
 }
 
-.list-footer-sync[data-state='saving'] .sync-dot {
+.sync-indicator[data-state='saving'] .sync-dot {
   background: var(--accent);
 }
 
-.list-footer-sync[data-state='error'] .sync-dot {
+.sync-indicator[data-state='error'] .sync-dot {
   background: var(--danger);
 }
 
-.list-footer-sync[data-state='error'] {
+.sync-indicator[data-state='error'] {
   color: var(--danger);
   font-weight: 600;
 }
@@ -609,125 +709,15 @@ button.disclosure:hover {
   text-decoration: underline;
 }
 
-.list-title-row {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-}
-
-.list-title {
-  font-family: var(--font-display);
-  font-size: 0.95rem;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.list-title-actions {
-  display: flex;
-  align-items: center;
-  gap: 0.1rem;
-  margin-left: auto;
-}
-
-/* The title doubles as the library trigger: the tag tree drops down behind it. */
-.list-title-group {
-  flex: 1;
-  min-width: 0;
-}
-
-/* The trigger bleeds left to line its label up with the plain title, so the
-   heading must not clip it — truncation moves to the label itself. */
-.list-title-group .list-title {
-  overflow: visible;
-}
-
-.list-title-trigger {
-  display: flex;
-  align-items: center;
-  gap: 0.2rem;
-  /* Hug the label, but never outgrow the header — the label truncates instead. */
-  width: max-content;
-  max-width: 100%;
-  margin-left: -0.35rem;
-  padding: 0.1rem 0.35rem;
-  border: 1px solid transparent;
-  border-radius: var(--radius);
-  font: inherit;
-  letter-spacing: inherit;
-  color: inherit;
-  transition: background var(--transition), border-color var(--transition);
-}
-
-.list-title-trigger:hover {
-  background: var(--surface-hover);
-}
-
-.list-title-trigger[aria-expanded='true'] {
-  border-color: transparent;
-  background: var(--accent-wash);
-  color: var(--text-primary);
-}
-
-.list-title-text {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.list-title-trigger svg {
-  flex: 0 0 auto;
-  color: var(--text-tertiary);
-  transition: transform var(--transition);
-}
-
-.list-title-trigger[aria-expanded='true'] svg {
-  color: inherit;
-  transform: rotate(180deg);
-}
-
-/*
- * The library's contents, opened by the title but dropped from the foot of the
- * whole header — clear of the search field, which is the control you most often
- * want next to it and which a title-anchored panel covered outright. Squaring
- * up with the note cards below rather than hugging the trigger also stops it
- * reading as a stray tooltip over the list.
- *
- * Deliberately not clipped: the tag rows carry menus that need to escape, and
- * the scroll sits on the inner `.sidebar-scroll` instead.
- */
-.library-popover {
-  position: absolute;
-  z-index: 40;
-  top: calc(100% - 0.1rem);
-  left: 0.5rem;
-  right: 0.5rem;
-  display: flex;
-  flex-direction: column;
-  max-height: min(26rem, calc(100vh - 12rem));
-  border: 1px solid var(--rule-strong);
-  border-radius: var(--radius);
-  background: var(--surface-raised);
-  box-shadow: var(--shadow-pop);
-  animation: pop var(--transition);
-}
-
-.library-popover .sidebar-scroll {
-  padding: 0.4rem 0.4rem 0.5rem;
-}
-
 .search-field {
   display: flex;
   align-items: center;
   gap: 0.45rem;
-  padding: 0.38rem 0.75rem;
+  padding: 0.38rem 0.65rem;
   border: 1px solid var(--rule-pane);
-  border-radius: var(--radius-pill);
-  background: var(--surface);
+  border-radius: var(--radius);
+  background: var(--surface-raised);
   color: var(--text-tertiary);
-  box-shadow: var(--shadow-soft);
   transition: border-color var(--transition), box-shadow var(--transition);
 }
 
@@ -764,32 +754,21 @@ button.disclosure:hover {
   border-radius: var(--radius);
   text-align: left;
   color: inherit;
-  transition: background var(--transition), border-color var(--transition),
-    box-shadow var(--transition), transform var(--transition-spring);
+  transition: background var(--transition), border-color var(--transition);
 }
 
 /* Rows are separated by soft gaps instead of hairlines. */
 .note-card + .note-card {
-  box-shadow: none;
-  margin-top: 0.2rem;
+  margin-top: 0.15rem;
 }
 
 .note-card:hover {
   background: var(--surface-hover);
-  transform: translateX(2px);
 }
 
-.note-card:hover + .note-card,
-.note-card[aria-current='true'] + .note-card,
+/* One treatment, not three: the selected card is a plain accent wash. */
 .note-card[aria-current='true'] {
-  box-shadow: none;
-}
-
-.note-card[aria-current='true'] {
-  border-color: var(--accent-soft);
   background: var(--accent-wash);
-  box-shadow: var(--shadow-soft), inset 3px 0 0 var(--accent);
-  transform: none;
 }
 
 .note-list[data-density='compact'] {
@@ -869,133 +848,136 @@ button.disclosure:hover {
 }
 
 /* ----------------------------------------------------------------- editor */
+/* The whole pane is the writing surface. Two slim full-width bars sit above
+   it — identity, then formatting — each closed with a single hairline, and the
+   text column centres itself inside the surface via its own measure. */
 
 .editor-pane {
   display: flex;
   flex-direction: column;
   flex: 1;
   min-width: 0;
-  background: transparent;
-  gap: 0;
+  min-height: 0;
+  background: var(--canvas-bg);
 }
 
-/* The title is a calm document identity bar rather than a second toolbar. */
-.editor-header {
+.editor-topbar {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.55rem 1.25rem 0.7rem;
+  gap: 0.35rem;
+  min-height: 3rem;
+  padding: 0.45rem 0.8rem;
+  border-bottom: 1px solid var(--rule);
   flex-shrink: 0;
 }
 
-.editor-header-inner {
-  display: flex;
-  align-items: center;
-  gap: 0.65rem;
-  max-width: calc(var(--editor-measure-scale) * var(--editor-font-size) + 4rem);
-  width: 100%;
-  margin: 0 auto;
-}
-
-.editor-title-group {
-  display: grid;
+.topbar-crumb {
   flex: 1;
   min-width: 0;
-  gap: 0.08rem;
-}
-
-.editor-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0 0.25rem;
+  font-family: var(--font-display);
+  font-size: 0.84rem;
   color: var(--text-tertiary);
-  font-family: var(--font-display);
-  font-size: 0.64rem;
-  font-weight: 650;
-  letter-spacing: 0.1em;
-  line-height: 1.2;
-  text-transform: uppercase;
 }
 
-.editor-title {
-  min-width: 0;
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: 1.22rem;
-  font-weight: 650;
-  letter-spacing: -0.025em;
-  line-height: 1.2;
-  color: var(--text-primary);
+.topbar-crumb svg {
+  flex: 0 0 auto;
+  opacity: 0.7;
+}
+
+.topbar-context {
+  flex: 0 1 auto;
+  max-width: 11rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.editor-header-actions {
+.topbar-title {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.topbar-actions {
   display: flex;
   align-items: center;
   gap: 0.2rem;
   flex-shrink: 0;
 }
 
-/* The formatting row is deliberately quiet and follows the text measure. */
+.topbar-meta {
+  margin-right: 0.35rem;
+  font-family: var(--font-display);
+  font-size: 0.74rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-tertiary);
+  white-space: nowrap;
+}
+
+/* The formatting row: flat icon clusters split by hairlines, status on the
+   right. Sits above the scroller and shades its edge once content passes
+   underneath. */
 .editor-toolbar {
-  padding: 0 1.25rem;
+  position: relative;
+  z-index: 5;
   flex-shrink: 0;
+  border-bottom: 1px solid var(--rule);
+  transition: box-shadow var(--transition);
+}
+
+.editor-toolbar[data-scrolled='true'] {
+  box-shadow: var(--shadow-toolbar);
 }
 
 .editor-toolbar-inner {
   display: flex;
   align-items: center;
-  gap: 0.45rem;
-  max-width: calc(var(--editor-measure-scale) * var(--editor-font-size) + 4rem);
-  margin: 0 auto;
-  padding: 0.55rem 0;
-  border-top: 1px solid var(--rule);
-  border-bottom: 1px solid var(--rule);
+  gap: 0.1rem;
+  padding: 0.4rem 0.8rem;
 }
-
-.editor-toolbar[data-scrolled='true'] .editor-toolbar-inner {
-  border-bottom-color: var(--rule-strong);
-}
-
-/* ---------------------------------------------------------------- library */
 
 .editor-toolbar-inner > .icon-button,
-.editor-toolbar-inner > .toolbar-group {
+.editor-toolbar-inner > .menu-anchor {
   flex-shrink: 0;
 }
 
-.toolbar-title {
-  flex: 1 1 auto;
-  min-width: 0;
-  padding: 0 0.4rem;
-  font-family: var(--font-display);
-  font-size: 0.8rem;
-  font-weight: 600;
-  letter-spacing: 0;
-  text-align: center;
-  color: var(--text-secondary);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.toolbar-group {
+.toolbar-cluster {
   display: flex;
   align-items: center;
   gap: 0.1rem;
-  padding: 0.12rem;
-  border: 1px solid var(--rule);
-  border-radius: var(--radius-sm);
-  background: var(--surface-raised);
-}
-
-.toolbar-group > .icon-button,
-.toolbar-group > .menu-anchor {
   flex-shrink: 0;
 }
 
-.toolbar-spacer {
-  flex: 1 0 0.5rem;
-  min-width: 0.5rem;
+.toolbar-divider {
+  width: 1px;
+  height: 1.05rem;
+  margin: 0 0.4rem;
+  background: var(--rule-strong);
+}
+
+.toolbar-status {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-left: auto;
+  padding-left: 0.6rem;
+  min-width: 0;
+  font-family: var(--font-display);
+  font-size: 0.74rem;
+  color: var(--text-tertiary);
+}
+
+.toolbar-count {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 .toolbar-heading {
@@ -1019,31 +1001,22 @@ button.disclosure:hover {
 }
 
 .toolbar-heading[data-active='true'] {
-  border-color: var(--accent-soft);
   background: var(--accent-wash-strong);
   color: var(--accent);
   border-radius: var(--radius-sm);
 }
 
-/* The writing surface is restrained: a paper edge, generous inner margin,
-   and no competing floating-card treatment. */
-.editor-canvas {
+.editor-surface {
   flex: 1;
   min-height: 0;
   display: flex;
   flex-direction: column;
-  margin: 0 0.65rem 0.65rem;
-  border: 1px solid var(--rule-pane);
-  border-radius: var(--radius-lg);
-  background: var(--canvas-bg);
-  box-shadow: var(--shadow-card);
-  overflow: hidden;
 }
 
 .editor-host {
   flex: 1;
   min-height: 0;
-  padding: 0 clamp(1.25rem, 3vw, 2.75rem);
+  padding: 0 clamp(1.25rem, 4vw, 3rem);
   overflow: hidden;
 }
 
@@ -1055,10 +1028,10 @@ button.disclosure:hover {
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  padding: 0.62rem clamp(1.25rem, 3vw, 2.75rem);
+  padding: 0.62rem clamp(1.25rem, 4vw, 3rem);
   border-bottom: 1px solid var(--rule-pane);
-  background: var(--honey);
-  color: var(--ink);
+  background: var(--highlight);
+  color: var(--text-primary);
   font-family: var(--font-display);
   font-size: 0.78rem;
   font-weight: 500;
@@ -1081,17 +1054,27 @@ button.disclosure:hover {
   position: relative;
 }
 
+/* Anchored under (or over) its `.menu-anchor` by default, so callers don't
+   hand-tune pixel offsets. Scrolls itself rather than outgrowing the screen —
+   the settings menu on a short window used to run straight off the bottom. */
 .menu {
   position: absolute;
   z-index: 40;
+  top: calc(100% + 0.3rem);
   min-width: 12.5rem;
+  max-height: min(calc(100vh - 6rem), 30rem);
+  overflow-y: auto;
   padding: 0.35rem;
   border: 1px solid var(--rule-pane);
   border-radius: var(--radius-lg);
   background: var(--surface-raised);
   box-shadow: var(--shadow-pop);
   animation: pop var(--transition-spring);
-  backdrop-filter: blur(12px);
+}
+
+.menu[data-direction='up'] {
+  top: auto;
+  bottom: calc(100% + 0.3rem);
 }
 
 .menu[data-align='right'] {
@@ -1115,7 +1098,7 @@ button.disclosure:hover {
   gap: 0.6rem;
   width: 100%;
   padding: 0.36rem 0.5rem;
-  border-radius: 2px;
+  border-radius: var(--radius-sm);
   text-align: left;
   font-size: 0.83rem;
   white-space: nowrap;
@@ -1195,7 +1178,7 @@ button.disclosure:hover {
   width: 1.5rem;
   height: 1.5rem;
   border: 1px solid var(--rule-strong);
-  border-radius: 2px;
+  border-radius: var(--radius-sm);
   line-height: 1;
 }
 
@@ -1328,16 +1311,14 @@ button.disclosure:hover {
 }
 
 .button-primary {
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-secondary) 100%);
-  border-radius: var(--radius-pill);
+  background: var(--accent);
   box-shadow: 0 2px 12px -2px var(--accent-soft);
 }
 
 .button-primary:hover {
-  background: linear-gradient(135deg, var(--accent-hover) 0%, var(--accent-secondary) 100%);
+  background: var(--accent-hover);
   border-color: transparent;
   opacity: 1;
-  transform: scale(1.02);
 }
 
 .button-danger {
@@ -2403,10 +2384,11 @@ button.disclosure:hover {
   display: none;
 }
 
-@media (max-width: 900px) {
+/* The sidebar leaves the flow below 1000px (it becomes a drawer, handled in
+   the shell), so only the list needs a slimmer column here. */
+@media (max-width: 1000px) {
   :root {
-    --list-width: 17rem;
-    --sidebar-width: 13.5rem;
+    --list-width: 19rem;
   }
 }
 
@@ -2419,38 +2401,11 @@ button.disclosure:hover {
     display: none;
   }
 
-  .app {
-    position: relative;
-    padding: 0;
-    gap: 0;
-  }
-
-  .note-list {
-    border-radius: 0;
-    border: none;
-    box-shadow: none;
-    backdrop-filter: none;
-  }
-
   .note-list,
   .editor-pane {
     flex: 1 1 auto;
     width: auto;
-  }
-
-  .editor-canvas {
-    margin: 0;
-    border-radius: 0;
-    border: none;
-    box-shadow: none;
-  }
-
-  .editor-header {
-    padding: 0.5rem 0.75rem 0;
-  }
-
-  .editor-title {
-    font-size: 1.05rem;
+    border-right: none;
   }
 
   /* The list is the whole viewport on a phone, where the desktop's compact
@@ -2484,28 +2439,25 @@ button.disclosure:hover {
     font-size: 0.76rem;
   }
 
-  .editor-host {
+  /* The crumb keeps the title; the edit date is the first thing to go. */
+  .topbar-meta {
+    display: none;
+  }
+
+  .editor-host,
+  .banner {
     padding-left: 1.1rem;
     padding-right: 1.1rem;
   }
 
   /* Hide the editor's scrollbar on phones: the 10px track eats the narrow
-     column, and it lights up on every keystroke via the focus-within rule.
-     Touch scrolling needs no chrome. The list keeps its own. */
+     column. Touch scrolling needs no chrome. The list keeps its own. */
   .editor-host .cm-scroller {
     scrollbar-width: none;
   }
 
   .editor-host .cm-scroller::-webkit-scrollbar {
     display: none;
-  }
-
-  .editor-toolbar {
-    padding-inline: 0.5rem;
-  }
-
-  .editor-toolbar-inner {
-    border-radius: var(--radius-lg);
   }
 
   /*
@@ -2530,10 +2482,8 @@ button.disclosure:hover {
     width: auto;
   }
 
-  /* The library opener is a text button rather than an icon one, so it needs
-     the height taking on separately. */
-  .list-title-trigger {
-    padding-block: 0.5rem;
+  .editor-toolbar-inner {
+    padding: 0.3rem 0.5rem;
   }
 
   .disclosure {

@@ -8,9 +8,17 @@ import { useEffect, useState, type RefObject } from 'react'
  */
 export function useElementWidth(ref: RefObject<HTMLElement | null>): number {
   const [width, setWidth] = useState(Number.POSITIVE_INFINITY)
+  const [element, setElement] = useState<HTMLElement | null>(null)
+
+  // The measured element comes and goes (the toolbar unmounts for the empty
+  // and read-only states and comes back as a fresh node), so follow whatever
+  // the ref currently points at rather than observing the mount-time node
+  // forever. Runs every commit; the set is a no-op while the node is stable.
+  useEffect(() => {
+    setElement(ref.current)
+  })
 
   useEffect(() => {
-    const element = ref.current
     if (!element || typeof ResizeObserver === 'undefined') return
 
     setWidth(element.clientWidth)
@@ -20,7 +28,7 @@ export function useElementWidth(ref: RefObject<HTMLElement | null>): number {
     })
     observer.observe(element)
     return () => observer.disconnect()
-  }, [ref])
+  }, [element])
 
   return width
 }

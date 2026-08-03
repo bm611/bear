@@ -19,3 +19,6 @@ export function useMediaQuery(query: string): boolean {
 
 /** The breakpoint below which the three panes stack into one. */
 export const NARROW_QUERY = '(max-width: 720px)'
+
+/** The breakpoint below which the sidebar overlays as a drawer instead of a pane. */
+export const COMPACT_QUERY = '(max-width: 1000px)'

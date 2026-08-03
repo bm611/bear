@@ -31,6 +31,7 @@ export interface Preferences {
   font: EditorFont
   fontSize: number
   sort: SortMode
+  sidebarVisible: boolean
   listVisible: boolean
   density: ListDensity
   previewLines: PreviewLines
