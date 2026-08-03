@@ -27,15 +27,6 @@ function GoogleGlyph() {
   )
 }
 
-/** Crosshair plus-marks pinned to the four corners of the card. */
-function AuthCornerMarks() {
-  return (
-    <span className="auth-marks" aria-hidden="true">
-      <i /> <i /> <i /> <i />
-    </span>
-  )
-}
-
 export function AuthScreen({
   initialMode = 'signIn',
   onBack,
@@ -93,8 +84,6 @@ export function AuthScreen({
         </button>
       ) : null}
       <form className="auth-card" onSubmit={onSubmit} aria-busy={pending || undefined}>
-        <AuthCornerMarks />
-        <span className="auth-eyebrow">[ slate://account ]</span>
         <div className="auth-brand">
           <span className="auth-brand-mark">
             <SlateMark size={26} />
