@@ -249,20 +249,12 @@ export function EditorPane({ note, viewRef, onBack, onTagNavigate }: EditorPaneP
     showToast(ok ? 'Markdown copied' : 'Clipboard unavailable')
   }
 
-  // The list carries the note's identity when it is on screen. When it is not —
-  // the stacked layout, or the desktop one with the list hidden — the toolbar
-  // has to say which note this is. Not at the narrowest tier, though: the two
-  // control clusters leave a few characters there, and a title cropped to
-  // "Wel…" is noise rather than information. That tier is a phone, where the
-  // back arrow and the note's own first heading already answer the question.
-  const showTitle = (onBack !== undefined || !preferences.listVisible) && tier >= 2
-
+  // The list carries the note's identity when it is on screen. The header
+  // title always shows which note you're editing.
   return (
     <section className="editor-pane" aria-label="Editor">
-      <div className="editor-toolbar" data-scrolled={scrolled ? 'true' : 'false'}>
-        {/* The tier is measured on the row, not the bar: the row is what the
-           controls have to fit inside now that it is capped to the measure. */}
-        <div className="editor-toolbar-inner" ref={toolbarRef}>
+      <div className="editor-header">
+        <div className="editor-header-inner">
           {onBack ? (
             <button
               type="button"
@@ -274,10 +266,14 @@ export function EditorPane({ note, viewRef, onBack, onTagNavigate }: EditorPaneP
             </button>
           ) : null}
 
-          <div className="toolbar-group desktop-only" role="group" aria-label="Panes">
+          <h1 className="editor-title" title={title}>
+            {title}
+          </h1>
+
+          <div className="editor-header-actions">
             <button
               type="button"
-              className="icon-button"
+              className="icon-button desktop-only"
               aria-label="Toggle note list"
               aria-pressed={preferences.listVisible}
               title={`Toggle note list (${mod('2')})`}
@@ -285,121 +281,7 @@ export function EditorPane({ note, viewRef, onBack, onTagNavigate }: EditorPaneP
             >
               <ListIcon />
             </button>
-          </div>
 
-          {!readOnly ? (
-            <div className="toolbar-group" role="group" aria-label="Formatting">
-              <div className="menu-anchor">
-                <button
-                  type="button"
-                  className="icon-button toolbar-heading"
-                  data-active={formats.heading !== null ? 'true' : undefined}
-                  aria-label={
-                    formats.heading === null ? 'Heading level' : `Heading level ${formats.heading}`
-                  }
-                  aria-expanded={headingOpen}
-                  title="Heading level"
-                  onMouseDown={keepEditorFocus}
-                  onClick={() => setHeadingOpen((open) => !open)}
-                >
-                  <span className="toolbar-heading-level">
-                    {formats.heading === null ? 'H' : `H${formats.heading}`}
-                  </span>
-                  <ChevronRight size={11} className="toolbar-heading-caret" />
-                </button>
-                {headingOpen ? (
-                  <Menu
-                    label="Heading level"
-                    align="left"
-                    restoreFocus={false}
-                    onClose={() => setHeadingOpen(false)}
-                    style={{ top: '2.3rem' }}
-                  >
-                    {[1, 2, 3, 4, 5, 6].map((level) => (
-                      <MenuItem
-                        key={level}
-                        checked={formats.heading === level}
-                        shortcut={combo(MOD, '⌥', String(level))}
-                        onSelect={() => {
-                          setHeadingOpen(false)
-                          run(setHeading(level))()
-                        }}
-                      >
-                        Heading {level}
-                      </MenuItem>
-                    ))}
-                  </Menu>
-                ) : null}
-              </div>
-
-              {inlineActions.map((action) => (
-                <button
-                  key={action.id}
-                  type="button"
-                  className="icon-button"
-                  aria-label={action.label}
-                  aria-pressed={action.state ? formats[action.state] : undefined}
-                  title={`${action.label} (${action.shortcut})`}
-                  onMouseDown={keepEditorFocus}
-                  onClick={run(action.command)}
-                >
-                  {action.icon}
-                </button>
-              ))}
-
-              {overflowActions.length > 0 ? (
-                <div className="menu-anchor">
-                  <button
-                    type="button"
-                    className="icon-button"
-                    aria-label="More formatting"
-                    aria-expanded={overflowOpen}
-                    title="More formatting"
-                    onMouseDown={keepEditorFocus}
-                    onClick={() => setOverflowOpen((open) => !open)}
-                  >
-                    <MoreIcon />
-                  </button>
-                  {overflowOpen ? (
-                    <Menu
-                      label="More formatting"
-                      // Right-aligned: this menu only exists in a narrow pane,
-                      // where opening leftward is what keeps it on screen.
-                      align="right"
-                      restoreFocus={false}
-                      onClose={() => setOverflowOpen(false)}
-                      style={{ top: '2.3rem' }}
-                    >
-                      {overflowActions.map((action) => (
-                        <MenuItem
-                          key={action.id}
-                          icon={action.icon}
-                          checked={action.state ? formats[action.state] : undefined}
-                          shortcut={action.shortcut}
-                          onSelect={() => {
-                            setOverflowOpen(false)
-                            run(action.command)()
-                          }}
-                        >
-                          {action.label}
-                        </MenuItem>
-                      ))}
-                    </Menu>
-                  ) : null}
-                </div>
-              ) : null}
-            </div>
-          ) : null}
-
-          {showTitle ? (
-            <span className="toolbar-title" title={title}>
-              {title}
-            </span>
-          ) : (
-            <span className="toolbar-spacer" />
-          )}
-
-          <div className="toolbar-group" role="group" aria-label="Note">
             <button
               type="button"
               className="icon-button"
@@ -428,9 +310,6 @@ export function EditorPane({ note, viewRef, onBack, onTagNavigate }: EditorPaneP
                   onClose={() => setMenuOpen(false)}
                   style={{ top: '2.3rem' }}
                 >
-                  {/* The one fact about a note the app never showed anywhere.
-                    It belongs with the note's own actions rather than in the
-                    chrome, where it would be read once and then be noise. */}
                   <div className="menu-info">Created {fullDate(note.createdAt)}</div>
                   <MenuSeparator />
                   <MenuItem
@@ -527,37 +406,145 @@ export function EditorPane({ note, viewRef, onBack, onTagNavigate }: EditorPaneP
         </div>
       </div>
 
-      {trashed ? (
-        <div className="banner" role="status">
-          This note is in the trash.
-          <span className="banner-actions">
-            <button type="button" onClick={() => restoreNote(note.id)}>
-              Put back
-            </button>
-            <button type="button" onClick={() => setConfirmDelete(true)}>
-              Delete now
-            </button>
-          </span>
-        </div>
-      ) : note.archived ? (
-        <div className="banner" role="status">
-          Archived.
-          <span className="banner-actions">
-            <button type="button" onClick={() => toggleArchive(note.id)}>
-              Move out of archive
-            </button>
-          </span>
+      {!readOnly ? (
+        <div className="editor-toolbar" data-scrolled={scrolled ? 'true' : 'false'}>
+          <div className="editor-toolbar-inner" ref={toolbarRef}>
+            <div className="toolbar-group" role="group" aria-label="Formatting">
+              <div className="menu-anchor">
+                <button
+                  type="button"
+                  className="icon-button toolbar-heading"
+                  data-active={formats.heading !== null ? 'true' : undefined}
+                  aria-label={
+                    formats.heading === null ? 'Heading level' : `Heading level ${formats.heading}`
+                  }
+                  aria-expanded={headingOpen}
+                  title="Heading level"
+                  onMouseDown={keepEditorFocus}
+                  onClick={() => setHeadingOpen((open) => !open)}
+                >
+                  <span className="toolbar-heading-level">
+                    {formats.heading === null ? 'H' : `H${formats.heading}`}
+                  </span>
+                  <ChevronRight size={11} className="toolbar-heading-caret" />
+                </button>
+                {headingOpen ? (
+                  <Menu
+                    label="Heading level"
+                    align="left"
+                    restoreFocus={false}
+                    onClose={() => setHeadingOpen(false)}
+                    style={{ top: '2.3rem' }}
+                  >
+                    {[1, 2, 3, 4, 5, 6].map((level) => (
+                      <MenuItem
+                        key={level}
+                        checked={formats.heading === level}
+                        shortcut={combo(MOD, '⌥', String(level))}
+                        onSelect={() => {
+                          setHeadingOpen(false)
+                          run(setHeading(level))()
+                        }}
+                      >
+                        Heading {level}
+                      </MenuItem>
+                    ))}
+                  </Menu>
+                ) : null}
+              </div>
+
+              {inlineActions.map((action) => (
+                <button
+                  key={action.id}
+                  type="button"
+                  className="icon-button"
+                  aria-label={action.label}
+                  aria-pressed={action.state ? formats[action.state] : undefined}
+                  title={`${action.label} (${action.shortcut})`}
+                  onMouseDown={keepEditorFocus}
+                  onClick={run(action.command)}
+                >
+                  {action.icon}
+                </button>
+              ))}
+
+              {overflowActions.length > 0 ? (
+                <div className="menu-anchor">
+                  <button
+                    type="button"
+                    className="icon-button"
+                    aria-label="More formatting"
+                    aria-expanded={overflowOpen}
+                    title="More formatting"
+                    onMouseDown={keepEditorFocus}
+                    onClick={() => setOverflowOpen((open) => !open)}
+                  >
+                    <MoreIcon />
+                  </button>
+                  {overflowOpen ? (
+                    <Menu
+                      label="More formatting"
+                      align="right"
+                      restoreFocus={false}
+                      onClose={() => setOverflowOpen(false)}
+                      style={{ top: '2.3rem' }}
+                    >
+                      {overflowActions.map((action) => (
+                        <MenuItem
+                          key={action.id}
+                          icon={action.icon}
+                          checked={action.state ? formats[action.state] : undefined}
+                          shortcut={action.shortcut}
+                          onSelect={() => {
+                            setOverflowOpen(false)
+                            run(action.command)()
+                          }}
+                        >
+                          {action.label}
+                        </MenuItem>
+                      ))}
+                    </Menu>
+                  ) : null}
+                </div>
+              ) : null}
+            </div>
+          </div>
         </div>
       ) : null}
 
-      <Editor
-        noteId={note.id}
-        text={note.text}
-        readOnly={readOnly}
-        viewRef={viewRef}
-        onTagNavigate={onTagNavigate}
-        onFormatsChange={setFormats}
-      />
+      <div className="editor-canvas">
+        {trashed ? (
+          <div className="banner" role="status">
+            This note is in the trash.
+            <span className="banner-actions">
+              <button type="button" onClick={() => restoreNote(note.id)}>
+                Put back
+              </button>
+              <button type="button" onClick={() => setConfirmDelete(true)}>
+                Delete now
+              </button>
+            </span>
+          </div>
+        ) : note.archived ? (
+          <div className="banner" role="status">
+            Archived.
+            <span className="banner-actions">
+              <button type="button" onClick={() => toggleArchive(note.id)}>
+                Move out of archive
+              </button>
+            </span>
+          </div>
+        ) : null}
+
+        <Editor
+          noteId={note.id}
+          text={note.text}
+          readOnly={readOnly}
+          viewRef={viewRef}
+          onTagNavigate={onTagNavigate}
+          onFormatsChange={setFormats}
+        />
+      </div>
 
       {confirmDelete ? (
         <ConfirmDialog

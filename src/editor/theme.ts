@@ -238,10 +238,10 @@ export const slateEditorTheme = EditorView.theme({
   },
 
   '.cm-hashtag': {
-    color: 'var(--text-primary)',
+    color: 'var(--accent)',
     backgroundColor: 'var(--accent-wash)',
     border: '1px solid var(--accent-soft)',
-    borderRadius: '2px',
+    borderRadius: '6px',
     padding: '0.05em 0.4em',
     margin: '0 -0.05em',
     cursor: 'pointer',
@@ -261,12 +261,11 @@ export const slateEditorTheme = EditorView.theme({
     display: 'inline-block',
     width: '1.05em',
     height: '1.05em',
-    // Into the same marker slot as a bullet, so a mixed list stays flush.
     marginLeft: '0.53em',
     marginRight: '0.45em',
     verticalAlign: '-0.16em',
     border: '1.5px solid var(--todo-border)',
-    borderRadius: '1px',
+    borderRadius: '4px',
     cursor: 'pointer',
     position: 'relative',
     transition: 'background-color 120ms ease, border-color 120ms ease',
