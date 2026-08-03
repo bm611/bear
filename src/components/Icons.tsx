@@ -80,6 +80,40 @@ export function SlateMark({ size = 20, ...rest }: { size?: number } & React.SVGP
   )
 }
 
+/**
+ * The brand ornament: a small gateway drawn as nested arches over a ground
+ * line of dots — an archway built with mandala repetition. Sits above hero
+ * eyebrows and on the auth card.
+ */
+export function MotifMark({ size = 64, ...rest }: { size?: number } & React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      width={size}
+      height={(size * 5) / 12}
+      viewBox="0 0 72 30"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.7}
+      strokeLinecap="round"
+      aria-hidden="true"
+      focusable="false"
+      {...rest}
+    >
+      {/* Nested gateway arches — the threshold */}
+      <path d="M26 26.5 V15.5 C26 9.4 30.3 5.6 36 5.6 C41.7 5.6 46 9.4 46 15.5 V26.5" />
+      <path d="M31.5 26.5 V16.5 C31.5 13.2 33.4 11 36 11 C38.6 11 40.5 13.2 40.5 16.5 V26.5" />
+      {/* The finial dot above the crown */}
+      <circle cx="36" cy="1.9" r="1.15" fill="currentColor" stroke="none" />
+      {/* Ground line, extending into mandala dots either side */}
+      <path d="M18 26.5 H54" strokeWidth={1.2} />
+      <circle cx="11.5" cy="26.5" r="1.15" fill="currentColor" stroke="none" />
+      <circle cx="5.5" cy="26.5" r="1.15" fill="currentColor" stroke="none" opacity="0.45" />
+      <circle cx="60.5" cy="26.5" r="1.15" fill="currentColor" stroke="none" />
+      <circle cx="66.5" cy="26.5" r="1.15" fill="currentColor" stroke="none" opacity="0.45" />
+    </svg>
+  )
+}
+
 // Library
 export const NotesIcon = glyph(Note01Icon, 'NotesIcon')
 export const TagIcon = glyph(Tag01Icon, 'TagIcon')

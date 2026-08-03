@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react'
-import { SlateMark } from './Icons'
+import { MotifMark, SlateMark } from './Icons'
 import type { AuthMode } from './AuthScreen'
 
 const prefersReducedMotion = () =>
@@ -190,6 +190,22 @@ function MockWindow() {
   )
 }
 
+/** What the marquee loops: the everyday kinds of notes people keep. */
+const MARQUEE_ITEMS = [
+  'Grocery lists',
+  '3am epiphanies',
+  'Book notes',
+  'Novel drafts',
+  'Meeting minutes',
+  'Gravy recipes',
+  'Workout logs',
+  'Dream journals',
+  'Code snippets',
+  'Lecture notes',
+  'Packing lists',
+  'Standup notes',
+]
+
 const CHEATS: { raw: string; render: ReactNode }[] = [
   { raw: '# Big idea', render: <span className="lp-cheat-h1">Big idea</span> },
   { raw: '**important**', render: <strong>important</strong> },
@@ -204,6 +220,30 @@ const CHEATS: { raw: string; render: ReactNode }[] = [
   },
   { raw: '#recipes', render: <span className="lp-cheat-pill">#recipes</span> },
 ]
+
+const PILLARS = [
+  {
+    index: '01',
+    title: 'Plain text, always',
+    body: 'Every note is a markdown file a thirty-year-old editor could open. No database, no proprietary soup, no export ritual.',
+  },
+  {
+    index: '02',
+    title: 'Quiet on purpose',
+    body: 'No badges, no nudges, no tour. The interface steps back so the sentence you are writing is the loudest thing on screen.',
+  },
+  {
+    index: '03',
+    title: 'Yours, end to end',
+    body: 'Sign in for sync across devices; walk away with a folder of text whenever you like. Leaving is a feature, not a complaint.',
+  },
+] as const
+
+const METRICS = [
+  { value: '1', label: 'File format — plain markdown' },
+  { value: '0', label: 'Folders, databases, lock-in' },
+  { value: '∞', label: 'Shelf life of plain text' },
+] as const
 
 const FEATURES = [
   {
@@ -233,30 +273,45 @@ export function LandingScreen({ onLaunch }: { onLaunch: (mode: AuthMode) => void
 
   return (
     <div className="lp">
-      <header className="lp-nav">
-        <a className="lp-logo" href="#top">
-          <span className="lp-logo-mark">
-            <SlateMark size={18} />
-          </span>
-          <span className="lp-logo-word">Slate</span>
-        </a>
-        <nav className="lp-nav-links" aria-label="Sections">
-          <a href="#syntax">Syntax</a>
-          <a href="#features">Features</a>
-        </nav>
-        <div className="lp-nav-actions">
-          <button type="button" className="lp-link" onClick={() => onLaunch('signIn')}>
-            Sign in
-          </button>
-          <button type="button" className="lp-btn lp-btn-sm" onClick={() => onLaunch('signUp')}>
-            Get started
-          </button>
-        </div>
-      </header>
+      <div className="lp-banner">
+        <span>
+          <strong>Slate is in early access</strong> — every account is free while it grows.
+        </span>
+        <button type="button" className="lp-banner-link" onClick={() => onLaunch('signUp')}>
+          Claim yours →
+        </button>
+      </div>
+
+      <div className="lp-nav-wrap">
+        <header className="lp-nav">
+          <a className="lp-logo" href="#top">
+            <span className="lp-logo-mark">
+              <SlateMark size={18} />
+            </span>
+            <span className="lp-logo-word">Slate</span>
+          </a>
+          <nav className="lp-nav-links" aria-label="Sections">
+            <a href="#syntax">Syntax</a>
+            <a href="#why">Why Slate</a>
+            <a href="#features">Features</a>
+          </nav>
+          <div className="lp-nav-actions">
+            <button type="button" className="lp-link" onClick={() => onLaunch('signIn')}>
+              Sign in
+            </button>
+            <button type="button" className="lp-btn lp-btn-sm" onClick={() => onLaunch('signUp')}>
+              Sign up
+            </button>
+          </div>
+        </header>
+      </div>
 
       <main className="lp-main" id="top">
         <section className="lp-hero">
+          <div className="lp-hero-glow" aria-hidden="true" />
           <div className="lp-hero-copy">
+            <MotifMark className="lp-motif" size={64} />
+
             <span className="lp-eyebrow">Markdown notes with a pulse</span>
 
             <h1 className="lp-title">
@@ -305,9 +360,26 @@ export function LandingScreen({ onLaunch }: { onLaunch: (mode: AuthMode) => void
           </div>
         </section>
 
+        <div className="lp-marquee" aria-hidden="true">
+          <p className="lp-marquee-label">One home for everything you write down</p>
+          <div className="lp-marquee-mask">
+            <div className="lp-marquee-track">
+              {[0, 1].map((group) => (
+                <div className="lp-marquee-group" key={group}>
+                  {MARQUEE_ITEMS.map((item) => (
+                    <span className="lp-marquee-item" key={item}>
+                      {item}
+                    </span>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
         <section className="lp-section" id="syntax">
           <div className="lp-section-head">
-            <span className="lp-eyebrow">Syntax → render</span>
+            <p className="lp-kicker">Syntax → render</p>
             <h2 className="lp-h2">Type this, get that</h2>
             <p className="lp-section-sub">
               Type the markdown you already half-remember — headings, todos, and tags light up as
@@ -329,42 +401,103 @@ export function LandingScreen({ onLaunch }: { onLaunch: (mode: AuthMode) => void
           </div>
         </section>
 
-        <section className="lp-dark" id="features">
-          <div className="lp-dark-inner">
-            <div className="lp-section-head">
-              <span className="lp-eyebrow lp-eyebrow-dark">The spec sheet</span>
-              <h2 className="lp-h2 lp-h2-dark">Four things, done properly</h2>
-              <p className="lp-section-sub lp-sub-dark">
-                Instead of forty things done in a settings panel nobody opens.
-              </p>
+        <section className="lp-statement">
+          <div className="lp-statement-inner">
+            <p className="lp-kicker lp-kicker-dark">The bet</p>
+            <h2 className="lp-statement-title">Plain text outlives every app.</h2>
+            <p className="lp-statement-sub">
+              Apps come and go. Formats get acquired. A folder of markdown files just keeps
+              reading — yours, readable, thirty years from now.
+            </p>
+            <div className="lp-cta-group">
+              <button
+                type="button"
+                className="lp-btn lp-btn-light lp-btn-lg"
+                onClick={() => onLaunch('signUp')}
+              >
+                Start your library
+              </button>
+              <a className="lp-btn lp-btn-ghost lp-btn-lg" href="#syntax">
+                See how it reads
+              </a>
             </div>
+          </div>
+        </section>
 
-            <div className="lp-feat-grid">
-              {FEATURES.map((feature) => (
-                <article className="lp-feature" key={feature.index}>
-                  <span className="lp-feat-index">{feature.index}</span>
-                  <h3 className="lp-h3">{feature.title}</h3>
-                  <p className="lp-feature-body">{feature.body}</p>
-                </article>
-              ))}
-            </div>
+        <section className="lp-section" id="why">
+          <div className="lp-section-head">
+            <p className="lp-kicker">Why Slate</p>
+            <h2 className="lp-h2">Three convictions, held firmly</h2>
+            <p className="lp-section-sub">
+              Everything in the app is downstream of these. When in doubt, the quieter option
+              wins.
+            </p>
+          </div>
+
+          <div className="lp-pillar-grid">
+            {PILLARS.map((pillar) => (
+              <article className="lp-pillar" key={pillar.index}>
+                <span className="lp-pillar-index">{pillar.index}</span>
+                <h3 className="lp-h3">{pillar.title}</h3>
+                <p className="lp-pillar-body">{pillar.body}</p>
+              </article>
+            ))}
+          </div>
+
+          <p className="lp-audience">
+            <span>For writers</span>
+            <span>Thinkers</span>
+            <span>The chronically curious</span>
+          </p>
+
+          <div className="lp-metric-row">
+            {METRICS.map((metric) => (
+              <div className="lp-metric" key={metric.label}>
+                <span className="lp-metric-value">{metric.value}</span>
+                <span className="lp-metric-label">{metric.label}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="lp-section" id="features">
+          <div className="lp-section-head">
+            <p className="lp-kicker">The spec sheet</p>
+            <h2 className="lp-h2">Four things, done properly</h2>
+            <p className="lp-section-sub">
+              Instead of forty things done in a settings panel nobody opens.
+            </p>
+          </div>
+
+          <div className="lp-feat-grid">
+            {FEATURES.map((feature) => (
+              <article className="lp-feature" key={feature.index}>
+                <span className="lp-feat-index">{feature.index}</span>
+                <h3 className="lp-h3">{feature.title}</h3>
+                <p className="lp-feature-body">{feature.body}</p>
+              </article>
+            ))}
           </div>
         </section>
 
         <section className="lp-closer">
           <div className="lp-closer-inner">
-            <span className="lp-eyebrow">Step one — open a note</span>
+            <p className="lp-kicker">Step one — open a note</p>
             <h2 className="lp-closer-title">Go on, write something down.</h2>
             <p className="lp-closer-sub">
               It takes about nine seconds to make an account, and roughly zero to start typing.
             </p>
-            <div className="lp-cta-group lp-cta-center">
-              <button type="button" className="lp-btn lp-btn-lg" onClick={() => onLaunch('signUp')}>
+            <div className="lp-cta-group">
+              <button
+                type="button"
+                className="lp-btn lp-btn-light lp-btn-lg"
+                onClick={() => onLaunch('signUp')}
+              >
                 Open a blank note
               </button>
               <button
                 type="button"
-                className="lp-btn lp-btn-outline lp-btn-lg"
+                className="lp-btn lp-btn-ghost lp-btn-lg"
                 onClick={() => onLaunch('signIn')}
               >
                 Sign in
@@ -375,15 +508,43 @@ export function LandingScreen({ onLaunch }: { onLaunch: (mode: AuthMode) => void
       </main>
 
       <footer className="lp-foot">
-        <div className="lp-foot-row">
-          <span className="lp-foot-brand">
-            <SlateMark size={15} />
-            Slate — v0.1.0
-          </span>
-          <span className="lp-foot-tagline">Built for people who think in plain text.</span>
-          <button type="button" className="lp-link" onClick={() => onLaunch('signUp')}>
-            Get started →
-          </button>
+        <div className="lp-foot-grid">
+          <div className="lp-foot-brand">
+            <span className="lp-foot-brand-row">
+              <span className="lp-logo-mark">
+                <SlateMark size={16} />
+              </span>
+              Slate
+            </span>
+            <span className="lp-foot-tagline">Built for people who think in plain text.</span>
+          </div>
+
+          <div className="lp-foot-col">
+            <h4>Product</h4>
+            <a href="#syntax">Syntax</a>
+            <a href="#why">Why Slate</a>
+            <a href="#features">Features</a>
+          </div>
+
+          <div className="lp-foot-col">
+            <h4>Account</h4>
+            <button type="button" onClick={() => onLaunch('signUp')}>
+              Create account
+            </button>
+            <button type="button" onClick={() => onLaunch('signIn')}>
+              Sign in
+            </button>
+          </div>
+
+          <div className="lp-foot-col">
+            <h4>This page</h4>
+            <a href="#top">Back to top</a>
+          </div>
+        </div>
+
+        <div className="lp-foot-legal">
+          <span>Slate — v0.1.0</span>
+          <span>Plain text · No folders · No lock-in</span>
         </div>
       </footer>
     </div>

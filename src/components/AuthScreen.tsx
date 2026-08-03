@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { supabase } from '../lib/supabaseClient'
-import { BackIcon, SlateMark } from './Icons'
+import { BackIcon, MotifMark, SlateMark } from './Icons'
 
 export type AuthMode = 'signIn' | 'signUp'
 
@@ -84,6 +84,7 @@ export function AuthScreen({
         </button>
       ) : null}
       <form className="auth-card" onSubmit={onSubmit} aria-busy={pending || undefined}>
+        <MotifMark className="auth-motif" size={56} />
         <div className="auth-brand">
           <span className="auth-brand-mark">
             <SlateMark size={26} />

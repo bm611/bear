@@ -65,12 +65,15 @@ and the same dropdown serves the narrow layout.
 
 ## Type and icons
 
-Set in [Google Sans](https://fonts.google.com/specimen/Google+Sans), with
-[Google Sans Code](https://fonts.google.com/specimen/Google+Sans+Code) for code
-spans, fenced blocks and the mono editor setting. Both are self-hosted from
-their Fontsource packages (SIL OFL 1.1) — `src/styles/fonts.css` declares only
-the latin subsets, because importing the packages' own CSS would bundle all 25
-subsets and 14 MB of woff2 for a latin interface.
+Set in [Anybody](https://fonts.google.com/specimen/Anybody) — its width axis
+carries the wordmark's wide letterforms — with
+[Fraunces](https://fonts.google.com/specimen/Fraunces) as the display serif for
+headlines, buttons and brand moments. [Space Mono](https://fonts.google.com/specimen/Space+Mono)
+serves code spans, fenced blocks and the mono editor setting. All are
+self-hosted from their Fontsource packages (SIL OFL 1.1) —
+`src/styles/fonts.css` declares only the latin subsets, because importing the
+packages' own CSS would bundle all 25 subsets and several MB of woff2 for a
+latin interface.
 
 Icons come from [Hugeicons](https://hugeicons.com) (free set) via
 `@hugeicons/react`. `src/components/Icons.tsx` maps each Hugeicons glyph to a

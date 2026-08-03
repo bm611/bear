@@ -1,0 +1,198 @@
+- generic [ref=e3]:
+  - generic [ref=e4]:
+    - generic [ref=e5]:
+      - strong [ref=e6]: Slate is in early access
+      - text: — every account is free while it grows.
+    - button "Claim yours →" [ref=e7] [cursor=pointer]
+  - banner [ref=e9]:
+    - link "Slate" [ref=e10] [cursor=pointer]:
+      - /url: "#top"
+    - navigation "Sections" [ref=e19]:
+      - link "Syntax" [ref=e20] [cursor=pointer]:
+        - /url: "#syntax"
+      - link "Why Slate" [ref=e21] [cursor=pointer]:
+        - /url: "#why"
+      - link "Features" [ref=e22] [cursor=pointer]:
+        - /url: "#features"
+    - generic [ref=e23]:
+      - button "Sign in" [ref=e24] [cursor=pointer]
+      - button "Sign up" [ref=e25] [cursor=pointer]
+  - main [ref=e26]:
+    - generic [ref=e27]:
+      - generic [ref=e28]:
+        - generic [ref=e37]: Markdown notes with a pulse
+        - heading "A clean slate for your half-baked ideas" [level=1] [ref=e38]:
+          - text: A clean slate for your
+          - generic [ref=e39]: half-baked ideas
+        - paragraph [ref=e41]: Slate is a fast little markdown notebook that doesn't nag, sync-spin, or hide your words behind a database. Type. Tag. Close the laptop. It'll all still be there.
+        - generic [ref=e42]:
+          - button "Start writing — free" [ref=e43] [cursor=pointer]
+          - button "I've been here before" [ref=e44] [cursor=pointer]
+        - list [ref=e45]:
+          - listitem [ref=e46]: No credit card
+          - listitem [ref=e47]: No onboarding tour
+          - listitem [ref=e48]: No folders, ever
+      - generic [ref=e51]:
+        - generic [ref=e52]: ~/notes/sourdough-take-four.md
+        - generic [ref=e58]:
+          - generic [ref=e59]: Slate
+          - generic [ref=e67]:
+            - generic [ref=e68]: Sourdough, take four
+            - generic [ref=e70]: Just now
+          - generic [ref=e71]:
+            - generic [ref=e72]: Reading list
+            - generic [ref=e74]: Tuesday
+          - generic [ref=e75]:
+            - generic [ref=e76]: Weekly review
+            - generic [ref=e78]: Sunday
+          - generic [ref=e79]:
+            - generic [ref=e80]: Trip packing
+            - generic [ref=e82]: Mar 14
+          - generic [ref=e83]:
+            - generic [ref=e84]: Book notes — Piranesi
+            - generic [ref=e86]: Mar 9
+    - generic [ref=e90]:
+      - paragraph [ref=e91]: One home for everything you write down
+      - generic [ref=e93]:
+        - generic [ref=e94]:
+          - generic [ref=e95]: Grocery lists
+          - generic [ref=e96]: 3am epiphanies
+          - generic [ref=e97]: Book notes
+          - generic [ref=e98]: Novel drafts
+          - generic [ref=e99]: Meeting minutes
+          - generic [ref=e100]: Gravy recipes
+          - generic [ref=e101]: Workout logs
+          - generic [ref=e102]: Dream journals
+          - generic [ref=e103]: Code snippets
+          - generic [ref=e104]: Lecture notes
+          - generic [ref=e105]: Packing lists
+          - generic [ref=e106]: Standup notes
+        - generic [ref=e107]:
+          - generic [ref=e108]: Grocery lists
+          - generic [ref=e109]: 3am epiphanies
+          - generic [ref=e110]: Book notes
+          - generic [ref=e111]: Novel drafts
+          - generic [ref=e112]: Meeting minutes
+          - generic [ref=e113]: Gravy recipes
+          - generic [ref=e114]: Workout logs
+          - generic [ref=e115]: Dream journals
+          - generic [ref=e116]: Code snippets
+          - generic [ref=e117]: Lecture notes
+          - generic [ref=e118]: Packing lists
+          - generic [ref=e119]: Standup notes
+    - generic [ref=e120]:
+      - generic [ref=e121]:
+        - paragraph [ref=e122]: Syntax → render
+        - heading "Type this, get that" [level=2] [ref=e123]
+        - paragraph [ref=e124]: Type the markdown you already half-remember — headings, todos, and tags light up as you go.
+      - generic [ref=e125]:
+        - generic [ref=e126]:
+          - generic [ref=e127]: "01"
+          - code [ref=e128]: "# Big idea"
+          - generic [ref=e129]: →
+          - generic [ref=e130]: Big idea
+        - generic [ref=e132]:
+          - generic [ref=e133]: "02"
+          - code [ref=e134]: "**important**"
+          - generic [ref=e135]: →
+          - strong [ref=e137]: important
+        - generic [ref=e138]:
+          - generic [ref=e139]: "03"
+          - code [ref=e140]: "- [ ] milk"
+          - generic [ref=e141]: →
+          - generic [ref=e142]: milk
+        - generic [ref=e145]:
+          - generic [ref=e146]: "04"
+          - code [ref=e147]: "#recipes"
+          - generic [ref=e148]: →
+          - generic [ref=e149]: "#recipes"
+    - generic [ref=e152]:
+      - paragraph [ref=e153]: The bet
+      - heading "Plain text outlives every app." [level=2] [ref=e154]
+      - paragraph [ref=e155]: Apps come and go. Formats get acquired. A folder of markdown files just keeps reading — yours, readable, thirty years from now.
+      - generic [ref=e156]:
+        - button "Start your library" [ref=e157] [cursor=pointer]
+        - link "See how it reads" [ref=e158] [cursor=pointer]:
+          - /url: "#syntax"
+    - generic [ref=e159]:
+      - generic [ref=e160]:
+        - paragraph [ref=e161]: Why Slate
+        - heading "Three convictions, held firmly" [level=2] [ref=e162]
+        - paragraph [ref=e163]: Everything in the app is downstream of these. When in doubt, the quieter option wins.
+      - generic [ref=e164]:
+        - article [ref=e165]:
+          - text: "01"
+          - heading "Plain text, always" [level=3] [ref=e166]
+          - paragraph [ref=e167]: Every note is a markdown file a thirty-year-old editor could open. No database, no proprietary soup, no export ritual.
+        - article [ref=e168]:
+          - text: "02"
+          - heading "Quiet on purpose" [level=3] [ref=e169]
+          - paragraph [ref=e170]: No badges, no nudges, no tour. The interface steps back so the sentence you are writing is the loudest thing on screen.
+        - article [ref=e171]:
+          - text: "03"
+          - heading "Yours, end to end" [level=3] [ref=e172]
+          - paragraph [ref=e173]: Sign in for sync across devices; walk away with a folder of text whenever you like. Leaving is a feature, not a complaint.
+      - paragraph [ref=e174]: For writers|Thinkers|The chronically curious
+      - generic [ref=e175]:
+        - generic [ref=e176]:
+          - generic [ref=e177]: "1"
+          - generic [ref=e178]: File format — plain markdown
+        - generic [ref=e179]:
+          - generic [ref=e180]: "0"
+          - generic [ref=e181]: Folders, databases, lock-in
+        - generic [ref=e182]:
+          - generic [ref=e183]: ∞
+          - generic [ref=e184]: Shelf life of plain text
+    - generic [ref=e185]:
+      - generic [ref=e186]:
+        - paragraph [ref=e187]: The spec sheet
+        - heading "Four things, done properly" [level=2] [ref=e188]
+        - paragraph [ref=e189]: Instead of forty things done in a settings panel nobody opens.
+      - generic [ref=e190]:
+        - article [ref=e191]:
+          - text: "01"
+          - heading "Markdown that shows its work" [level=3] [ref=e192]
+          - paragraph [ref=e193]: Headings swell, todos sprout checkboxes, tables snap into a grid — all while the file underneath stays boring, portable text.
+        - article [ref=e194]:
+          - text: "02"
+          - heading "Tags, not folders" [level=3] [ref=e195]
+          - paragraph [ref=e196]: "Drop a #tag mid-sentence. Nest them like folders if you must — one note can live in six places at once."
+        - article [ref=e197]:
+          - text: "03"
+          - heading "Follows you around" [level=3] [ref=e198]
+          - paragraph [ref=e199]: Sign in once and every note turns up on the next device, mid-sentence.
+        - article [ref=e200]:
+          - text: "04"
+          - heading "Yours to walk away with" [level=3] [ref=e201]
+          - paragraph [ref=e202]: Every note exports as a plain .md file. No hostage situation, no export fee — just a folder of text you can read in thirty years.
+    - generic [ref=e204]:
+      - paragraph [ref=e205]: Step one — open a note
+      - heading "Go on, write something down." [level=2] [ref=e206]
+      - paragraph [ref=e207]: It takes about nine seconds to make an account, and roughly zero to start typing.
+      - generic [ref=e208]:
+        - button "Open a blank note" [ref=e209] [cursor=pointer]
+        - button "Sign in" [ref=e210] [cursor=pointer]
+  - contentinfo [ref=e211]:
+    - generic [ref=e212]:
+      - generic [ref=e213]:
+        - generic [ref=e214]: Slate
+        - generic [ref=e222]: Built for people who think in plain text.
+      - generic [ref=e223]:
+        - heading "Product" [level=4] [ref=e224]
+        - link "Syntax" [ref=e225] [cursor=pointer]:
+          - /url: "#syntax"
+        - link "Why Slate" [ref=e226] [cursor=pointer]:
+          - /url: "#why"
+        - link "Features" [ref=e227] [cursor=pointer]:
+          - /url: "#features"
+      - generic [ref=e228]:
+        - heading "Account" [level=4] [ref=e229]
+        - button "Create account" [ref=e230] [cursor=pointer]
+        - button "Sign in" [ref=e231] [cursor=pointer]
+      - generic [ref=e232]:
+        - heading "This page" [level=4] [ref=e233]
+        - link "Back to top" [ref=e234] [cursor=pointer]:
+          - /url: "#top"
+    - generic [ref=e235]:
+      - generic [ref=e236]: Slate — v0.1.0
+      - generic [ref=e237]: Plain text · No folders · No lock-in
