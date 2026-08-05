@@ -16,7 +16,7 @@ import { COMPACT_QUERY, NARROW_QUERY, useMediaQuery } from './hooks/useMediaQuer
 import { hasMod } from './lib/platform'
 
 const FONT_STACKS = {
-  sans: 'var(--font-ui)',
+  sans: 'var(--font-editor)',
   inter: 'var(--font-inter)',
   system: 'var(--font-system)',
   mono: 'var(--font-mono)',
@@ -33,7 +33,7 @@ function useTheme() {
       document.documentElement.dataset.theme = resolved
       document
         .querySelector('meta[name="theme-color"]')
-        ?.setAttribute('content', resolved === 'dark' ? '#14121a' : '#f4f1ec')
+        ?.setAttribute('content', resolved === 'dark' ? '#111513' : '#f5f2ea')
     }
     apply()
     if (theme !== 'system') return

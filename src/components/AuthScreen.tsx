@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { supabase } from '../lib/supabaseClient'
-import { BackIcon, MotifMark, SlateMark } from './Icons'
+import { BackIcon, SlateMark } from './Icons'
 
 export type AuthMode = 'signIn' | 'signUp'
 
@@ -83,16 +83,27 @@ export function AuthScreen({
           Back
         </button>
       ) : null}
+      <aside className="auth-story" aria-hidden="true">
+        <div className="auth-story-brand">
+          <span><SlateMark size={18} /></span>
+          Slate
+        </div>
+        <blockquote>“The page should be quieter than the thought.”</blockquote>
+        <div className="auth-story-note">
+          <small>FIELD NOTE / 08.05</small>
+          <strong>Keep what matters.</strong>
+          <p>Plain text, useful tags, and enough room to think.</p>
+        </div>
+      </aside>
       <form className="auth-card" onSubmit={onSubmit} aria-busy={pending || undefined}>
-        <MotifMark className="auth-motif" size={56} />
         <div className="auth-brand">
           <span className="auth-brand-mark">
             <SlateMark size={26} />
           </span>
-          <h1>Slate</h1>
+          <h1>{mode === 'signIn' ? 'Welcome back' : 'Start a new slate'}</h1>
         </div>
         <p className="auth-tagline">
-          {mode === 'signIn' ? 'Welcome back. Pick up where you left off.' : 'Start with a clean slate.'}
+          {mode === 'signIn' ? 'Your notes are right where you left them.' : 'A quiet place for everything worth keeping.'}
         </p>
 
         <button type="button" className="button auth-google" onClick={onGoogle} disabled={pending}>

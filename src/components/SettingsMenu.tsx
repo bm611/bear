@@ -89,7 +89,7 @@ export function SettingsMenu({
       <MenuSeparator />
       <MenuLabel>Editor font</MenuLabel>
       <MenuItem checked={preferences.font === 'sans'} onSelect={() => setPreferences({ font: 'sans' })}>
-        Anybody
+        Literata
       </MenuItem>
       <MenuItem checked={preferences.font === 'inter'} onSelect={() => setPreferences({ font: 'inter' })}>
         Inter
@@ -98,7 +98,7 @@ export function SettingsMenu({
         System
       </MenuItem>
       <MenuItem checked={preferences.font === 'mono'} onSelect={() => setPreferences({ font: 'mono' })}>
-        Mono
+        IBM Plex Mono
       </MenuItem>
 
       <div className="stepper">

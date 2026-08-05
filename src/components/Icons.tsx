@@ -52,7 +52,7 @@ function glyph(icon: IconSvgElement, name: string) {
   return Glyph
 }
 
-/** The app's own mark: a writing slate, ruled with three strokes of script. */
+/** The app's own mark: a folded sheet with one decisive line of writing. */
 export function SlateMark({ size = 20, ...rest }: { size?: number } & React.SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -61,21 +61,16 @@ export function SlateMark({ size = 20, ...rest }: { size?: number } & React.SVGP
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth={1.5}
+      strokeWidth={1.65}
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden="true"
       focusable="false"
       {...rest}
     >
-      {/* The frame is set lighter than the writing on it, so the three strokes
-          stay legible where the mark is small (12px in the list mock). */}
-      <rect x="3.2" y="3.2" width="17.6" height="17.6" rx="4.2" strokeWidth={1.25} />
-      <g strokeWidth={1.85}>
-        <path d="M7.6 15.4 9.7 8.9" />
-        <path d="M11.4 15.4 13.5 8.9" />
-        <path d="M15.2 15.4 16.2 12.2" />
-      </g>
+      <path d="M5 3.5h9.8L19 7.7v12.8H5z" />
+      <path d="M14.8 3.5v4.2H19" />
+      <path d="M8.2 12h7.6M8.2 15.3h5.5" strokeWidth={1.9} />
     </svg>
   )
 }

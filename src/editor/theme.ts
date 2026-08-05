@@ -239,15 +239,13 @@ export const slateEditorTheme = EditorView.theme({
 
   '.cm-hashtag': {
     color: 'var(--accent)',
-    backgroundColor: 'var(--accent-wash)',
-    border: '1px solid var(--accent-soft)',
-    borderRadius: '6px',
-    padding: '0.05em 0.4em',
-    margin: '0 -0.05em',
+    backgroundColor: 'transparent',
+    borderBottom: '1px solid var(--accent-soft)',
+    padding: '0.03em 0.08em',
     cursor: 'pointer',
     fontWeight: '600',
   },
-  '.cm-hashtag:hover': { backgroundColor: 'var(--accent-wash-strong)' },
+  '.cm-hashtag:hover': { backgroundColor: 'var(--accent-wash)' },
 
   '.cm-highlight': {
     backgroundColor: 'var(--highlight)',
@@ -265,7 +263,7 @@ export const slateEditorTheme = EditorView.theme({
     marginRight: '0.45em',
     verticalAlign: '-0.16em',
     border: '1.5px solid var(--todo-border)',
-    borderRadius: '4px',
+    borderRadius: '1px',
     cursor: 'pointer',
     position: 'relative',
     transition: 'background-color 120ms ease, border-color 120ms ease',
