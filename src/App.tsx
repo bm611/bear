@@ -33,7 +33,7 @@ function useTheme() {
       document.documentElement.dataset.theme = resolved
       document
         .querySelector('meta[name="theme-color"]')
-        ?.setAttribute('content', resolved === 'dark' ? '#101020' : '#ecedf4')
+        ?.setAttribute('content', resolved === 'dark' ? '#14121a' : '#f4f1ec')
     }
     apply()
     if (theme !== 'system') return

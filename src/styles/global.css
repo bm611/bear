@@ -1,8 +1,8 @@
 /* ---------------------------------------------------------------- tokens */
-/* Spectrum system: cool indigo neutrals carry the interface, and a
-   blue → orange spectrum marks activity — brand moments, live state, the
-   caret, tag pills. The editor stays quiet so the note carries the visual
-   weight; the spectrum links it to the landing and auth surfaces. */
+/* Pastel system: warm bone neutrals carry the interface, and a soft
+   lavender → lilac → dusty-rose run marks brand moments — the caret, tag
+   pills, live state. The editor stays quiet so the note carries the visual
+   weight; the pastel run links it to the landing and auth surfaces. */
 
 :root {
   --font-ui: 'Anybody', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui,
@@ -27,17 +27,10 @@
   --font-display: var(--font-chrome);
   --font-brand: 'Fraunces', 'Iowan Old Style', Georgia, 'Times New Roman', serif;
 
-  /* The spectrum, as reusable paints. Gradients mean activity or identity;
-     everything static stays neutral. */
-  --gradient-ink: linear-gradient(180deg, #3a3f5c 0%, #1e2033 100%);
-  --spectrum: linear-gradient(
-    100deg,
-    #4250d5 0%,
-    #6a88e2 26%,
-    #9b8ce6 48%,
-    #f0a04b 78%,
-    #ea580c 100%
-  );
+  /* The pastel run, as reusable paints. Gradients mean brand or activity;
+     everything static stays warm and neutral. */
+  --gradient-ink: linear-gradient(180deg, #403a4c 0%, #2f2a3a 100%);
+  --spectrum: linear-gradient(135deg, #6a5bc9 0%, #8b6fc7 45%, #b26e9e 100%);
 
   --sidebar-width: 16rem;
   --list-width: 20.5rem;
@@ -54,102 +47,102 @@
 [data-theme='light'] {
   color-scheme: light;
 
-  --edge-color: #1e2033;
-  --shadow-ink: #1e2033;
+  --edge-color: #3b3742;
+  --shadow-ink: #3b3742;
 
-  /* Blue end of the spectrum is the working accent; the orange end is the
-     signal colour, reserved for highlights and live states. */
-  --accent: #4250d5;
-  --accent-hover: #3541c0;
-  --accent-secondary: #ea580c;
+  /* Periwinkle is the working accent; dusty rose is the signal colour,
+     reserved for highlights and live states. */
+  --accent: #7b6cd6;
+  --accent-hover: #6a5bc9;
+  --accent-secondary: #c2557f;
   --list-marker: var(--accent);
-  --accent-soft: rgba(66, 80, 213, 0.34);
-  --accent-wash: rgba(66, 80, 213, 0.09);
-  --accent-wash-strong: rgba(66, 80, 213, 0.16);
+  --accent-soft: rgba(123, 108, 214, 0.32);
+  --accent-wash: rgba(123, 108, 214, 0.08);
+  --accent-wash-strong: rgba(123, 108, 214, 0.16);
 
-  --invert-bg: #1e2033;
+  --invert-bg: #3a3544;
   --invert-fg: #ffffff;
 
   /* Three flat surface steps, lightening toward the writing surface:
      sidebar (app-bg) → note list → canvas. Hairlines separate them. */
-  --app-bg: #ecedf4;
+  --app-bg: #f4f1ec;
   --sidebar-bg: var(--app-bg);
-  --list-bg: #f4f5fa;
-  --surface: #fafafc;
+  --list-bg: #faf8f4;
+  --surface: #fcfbf8;
   --surface-raised: #ffffff;
-  --surface-hover: rgba(66, 80, 213, 0.05);
-  --surface-active: rgba(66, 80, 213, 0.09);
-  --canvas-bg: #fdfdff;
+  --surface-hover: rgba(123, 108, 214, 0.05);
+  --surface-active: rgba(123, 108, 214, 0.09);
+  --canvas-bg: #fdfcf9;
 
-  --text-primary: #1e2033;
-  --text-secondary: #4d5170;
-  --text-tertiary: #8a8ea8;
+  --text-primary: #3b3742;
+  --text-secondary: #6b6577;
+  --text-tertiary: #9d96a8;
   --text-inverse: #ffffff;
 
-  --rule: rgba(30, 32, 51, 0.09);
-  --rule-pane: rgba(30, 32, 51, 0.13);
-  --rule-strong: rgba(30, 32, 51, 0.22);
-  --selection: rgba(66, 80, 213, 0.16);
-  --syntax-mark: #9ca1ba;
-  --code-bg: #eef0f9;
-  --code-text: #4250d5;
-  --todo-border: #9aa1c4;
-  --highlight: rgba(254, 177, 43, 0.26);
-  --table-row: rgba(30, 32, 51, 0.035);
-  --danger: #e0314b;
-  --danger-wash: rgba(224, 49, 75, 0.1);
-  --success: #16a34a;
+  --rule: rgba(59, 55, 66, 0.08);
+  --rule-pane: rgba(59, 55, 66, 0.11);
+  --rule-strong: rgba(59, 55, 66, 0.18);
+  --selection: rgba(123, 108, 214, 0.16);
+  --syntax-mark: #a9a2b4;
+  --code-bg: #f1edf9;
+  --code-text: #6a5bc9;
+  --todo-border: #a79fc0;
+  --highlight: rgba(250, 240, 218, 0.72);
+  --table-row: rgba(59, 55, 66, 0.03);
+  --danger: #c24e72;
+  --danger-wash: rgba(194, 78, 114, 0.1);
+  --success: #3e8e6e;
 
-  --shadow-soft: 0 8px 24px -20px rgba(30, 32, 51, 0.3);
-  --shadow-card: 0 20px 50px -42px rgba(30, 32, 51, 0.45);
-  --shadow-pop: 0 20px 44px -24px rgba(30, 32, 51, 0.3);
-  --shadow-toolbar: 0 8px 20px -18px rgba(30, 32, 51, 0.35);
+  --shadow-soft: 0 8px 24px -20px rgba(59, 55, 66, 0.28);
+  --shadow-card: 0 20px 50px -42px rgba(59, 55, 66, 0.4);
+  --shadow-pop: 0 20px 44px -24px rgba(59, 55, 66, 0.26);
+  --shadow-toolbar: 0 8px 20px -18px rgba(59, 55, 66, 0.3);
 }
 
 [data-theme='dark'] {
   color-scheme: dark;
 
-  --edge-color: rgba(174, 184, 255, 0.5);
-  --shadow-ink: #07070f;
+  --edge-color: rgba(178, 166, 226, 0.5);
+  --shadow-ink: #0b0a10;
 
-  --accent: #93a5ff;
-  --accent-hover: #b3c2ff;
-  --accent-secondary: #ff8a3c;
+  --accent: #a99ce8;
+  --accent-hover: #c0b6f0;
+  --accent-secondary: #e8a9c3;
   --list-marker: var(--accent);
-  --accent-soft: rgba(147, 165, 255, 0.5);
-  --accent-wash: rgba(147, 165, 255, 0.13);
-  --accent-wash-strong: rgba(147, 165, 255, 0.22);
+  --accent-soft: rgba(169, 156, 232, 0.5);
+  --accent-wash: rgba(169, 156, 232, 0.14);
+  --accent-wash-strong: rgba(169, 156, 232, 0.22);
 
-  --invert-bg: #e8ebff;
-  --invert-fg: #1e2033;
+  --invert-bg: #e6e1f5;
+  --invert-fg: #2a2633;
 
-  --app-bg: #101020;
+  --app-bg: #14121a;
   --sidebar-bg: var(--app-bg);
-  --list-bg: #14152a;
-  --surface: #171832;
-  --surface-raised: #1d1f3d;
-  --surface-hover: rgba(147, 165, 255, 0.08);
-  --surface-active: rgba(147, 165, 255, 0.13);
-  --canvas-bg: #14152a;
+  --list-bg: #191720;
+  --surface: #1e1b26;
+  --surface-raised: #262230;
+  --surface-hover: rgba(169, 156, 232, 0.09);
+  --surface-active: rgba(169, 156, 232, 0.14);
+  --canvas-bg: #191720;
 
-  --text-primary: #eef0ff;
-  --text-secondary: #b3b7d4;
-  --text-tertiary: #787da0;
-  --text-inverse: #1e2033;
+  --text-primary: #f2eff7;
+  --text-secondary: #bcb5cc;
+  --text-tertiary: #837c93;
+  --text-inverse: #2a2633;
 
-  --rule: rgba(238, 240, 255, 0.1);
-  --rule-pane: rgba(238, 240, 255, 0.14);
-  --rule-strong: rgba(238, 240, 255, 0.22);
-  --selection: rgba(147, 165, 255, 0.28);
-  --syntax-mark: #787da0;
-  --code-bg: #1f2242;
-  --code-text: #b3c2ff;
-  --todo-border: #4c5178;
-  --highlight: rgba(254, 177, 43, 0.24);
-  --table-row: rgba(238, 240, 255, 0.045);
-  --danger: #f87181;
-  --danger-wash: rgba(248, 113, 129, 0.14);
-  --success: #34d399;
+  --rule: rgba(242, 239, 247, 0.1);
+  --rule-pane: rgba(242, 239, 247, 0.13);
+  --rule-strong: rgba(242, 239, 247, 0.2);
+  --selection: rgba(169, 156, 232, 0.3);
+  --syntax-mark: #837c93;
+  --code-bg: #2a2540;
+  --code-text: #c0b6f0;
+  --todo-border: #544c6e;
+  --highlight: rgba(250, 240, 218, 0.12);
+  --table-row: rgba(242, 239, 247, 0.04);
+  --danger: #e88ba8;
+  --danger-wash: rgba(232, 139, 168, 0.14);
+  --success: #7fbf9e;
 
   --shadow-soft: 0 2px 12px -2px rgba(0, 0, 0, 0.4);
   --shadow-card: 0 20px 50px -36px rgba(0, 0, 0, 0.7);
@@ -1292,8 +1285,8 @@ button.disclosure:hover {
   margin-top: 1.1rem;
 }
 
-/* Pill buttons in the spectrum system: a hairline ring for the default
-   variant, the deep-ink gradient for primary, solid fill for danger. */
+/* Pill buttons in the pastel system: a hairline ring for the default
+   variant, the deep-plum gradient for primary, solid fill for danger. */
 .button {
   display: inline-flex;
   align-items: center;
@@ -1328,7 +1321,7 @@ button.disclosure:hover {
 
 .button-primary {
   background: var(--gradient-ink);
-  box-shadow: 0 6px 18px -8px rgba(30, 32, 51, 0.55);
+  box-shadow: 0 6px 18px -8px rgba(59, 55, 66, 0.5);
 }
 
 .button-primary:hover {
@@ -1355,30 +1348,30 @@ button.disclosure:hover {
 
 /* Dark theme flips the ink gradient: light pill, dark label. */
 [data-theme='dark'] .button-primary {
-  background: linear-gradient(180deg, #f4f6ff 0%, #c9d2f5 100%);
-  color: #1e2033;
+  background: linear-gradient(180deg, #efebfa 0%, #cbc4e8 100%);
+  color: #2a2633;
   box-shadow: 0 6px 18px -8px rgba(0, 0, 0, 0.8);
 }
 
 /* ----------------------------------------------------------------- auth */
 
-/* The card floats over a fogged indigo canvas washed with the spectrum's two
-   ends — blue above, a faint warm horizon below. Fixed to the light theme
-   regardless of the app's mode (a sign-in screen isn't the place to test a
-   preference). */
+/* The card floats over a fogged warm canvas washed with the pastel run's
+   three soft ends — lilac above, blush to the right, mint below. Fixed to
+   the light theme regardless of the app's mode (a sign-in screen isn't the
+   place to test a preference). */
 
 .auth-screen {
-  --surface: #fafafc;
+  --surface: #faf7f3;
   --surface-raised: #ffffff;
-  --text-primary: #1e2033;
-  --text-secondary: #4d5170;
-  --text-tertiary: #8a8ea8;
-  --rule-pane: rgba(30, 32, 51, 0.12);
-  --rule-strong: rgba(30, 32, 51, 0.2);
-  --accent: #4250d5;
-  --accent-wash: rgba(66, 80, 213, 0.08);
-  --danger: #e0314b;
-  --danger-wash: rgba(224, 49, 75, 0.08);
+  --text-primary: #3b3742;
+  --text-secondary: #6b6577;
+  --text-tertiary: #9d96a8;
+  --rule-pane: rgba(59, 55, 66, 0.11);
+  --rule-strong: rgba(59, 55, 66, 0.18);
+  --accent: #7b6cd6;
+  --accent-wash: rgba(123, 108, 214, 0.08);
+  --danger: #c24e72;
+  --danger-wash: rgba(194, 78, 114, 0.08);
 
   position: relative;
   display: flex;
@@ -1389,10 +1382,10 @@ button.disclosure:hover {
   overflow-x: hidden;
   overflow-y: auto;
   background:
-    radial-gradient(52rem 30rem at 18% -12%, rgba(106, 136, 226, 0.24), transparent 62%),
-    radial-gradient(46rem 26rem at 84% -8%, rgba(165, 187, 252, 0.3), transparent 60%),
-    radial-gradient(50rem 30rem at 50% 112%, rgba(240, 160, 75, 0.16), transparent 62%),
-    #fafafc;
+    radial-gradient(52rem 30rem at 18% -12%, rgba(139, 111, 199, 0.2), transparent 62%),
+    radial-gradient(46rem 26rem at 84% -8%, rgba(232, 169, 195, 0.22), transparent 60%),
+    radial-gradient(50rem 30rem at 50% 112%, rgba(158, 212, 184, 0.18), transparent 62%),
+    #faf7f3;
   color: var(--text-primary);
   color-scheme: light;
 }
@@ -1410,8 +1403,8 @@ button.disclosure:hover {
   border-radius: var(--radius-xl);
   background: var(--surface-raised);
   box-shadow:
-    0 1px 2px rgba(30, 32, 51, 0.05),
-    0 24px 60px -32px rgba(30, 32, 51, 0.35);
+    0 1px 2px rgba(59, 55, 66, 0.05),
+    0 24px 60px -32px rgba(59, 55, 66, 0.3);
 }
 
 .auth-motif {
@@ -1438,7 +1431,7 @@ button.disclosure:hover {
   border-radius: 0.9rem;
   background: var(--spectrum);
   color: #ffffff;
-  box-shadow: 0 8px 20px -8px rgba(66, 80, 213, 0.55);
+  box-shadow: 0 8px 20px -8px rgba(123, 108, 214, 0.45);
 }
 
 .auth-brand h1 {
@@ -1569,24 +1562,24 @@ button.disclosure:hover {
 }
 
 /* -------------------------------------------------------------- landing */
-/* The marketing surface, in the spectrum design language: a frosted pill
-   nav, a hero under a blurred spectrum arc, eyebrows flanked by gradient
-   hairlines, Fraunces headlines, an infinite marquee, a dark statement band,
-   pillar columns and a metric row. Fixed to light. */
+/* The marketing surface, in the pastel design language: a frosted pill
+   nav, a hero under a blurred pastel wash, Fraunces headlines, an infinite
+   marquee, a deep plum statement band, pillar columns and a metric row.
+   Fixed to light. */
 
 .lp {
-  --lp-bg: #fafafc;
-  --lp-fog: #f0f1f6;
-  --lp-ink: #1e2033;
-  --lp-ink-70: #4d5170;
-  --lp-ink-55: #8a8ea8;
-  --lp-line: rgba(30, 32, 51, 0.1);
-  --lp-line-strong: rgba(30, 32, 51, 0.18);
-  --lp-accent: #4250d5;
-  --lp-accent-2: #6a88e2;
-  --lp-accent-soft: #a5bbfc;
-  --lp-warm-2: #feb12b;
-  --lp-accent-wash: rgba(66, 80, 213, 0.09);
+  --lp-bg: #f7f5f1;
+  --lp-fog: #efece6;
+  --lp-ink: #3b3742;
+  --lp-ink-70: #6b6577;
+  --lp-ink-55: #9d96a8;
+  --lp-line: rgba(59, 55, 66, 0.1);
+  --lp-line-strong: rgba(59, 55, 66, 0.18);
+  --lp-accent: #7b6cd6;
+  --lp-accent-2: #a68bd8;
+  --lp-accent-soft: #c9bcf0;
+  --lp-warm-2: #9dd4b4;
+  --lp-accent-wash: rgba(123, 108, 214, 0.09);
 
   --f-ui: var(--font-chrome);
   --f-display: var(--font-brand);
@@ -1605,55 +1598,8 @@ button.disclosure:hover {
 }
 
 .lp ::selection {
-  background: rgba(66, 80, 213, 0.18);
+  background: rgba(123, 108, 214, 0.2);
   color: var(--lp-ink);
-}
-
-/* ---------------------------------------------------------------- banner */
-
-/* The persistent strip: one line, a spectrum-lit claim, an arrow link. */
-.lp-banner {
-  position: relative;
-  z-index: 30;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  gap: 0.3rem 0.55rem;
-  padding: 0.55rem 1.2rem;
-  border-bottom: 1px solid var(--lp-line);
-  background: linear-gradient(
-    90deg,
-    rgba(66, 80, 213, 0.06),
-    rgba(155, 140, 230, 0.06) 50%,
-    rgba(234, 88, 12, 0.06)
-  );
-  font-size: 0.78rem;
-  font-weight: 500;
-  color: var(--lp-ink-70);
-  text-align: center;
-}
-
-.lp-banner strong {
-  background: var(--spectrum);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  font-weight: 650;
-}
-
-.lp-banner-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  color: var(--lp-accent);
-  font-weight: 600;
-  white-space: nowrap;
-}
-
-.lp-banner-link:hover {
-  text-decoration: underline;
-  text-underline-offset: 2px;
 }
 
 /* ------------------------------------------------------------------- nav */
@@ -1672,15 +1618,16 @@ button.disclosure:hover {
   gap: 0.8rem;
   max-width: 73rem;
   margin: 0 auto;
-  padding: 0.5rem 0.55rem 0.5rem 0.95rem;
-  border: 1px solid rgba(220, 220, 220, 0.4);
+  padding: 0.55rem 0.6rem 0.55rem 1rem;
+  border: 1px solid var(--lp-line);
   border-radius: var(--radius-pill);
-  background: rgba(255, 255, 255, 0.55);
-  backdrop-filter: blur(24px) saturate(1.3) brightness(1.04);
-  -webkit-backdrop-filter: blur(24px) saturate(1.3) brightness(1.04);
+  background: rgba(255, 255, 255, 0.66);
+  backdrop-filter: blur(24px) saturate(1.4) brightness(1.03);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4) brightness(1.03);
   box-shadow:
-    0 2px 24px rgba(0, 0, 0, 0.02),
-    inset 0 1px 3px rgba(0, 0, 0, 0.04);
+    0 10px 32px -16px rgba(59, 55, 66, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.75),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.45);
 }
 
 .lp-logo {
@@ -1689,6 +1636,10 @@ button.disclosure:hover {
   gap: 0.55rem;
   color: inherit;
   text-decoration: none;
+}
+
+.lp-logo:hover .lp-logo-word {
+  color: var(--lp-accent);
 }
 
 .lp-logo-mark {
@@ -1708,6 +1659,7 @@ button.disclosure:hover {
   font-weight: 700;
   font-stretch: 126%;
   letter-spacing: 0.005em;
+  transition: color 160ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .lp-nav-links {
@@ -1717,41 +1669,56 @@ button.disclosure:hover {
 }
 
 .lp-nav-links a {
-  padding: 0.45rem 0.8rem;
-  border-radius: 0.55rem;
-  color: var(--lp-ink);
+  padding: 0.45rem 0.85rem;
+  border-radius: var(--radius-pill);
+  color: var(--lp-ink-70);
   font-family: var(--f-ui);
   font-size: 0.72rem;
-  font-weight: 600;
+  font-weight: 650;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   text-decoration: none;
-  transition: background-color 140ms;
+  transition:
+    background-color 160ms cubic-bezier(0.16, 1, 0.3, 1),
+    color 160ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .lp-nav-links a:hover {
-  background: rgba(30, 32, 51, 0.05);
+  background: var(--lp-accent-wash);
+  color: var(--lp-accent);
 }
 
 .lp-nav-actions {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.5rem;
+}
+
+.lp-nav-divider {
+  width: 1px;
+  height: 1.35rem;
+  margin: 0 0.4rem;
+  background: var(--lp-line-strong);
 }
 
 .lp-link {
+  padding: 0.45rem 0.85rem;
+  border-radius: var(--radius-pill);
   font-family: var(--f-ui);
   font-size: 0.72rem;
-  font-weight: 600;
+  font-weight: 650;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--lp-ink-70);
   text-decoration: none;
   white-space: nowrap;
-  transition: color 140ms;
+  transition:
+    background-color 160ms cubic-bezier(0.16, 1, 0.3, 1),
+    color 160ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .lp-link:hover {
+  background: rgba(59, 55, 66, 0.05);
   color: var(--lp-ink);
 }
 
@@ -1794,18 +1761,18 @@ button.disclosure:hover {
 }
 
 .lp-btn-outline {
-  background: linear-gradient(to bottom, #ffffff 0%, #f0f1f5 100%);
-  box-shadow: inset 0 0 0 1px rgba(30, 32, 51, 0.14);
+  background: linear-gradient(to bottom, #ffffff 0%, #f1ede7 100%);
+  box-shadow: inset 0 0 0 1px rgba(59, 55, 66, 0.14);
   color: var(--lp-ink);
 }
 
 .lp-btn-outline:hover {
   filter: none;
-  box-shadow: inset 0 0 0 1px rgba(30, 32, 51, 0.3);
+  box-shadow: inset 0 0 0 1px rgba(59, 55, 66, 0.3);
 }
 
 .lp-btn-light {
-  background: linear-gradient(to bottom, #ffffff 0%, #dfe4f4 100%);
+  background: linear-gradient(to bottom, #ffffff 0%, #e8e2f2 100%);
   color: var(--lp-ink);
   box-shadow: 0 6px 24px -8px rgba(0, 0, 0, 0.45);
 }
@@ -1817,7 +1784,7 @@ button.disclosure:hover {
 .lp-btn-ghost {
   background: transparent;
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.28);
-  color: #eef0ff;
+  color: #f2eff7;
 }
 
 .lp-btn-ghost:hover {
@@ -1858,8 +1825,9 @@ button.disclosure:hover {
   text-align: center;
 }
 
-/* The great blurred arc behind the hero — the spectrum as weather, not
-   paint. One conic ring, heavily blurred, plus a blue core glow. */
+/* The great blurred wash behind the hero — the pastel run as weather, not
+   paint. Three soft blobs (lilac, blush, mint), heavily blurred, plus a
+   lavender core glow. */
 .lp-hero-glow {
   position: absolute;
   inset: 0 0 auto;
@@ -1877,19 +1845,17 @@ button.disclosure:hover {
   aspect-ratio: 1.35;
   transform: translateX(-50%);
   border-radius: 50%;
-  background: conic-gradient(
-    from 40deg at 50% 50%,
-    #4250d5,
-    #6a88e2,
-    #a5bbfc,
-    #feb12b,
-    #ea580c,
-    #a5bbfc,
-    #6a88e2,
-    #4250d5
-  );
-  filter: blur(110px);
-  opacity: 0.3;
+  /* Pastel weather: three soft blobs — lilac, blush, mint — instead of the
+     old conic spectrum. */
+  background: radial-gradient(
+      42% 46% at 24% 42%,
+      rgba(139, 111, 199, 0.55),
+      transparent 68%
+    ),
+    radial-gradient(38% 44% at 72% 30%, rgba(232, 169, 195, 0.5), transparent 66%),
+    radial-gradient(44% 40% at 55% 88%, rgba(158, 212, 184, 0.45), transparent 70%);
+  filter: blur(80px);
+  opacity: 0.85;
 }
 
 .lp-hero-glow::after {
@@ -1900,9 +1866,9 @@ button.disclosure:hover {
   width: 34rem;
   height: 15rem;
   transform: translateX(-50%);
-  background: radial-gradient(ellipse, #a5bbfc 0%, #d5e2ff 40%, transparent 70%);
+  background: radial-gradient(ellipse, #c9bcf0 0%, #e6ddf8 40%, transparent 70%);
   filter: blur(60px);
-  opacity: 0.55;
+  opacity: 0.6;
 }
 
 .lp-hero-copy {
@@ -1918,33 +1884,6 @@ button.disclosure:hover {
   display: block;
   margin: 0 auto 1.1rem;
   color: var(--lp-accent);
-}
-
-/* Eyebrow: a claim in small caps, carried between two gradient hairlines. */
-.lp-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 1rem;
-  font-size: 0.8rem;
-  font-weight: 550;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--lp-accent);
-}
-
-.lp-eyebrow::before,
-.lp-eyebrow::after {
-  content: '';
-  width: 3.4rem;
-  height: 1px;
-}
-
-.lp-eyebrow::before {
-  background: linear-gradient(90deg, transparent, var(--lp-accent-2));
-}
-
-.lp-eyebrow::after {
-  background: linear-gradient(90deg, var(--lp-accent-2), transparent);
 }
 
 .lp-kicker {
@@ -1967,7 +1906,7 @@ button.disclosure:hover {
   text-wrap: balance;
 }
 
-/* The rotating word picks up the full spectrum — identity, not chrome. */
+/* The rotating word picks up the pastel run — identity, not chrome. */
 .lp-rotor {
   display: grid;
   place-items: center;
@@ -2047,7 +1986,7 @@ button.disclosure:hover {
   width: 80%;
   height: 6rem;
   transform: translateX(-50%);
-  background: radial-gradient(ellipse, rgba(66, 80, 213, 0.22), transparent 70%);
+  background: radial-gradient(ellipse, rgba(123, 108, 214, 0.2), transparent 70%);
   filter: blur(40px);
   pointer-events: none;
 }
@@ -2064,8 +2003,8 @@ button.disclosure:hover {
   border-radius: 20px;
   background: #fff;
   box-shadow:
-    0 1px 2px rgba(30, 32, 51, 0.06),
-    0 40px 80px -36px rgba(30, 32, 51, 0.35);
+    0 1px 2px rgba(59, 55, 66, 0.06),
+    0 40px 80px -36px rgba(59, 55, 66, 0.32);
   text-align: left;
 }
 
@@ -2152,11 +2091,11 @@ button.disclosure:hover {
 .lp .mock-note-line {
   height: 3px;
   border-radius: 2px;
-  background: rgba(30, 32, 51, 0.09);
+  background: rgba(59, 55, 66, 0.09);
 }
 
 .lp .mock-note[data-active='true'] .mock-note-line {
-  background: rgba(66, 80, 213, 0.22);
+  background: rgba(123, 108, 214, 0.22);
 }
 
 .lp .mock-note-meta {
@@ -2228,7 +2167,7 @@ button.disclosure:hover {
   color: #fff;
 }
 
-/* A caret is pure activity, so it carries the spectrum's whole run. */
+/* A caret is pure activity, so it carries the pastel run. */
 .lp .mock-caret {
   display: inline-block;
   width: 2px;
@@ -2356,7 +2295,7 @@ button.disclosure:hover {
   overflow: hidden;
   background: var(--lp-line);
   gap: 1px;
-  box-shadow: 0 1px 2px rgba(30, 32, 51, 0.04);
+  box-shadow: 0 1px 2px rgba(59, 55, 66, 0.04);
 }
 
 .lp-cheat {
@@ -2437,16 +2376,16 @@ button.disclosure:hover {
 }
 
 /* ------------------------------------------------------------- statement */
-/* Full-bleed band: deep ink bleeding into the spectrum's pale blue — the
-   one loud chromatic surface on the page. */
+/* Full-bleed band: deep plum bleeding toward a muted violet — the one loud
+   chromatic surface on the page. */
 
 .lp-statement {
   position: relative;
   overflow: hidden;
   padding: 7.5rem 1.6rem;
   text-align: center;
-  background: linear-gradient(180deg, #13121e 0%, #a5bbfc 145%);
-  color: #eef0ff;
+  background: linear-gradient(180deg, #1b1724 0%, #4d4068 145%);
+  color: #f2eff7;
 }
 
 .lp-statement::before {
@@ -2458,7 +2397,7 @@ button.disclosure:hover {
   aspect-ratio: 2.1;
   transform: translateX(-50%);
   border-radius: 50%;
-  background: radial-gradient(ellipse, rgba(254, 177, 43, 0.16), rgba(106, 136, 226, 0.1) 55%, transparent 72%);
+  background: radial-gradient(ellipse, rgba(232, 169, 195, 0.2), rgba(158, 212, 184, 0.12) 55%, transparent 72%);
   filter: blur(50px);
   pointer-events: none;
 }
@@ -2490,7 +2429,7 @@ button.disclosure:hover {
   margin: 1.1rem auto 0;
   font-size: 1rem;
   line-height: 1.7;
-  color: rgba(238, 240, 255, 0.72);
+  color: rgba(242, 239, 247, 0.72);
 }
 
 .lp-statement .lp-cta-group {
@@ -2616,7 +2555,7 @@ button.disclosure:hover {
   border-radius: var(--radius-xl);
   overflow: hidden;
   background: var(--lp-line);
-  box-shadow: 0 1px 2px rgba(30, 32, 51, 0.04);
+  box-shadow: 0 1px 2px rgba(59, 55, 66, 0.04);
 }
 
 .lp-feature {
@@ -2659,8 +2598,8 @@ button.disclosure:hover {
   margin: 0 auto;
   padding: 4.5rem 2rem;
   border-radius: 2rem;
-  background: #13121e;
-  color: #eef0ff;
+  background: #1b1724;
+  color: #f2eff7;
   text-align: center;
 }
 
@@ -2673,18 +2612,14 @@ button.disclosure:hover {
   aspect-ratio: 1.6;
   transform: translateX(-50%);
   border-radius: 50%;
-  background: conic-gradient(
-    from 40deg,
-    #4250d5,
-    #6a88e2,
-    #a5bbfc,
-    #feb12b,
-    #ea580c,
-    #a5bbfc,
-    #4250d5
+  background: radial-gradient(
+    60% 70% at 50% 30%,
+    rgba(139, 111, 199, 0.5),
+    rgba(232, 169, 195, 0.35) 55%,
+    transparent 75%
   );
-  filter: blur(90px);
-  opacity: 0.34;
+  filter: blur(80px);
+  opacity: 0.55;
   pointer-events: none;
 }
 
@@ -2709,7 +2644,7 @@ button.disclosure:hover {
   margin: 1rem auto 0;
   font-size: 0.98rem;
   line-height: 1.7;
-  color: rgba(238, 240, 255, 0.72);
+  color: rgba(242, 239, 247, 0.72);
 }
 
 .lp-closer .lp-kicker {

@@ -87,28 +87,28 @@ const EXPORT_CSS = `
 body {
   margin: 0 auto; padding: 3rem 1.5rem; max-width: 44rem;
   font: 16px/1.65 "Anybody", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
-  color: #1e2033; background: #fff; overflow-wrap: break-word;
+  color: #3b3742; background: #fff; overflow-wrap: break-word;
 }
 h1, h2, h3, h4 { line-height: 1.25; margin: 1.8em 0 .6em; }
 h1 { font-size: 1.9rem } h2 { font-size: 1.5rem } h3 { font-size: 1.25rem }
-a { color: #4250d5 }
-blockquote { margin: 1em 0; padding: .2em 0 .2em 1em; border-left: 3px solid #e5e5ea; color: #4d5170 }
+a { color: #7b6cd6 }
+blockquote { margin: 1em 0; padding: .2em 0 .2em 1em; border-left: 3px solid #e6e2da; color: #6b6577 }
 code { font-family: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .9em;
-  background: #eef0f9; padding: .15em .35em; border-radius: 4px }
-pre { background: #eef0f9; padding: 1em; border-radius: 8px; overflow-x: auto }
+  background: #f1edf9; padding: .15em .35em; border-radius: 4px }
+pre { background: #f1edf9; padding: 1em; border-radius: 8px; overflow-x: auto }
 pre code { background: none; padding: 0 }
-mark { background: #ffe9a8; padding: 0 .15em }
-hr { border: none; border-top: 1px solid #e5e5ea; margin: 2em 0 }
+mark { background: #faf0da; padding: 0 .15em }
+hr { border: none; border-top: 1px solid #e6e2da; margin: 2em 0 }
 img { max-width: 100% }
 table { border-collapse: collapse; width: 100% }
-th, td { border: 1px solid #e5e5ea; padding: .45em .7em; text-align: left }
+th, td { border: 1px solid #e6e2da; padding: .45em .7em; text-align: left }
 ul.contains-task-list { list-style: none; padding-left: 1.1em }
-.md-hashtag { color: #4250d5; font-weight: 500 }
+.md-hashtag { color: #7b6cd6; font-weight: 500 }
 @media (prefers-color-scheme: dark) {
-  body { color: #eef0ff; background: #14152a }
-  code, pre { background: #1f2242 } mark { background: #6b5a1e; color: #fff }
-  blockquote { border-color: #33365a; color: #b3b7d4 }
-  th, td, hr { border-color: #33365a }
+  body { color: #f2eff7; background: #191720 }
+  code, pre { background: #2a2540 } mark { background: #4d4430; color: #fff }
+  blockquote { border-color: #3a3547; color: #bcb5cc }
+  th, td, hr { border-color: #3a3547 }
 }
 `.trim()
 

@@ -273,18 +273,9 @@ export function LandingScreen({ onLaunch }: { onLaunch: (mode: AuthMode) => void
 
   return (
     <div className="lp">
-      <div className="lp-banner">
-        <span>
-          <strong>Slate is in early access</strong> — every account is free while it grows.
-        </span>
-        <button type="button" className="lp-banner-link" onClick={() => onLaunch('signUp')}>
-          Claim yours →
-        </button>
-      </div>
-
       <div className="lp-nav-wrap">
         <header className="lp-nav">
-          <a className="lp-logo" href="#top">
+          <a className="lp-logo" href="#top" aria-label="Slate — home">
             <span className="lp-logo-mark">
               <SlateMark size={18} />
             </span>
@@ -296,6 +287,7 @@ export function LandingScreen({ onLaunch }: { onLaunch: (mode: AuthMode) => void
             <a href="#features">Features</a>
           </nav>
           <div className="lp-nav-actions">
+            <span className="lp-nav-divider" aria-hidden="true" />
             <button type="button" className="lp-link" onClick={() => onLaunch('signIn')}>
               Sign in
             </button>
@@ -311,8 +303,6 @@ export function LandingScreen({ onLaunch }: { onLaunch: (mode: AuthMode) => void
           <div className="lp-hero-glow" aria-hidden="true" />
           <div className="lp-hero-copy">
             <MotifMark className="lp-motif" size={64} />
-
-            <span className="lp-eyebrow">Markdown notes with a pulse</span>
 
             <h1 className="lp-title">
               A clean slate for your
