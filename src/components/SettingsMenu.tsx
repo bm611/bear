@@ -89,10 +89,7 @@ export function SettingsMenu({
       <MenuSeparator />
       <MenuLabel>Editor font</MenuLabel>
       <MenuItem checked={preferences.font === 'sans'} onSelect={() => setPreferences({ font: 'sans' })}>
-        Anybody
-      </MenuItem>
-      <MenuItem checked={preferences.font === 'inter'} onSelect={() => setPreferences({ font: 'inter' })}>
-        Inter
+        Sans
       </MenuItem>
       <MenuItem checked={preferences.font === 'system'} onSelect={() => setPreferences({ font: 'system' })}>
         System

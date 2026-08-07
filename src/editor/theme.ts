@@ -6,24 +6,27 @@ import { tags as t } from '@lezer/highlight'
  * Markdown is styled in place rather than in a separate preview. Structural
  * markers are folded by `decorations.ts` and reveal themselves only when the
  * selection enters one, so the document remains fully editable.
+ *
+ * The paint comes from the neo-brutalist sheet: ink-black rules, accent fills
+ * behind black text (tags blue, marks yellow), mono for anything measured.
  */
 export const slateHighlightStyle = HighlightStyle.define([
   // H1 is twice the body size — 34px against 17px copy — and the rest of the
   // ramp steps down from there rather than from the body size up.
-  { tag: t.heading1, fontSize: '2em', fontWeight: '700', lineHeight: '1.4' },
-  { tag: t.heading2, fontSize: '1.55em', fontWeight: '700', lineHeight: '1.35' },
-  { tag: t.heading3, fontSize: '1.25em', fontWeight: '600' },
-  { tag: t.heading4, fontSize: '1.1em', fontWeight: '600' },
-  { tag: [t.heading5, t.heading6], fontWeight: '600', color: 'var(--text-secondary)' },
+  { tag: t.heading1, fontSize: '2em', fontWeight: '800', lineHeight: '1.4', letterSpacing: '-0.02em' },
+  { tag: t.heading2, fontSize: '1.55em', fontWeight: '800', lineHeight: '1.35', letterSpacing: '-0.015em' },
+  { tag: t.heading3, fontSize: '1.25em', fontWeight: '700', letterSpacing: '-0.01em' },
+  { tag: t.heading4, fontSize: '1.1em', fontWeight: '700' },
+  { tag: [t.heading5, t.heading6], fontWeight: '700', color: 'var(--text-secondary)' },
   { tag: t.strong, fontWeight: '700' },
   { tag: t.emphasis, fontStyle: 'italic' },
   { tag: t.strikethrough, textDecoration: 'line-through', color: 'var(--text-tertiary)' },
-  { tag: t.link, color: 'var(--accent)', textDecoration: 'underline', textDecorationColor: 'var(--accent-soft)' },
+  { tag: t.link, color: 'var(--link)', textDecoration: 'underline', textDecorationColor: 'var(--link)', textDecorationThickness: '2px', textUnderlineOffset: '2px' },
   { tag: t.url, color: 'var(--text-tertiary)', textDecoration: 'none' },
   { tag: t.quote, color: 'var(--text-secondary)', fontStyle: 'italic' },
-  { tag: t.monospace, fontFamily: 'var(--font-mono)', fontSize: '0.92em', color: 'var(--code-text)' },
+  { tag: t.monospace, fontFamily: 'var(--font-mono)', fontSize: '0.88em', color: 'var(--code-text)', backgroundColor: 'var(--code-bg)', },
   { tag: t.list, color: 'var(--text-primary)' },
-  { tag: t.atom, color: 'var(--accent)' },
+  { tag: t.atom, color: 'var(--blue-deep)' },
   { tag: t.contentSeparator, color: 'var(--text-tertiary)' },
   { tag: t.labelName, color: 'var(--text-tertiary)' },
   { tag: t.escape, color: 'var(--text-tertiary)' },
@@ -59,7 +62,7 @@ export const slateEditorTheme = EditorView.theme({
   },
   '.cm-content': {
     padding: '2.2rem 0 45vh',
-    caretColor: 'var(--accent)',
+    caretColor: 'var(--ink)',
     maxWidth: 'var(--editor-measure)',
     margin: '0 auto',
     width: '100%',
@@ -117,7 +120,7 @@ export const slateEditorTheme = EditorView.theme({
   '.cm-list-marker, .cm-list-marker span': {
     color: 'var(--list-marker) !important',
   },
-  '.cm-cursor, .cm-dropCursor': { borderLeftWidth: '2px', borderLeftColor: 'var(--accent)' },
+  '.cm-cursor, .cm-dropCursor': { borderLeftWidth: '2px', borderLeftColor: 'var(--ink)' },
   '&.cm-focused .cm-selectionBackground, .cm-selectionBackground, ::selection': {
     backgroundColor: 'var(--selection)',
   },
@@ -137,29 +140,35 @@ export const slateEditorTheme = EditorView.theme({
   '.cm-line.cm-heading-1:first-child, .cm-line.cm-heading-2:first-child': { paddingTop: '0' },
 
   '.cm-quote-line': {
-    borderLeft: '2px solid var(--rule-strong)',
+    borderLeft: '3px solid var(--ink)',
     paddingLeft: '0.85em',
-    marginLeft: '-1px',
+    marginLeft: '-2px',
   },
+  // Code runs in a boxed block: cream fill, thick ink rule, radius only on the
+  // first and last row so stacked lines read as one card.
   '.cm-code-line': {
     backgroundColor: 'var(--code-bg)',
     fontFamily: 'var(--font-mono)',
-    fontSize: '0.92em',
+    fontSize: '0.88em',
     paddingLeft: '0.9em',
     paddingRight: '0.9em',
+    borderLeft: '2px solid var(--ink)',
+    borderRight: '2px solid var(--ink)',
   },
   '.cm-code-start': {
     marginTop: '0.8em',
-    paddingTop: '0.5em',
-    borderRadius: '2px 2px 0 0',
+    paddingTop: '0.55em',
+    borderTop: '2px solid var(--ink)',
+    borderRadius: '10px 10px 0 0',
   },
   '.cm-code-end': {
     marginBottom: '0.9em',
-    paddingBottom: '0.5em',
-    borderRadius: '0 0 2px 2px',
+    paddingBottom: '0.55em',
+    borderBottom: '2px solid var(--ink)',
+    borderRadius: '0 0 10px 10px',
   },
   '.cm-code-start.cm-code-end': {
-    borderRadius: '2px',
+    borderRadius: '10px',
   },
 
   // A table is drawn from its source: `tables.ts` hides the pipes and the
@@ -175,22 +184,22 @@ export const slateEditorTheme = EditorView.theme({
     alignItems: 'stretch',
     padding: '0',
     lineHeight: '1.5',
-    borderLeft: '1px solid var(--rule-strong)',
-    borderRight: '1px solid var(--rule-strong)',
+    borderLeft: '2px solid var(--ink)',
+    borderRight: '2px solid var(--ink)',
   },
   '.cm-line.cm-table-head': {
     marginTop: '0.55em',
-    borderTop: '1px solid var(--rule-strong)',
-    borderTopLeftRadius: '2px',
-    borderTopRightRadius: '2px',
-    backgroundColor: 'var(--table-row)',
+    borderTop: '2px solid var(--ink)',
+    borderTopLeftRadius: '8px',
+    borderTopRightRadius: '8px',
+    backgroundColor: 'var(--cream-cell)',
   },
   '.cm-line.cm-table-alt': { backgroundColor: 'var(--table-row)' },
   '.cm-line.cm-table-last': {
     marginBottom: '0.6em',
-    borderBottom: '1px solid var(--rule-strong)',
-    borderBottomLeftRadius: '2px',
-    borderBottomRightRadius: '2px',
+    borderBottom: '2px solid var(--ink)',
+    borderBottomLeftRadius: '8px',
+    borderBottomRightRadius: '8px',
   },
   // The last cell drops its rule so the rounded edge on the line is the only
   // thing drawn there — `cm-table-cell-end` rather than `:last-child`, which
@@ -203,7 +212,7 @@ export const slateEditorTheme = EditorView.theme({
     overflowWrap: 'break-word',
   },
   '.cm-table-cell-end': { borderRight: 'none' },
-  '.cm-table-head-cell': { fontWeight: '650' },
+  '.cm-table-head-cell': { fontWeight: '700' },
   '.cm-table-left': { textAlign: 'left' },
   '.cm-table-center': { textAlign: 'center' },
   '.cm-table-right': { textAlign: 'right' },
@@ -224,35 +233,39 @@ export const slateEditorTheme = EditorView.theme({
     height: '1.1rem',
     margin: '0.15rem',
     padding: '0',
-    borderRadius: '2px',
-    color: 'var(--text-tertiary)',
+    borderRadius: '4px',
+    color: 'var(--text-primary)',
     backgroundColor: 'var(--surface-raised)',
-    boxShadow: '0 0 0 1px var(--rule-strong)',
+    boxShadow: '0 0 0 2px var(--ink), 2px 2px 0 var(--ink)',
     cursor: 'pointer',
   },
   '.cm-table-handle svg': { width: '13px', height: '13px' },
   '.cm-table-handle:hover': {
-    color: 'var(--text-inverse)',
-    backgroundColor: 'var(--accent)',
-    boxShadow: '0 0 0 1px var(--accent)',
+    color: '#1a1a1a',
+    backgroundColor: 'var(--blue)',
+    boxShadow: '0 0 0 2px var(--ink), 2px 2px 0 var(--ink)',
   },
 
+  // A tag is a blue sticker: fill behind black text, ink border, clickable.
   '.cm-hashtag': {
-    color: 'var(--accent)',
-    backgroundColor: 'var(--accent-wash)',
-    border: '1px solid var(--accent-soft)',
+    color: '#1a1a1a',
+    backgroundColor: 'var(--blue)',
+    border: '2px solid var(--ink)',
     borderRadius: '6px',
-    padding: '0.05em 0.4em',
+    padding: '0.02em 0.35em',
     margin: '0 -0.05em',
     cursor: 'pointer',
-    fontWeight: '600',
+    fontWeight: '700',
   },
-  '.cm-hashtag:hover': { backgroundColor: 'var(--accent-wash-strong)' },
+  '.cm-hashtag:hover': { backgroundColor: 'var(--accent-blue)' },
 
+  // ==Marked== text takes the yellow highlight block, straight from the
+  // reference hero card.
   '.cm-highlight': {
     backgroundColor: 'var(--highlight)',
+    color: 'var(--text-primary)',
     borderRadius: '3px',
-    padding: '0.08em 0',
+    padding: '0.08em 0.1em',
   },
   '.cm-subscript': { fontSize: '0.85em', verticalAlign: 'sub' },
   '.cm-superscript': { fontSize: '0.85em', verticalAlign: 'super' },
@@ -264,22 +277,22 @@ export const slateEditorTheme = EditorView.theme({
     marginLeft: '0.53em',
     marginRight: '0.45em',
     verticalAlign: '-0.16em',
-    border: '1.5px solid var(--todo-border)',
+    border: '2px solid var(--ink)',
     borderRadius: '4px',
     cursor: 'pointer',
     position: 'relative',
     transition: 'background-color 120ms ease, border-color 120ms ease',
   },
-  '.cm-todo:hover': { borderColor: 'var(--accent)' },
-  '.cm-todo-checked': { backgroundColor: 'var(--accent)', borderColor: 'var(--accent)' },
+  '.cm-todo:hover': { borderColor: 'var(--ink)', backgroundColor: 'var(--surface-hover)' },
+  '.cm-todo-checked': { backgroundColor: 'var(--ink)', borderColor: 'var(--ink)' },
   '.cm-todo-checked::after': {
     content: '""',
     position: 'absolute',
-    left: '0.28em',
-    top: '0.1em',
+    left: '0.26em',
+    top: '0.08em',
     width: '0.26em',
     height: '0.52em',
-    border: '2px solid var(--text-inverse)',
+    border: '2px solid var(--canvas-bg)',
     borderTop: '0',
     borderLeft: '0',
     transform: 'rotate(40deg)',
@@ -287,8 +300,8 @@ export const slateEditorTheme = EditorView.theme({
   '.cm-todo-done': { color: 'var(--text-tertiary)', textDecoration: 'line-through' },
 
   '.cm-tooltip': {
-    border: '1px solid var(--rule-strong)',
-    borderRadius: '3px',
+    border: '3px solid var(--ink)',
+    borderRadius: '10px',
     backgroundColor: 'var(--surface-raised)',
     boxShadow: 'var(--shadow-pop)',
     overflow: 'hidden',
@@ -301,8 +314,8 @@ export const slateEditorTheme = EditorView.theme({
   },
   '.cm-tooltip.cm-tooltip-autocomplete > ul > li': { padding: '0.32rem 0.7rem' },
   '.cm-tooltip-autocomplete ul li[aria-selected]': {
-    backgroundColor: 'var(--accent)',
-    color: 'var(--text-inverse)',
+    backgroundColor: 'var(--blue)',
+    color: '#1a1a1a',
   },
   '.cm-completionLabel': { fontFamily: 'var(--font-ui)' },
   '.cm-completionDetail': { color: 'var(--text-tertiary)', fontStyle: 'normal', marginLeft: '0.6em' },
